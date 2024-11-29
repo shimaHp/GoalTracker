@@ -1,4 +1,5 @@
 using  GoalTracker.Infrastructure.Extension;
+using GoalTracker.Infrastructure.Seeders;
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -8,6 +9,10 @@ builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+var scope = app.Services.CreateScope();
+var seeder=scope.ServiceProvider.GetRequiredService<IGoalTrackerSeeder>();
+
+await seeder.Seed();
 
 // Configure the HTTP request pipeline.
 

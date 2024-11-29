@@ -10,8 +10,8 @@ internal class GoalTrackerDbContext:DbContext
     {
         
     }
-    internal required DbSet<Goal> Goals { get; set; }
-    internal required DbSet<WorkItem> WorkItems { get; set; }
+    internal  DbSet<Goal> Goals { get; set; }
+    internal  DbSet<WorkItem> WorkItems { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

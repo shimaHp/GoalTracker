@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoalTracker.Infrastructure.Migrations
 {
     [DbContext(typeof(GoalTrackerDbContext))]
-    [Migration("20241129112552_init")]
-    partial class init
+    [Migration("20241129121459_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,5 +1,7 @@
 ﻿
+using GoalTracker.Domain.Repository;
 using GoalTracker.Infrastructure.Persistence;
+using GoalTracker.Infrastructure.Repositories;
 using GoalTracker.Infrastructure.Seeders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +17,7 @@ public static class ServiceCollectionExtensions
         var connectionstring = configuration.GetConnectionString("GoalTrackerDb");
         services.AddDbContext<GoalTrackerDbContext>(Options => Options.UseSqlServer(connectionstring));
         services.AddScoped<IGoalTrackerSeeder, GoalTrackerSeeder>();
+        services.AddScoped<IGoalsRepository, GoalRepository>();
 
 
     }

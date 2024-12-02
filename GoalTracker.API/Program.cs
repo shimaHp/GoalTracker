@@ -1,3 +1,4 @@
+using GoalTracker.Application.Extensions;
 using  GoalTracker.Infrastructure.Extension;
 using GoalTracker.Infrastructure.Seeders;
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
 var app = builder.Build();
 var scope = app.Services.CreateScope();

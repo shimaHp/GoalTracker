@@ -1,6 +1,12 @@
-@GoalTracker.API_HostAddress = http://localhost:5073
+@GoalTracker.API_HostAddress = https://localhost:7124
 
-GET {{GoalTracker.API_HostAddress}}/weatherforecast/
-Accept: application/json
+
+###
+
+GET {{GoalTracker.API_HostAddress}}/api/goals
+
+###
+
+GET {{GoalTracker.API_HostAddress}}/api/goals/1
 
 ###

@@ -11,16 +11,23 @@ internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
 {
     public async Task<IEnumerable<Goal>> GetAllAsync()
     {
-        var goals = await dbContext.Goals.ToListAsync();
+        var goals = await dbContext.Goals.Include(c => c.WorkItems).ToListAsync();
         return goals;
     }
 
     public async Task<Goal?> GetGoalAsync(int GId)
     {
         var goal = await dbContext.Goals
-            
+            .Include(c=>c.WorkItems)
             .FirstOrDefaultAsync(g => g.Id == GId)
             ;
         return goal;
+    }
+
+    public async Task<int> CreateAsync(Goal goal)
+    {
+        dbContext.Goals.Add(goal);
+        await dbContext.SaveChangesAsync();
+        return goal.Id; 
     }
 }

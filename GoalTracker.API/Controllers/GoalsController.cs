@@ -1,5 +1,6 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using GoalTracker.Application.Goals;
+using GoalTracker.Application.Goals.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GoalTracker.API.Controllers;
@@ -26,5 +27,14 @@ public class GoalsController(IGoalsService goalService) : ControllerBase
         return Ok(goal);
             
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateGoal([FromBody]CreateGoalDto createGoalDto)
+    {
+        int id = await goalService.CreateGoal(createGoalDto);
+        return CreatedAtAction(nameof(GetGoalById), new { id }, null);
+
+    }
+
 
 }

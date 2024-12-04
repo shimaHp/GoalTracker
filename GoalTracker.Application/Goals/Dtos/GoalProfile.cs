@@ -9,6 +9,7 @@ public class GoalProfile:Profile
 {
     public GoalProfile()
     {
+        CreateMap<CreateGoalDto, Goal>();
         CreateMap<Goal, GoalDto>()
             .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
                 

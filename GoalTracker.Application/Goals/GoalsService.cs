@@ -27,4 +27,13 @@ internal class GoalsService(IGoalsRepository goalsRepository, ILogger<GoalsServi
         var goalDto = mapper.Map<GoalDto?>(goal);
         return goalDto;
     }
+
+    public async Task<int> CreateGoal(CreateGoalDto dto)
+    {
+        logger.LogInformation($"Creating a goal with title:{dto.Title}");
+        var goal= mapper.Map<Goal>(dto);
+        int id=await goalsRepository.CreateAsync(goal);
+        return id;
+
+    }
 }

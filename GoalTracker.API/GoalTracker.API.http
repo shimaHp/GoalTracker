@@ -10,3 +10,19 @@ GET {{GoalTracker.API_HostAddress}}/api/goals
 GET {{GoalTracker.API_HostAddress}}/api/goals/1
 
 ###
+
+POST {{GoalTracker.API_HostAddress}}/api/goals
+Content-Type: application/json
+
+{
+ 
+    "title": "Learn sql Fundamentals",
+    "description": "Master sql web development",
+    "createdDate": "2024-12-29T12:32:24.2476361",
+    "targetDate": null,
+    "status": 1,
+    "priority": 5
+    
+}
+
+###

@@ -1,4 +1,4 @@
-﻿using GoalTracker.Application.Goals.WorkItems.Dtos;
+﻿using GoalTracker.Application.WorkItems.Dtos;
 
 namespace GoalTracker.Application.Goals.Dtos;
 

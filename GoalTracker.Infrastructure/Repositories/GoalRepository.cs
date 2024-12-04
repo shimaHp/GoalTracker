@@ -24,10 +24,30 @@ internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
         return goal;
     }
 
+
+    
     public async Task<int> CreateAsync(Goal goal)
     {
         dbContext.Goals.Add(goal);
         await dbContext.SaveChangesAsync();
         return goal.Id; 
     }
+
+    public async Task DeleteAsync(Goal goal)
+    {
+        dbContext.Remove(goal);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<int> UpdateAsynce(Goal goal)
+    {
+        dbContext.Goals.Update(goal);
+        await dbContext.SaveChangesAsync();
+        return goal.Id;
+    }
+
+    public Task SaveChanges()
+    
+       =>dbContext.SaveChangesAsync();
+     
 }

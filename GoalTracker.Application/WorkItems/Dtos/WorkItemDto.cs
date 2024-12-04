@@ -1,7 +1,6 @@
-﻿
-using GoalTracker.Domain.Enums;
+﻿using GoalTracker.Domain.Enums;
 
-namespace GoalTracker.Application.Goals.WorkItems.Dtos;
+namespace GoalTracker.Application.WorkItems.Dtos;
 
 public class WorkItemDto
 {

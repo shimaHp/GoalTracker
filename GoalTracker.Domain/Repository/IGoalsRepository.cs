@@ -10,4 +10,9 @@ public interface IGoalsRepository
     Task<IEnumerable<Goal>> GetAllAsync();
 
     Task<Goal?> GetGoalAsync(int GId);
+    Task DeleteAsync(Goal goal);
+
+    Task<int> UpdateAsynce(Goal goal);
+
+    Task SaveChanges();
 }

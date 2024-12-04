@@ -16,13 +16,30 @@ Content-Type: application/json
 
 {
  
-    "title": "Learn sql Fundamentals",
+    "title": "Learn sql Fundamentals2",
     "description": "Master sql web development",
     "createdDate": "2024-12-29T12:32:24.2476361",
     "targetDate": null,
-    "status": 1,
-    "priority": 5
+    "status": 3,
+    "priority": 8
     
+}
+
+###
+
+@id=3
+DELETE {{GoalTracker.API_HostAddress}}/api/goals/{{id}}
+
+###
+
+PATCH {{GoalTracker.API_HostAddress}}/api/goals/1
+Content-Type: application/json
+
+{
+  "title": "Learn edit sql Fundamentals2",
+    "description": "Master edit sql web development",
+    "status": 4,
+    "priority": 4
 }
 
 ###

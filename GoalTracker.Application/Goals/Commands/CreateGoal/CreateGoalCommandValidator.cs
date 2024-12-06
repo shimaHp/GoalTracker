@@ -25,12 +25,12 @@ public class CreateGoalCommandValidator : AbstractValidator<CreateGoalCommand>
             .When(x => x.TargetDate.HasValue);
 
         RuleFor(x => x.Status)
-            .InclusiveBetween(1, 5).WithMessage("Status must be between 1 and 5.")
-            .When(x => x.Status.HasValue);
+    .IsInEnum()
+    .WithMessage("Status must be a valid WorkItemStatus value.");
 
-        RuleFor(x => x.Priority)
-            .InclusiveBetween(1, 5).WithMessage("Priority must be between 1 and 5.")
-            .When(x => x.Priority.HasValue);
+        RuleFor(x => x.Status)
+     .IsInEnum()
+     .WithMessage("Status must be a valid GoalStatus value.");
 
     }
 }

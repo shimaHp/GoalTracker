@@ -1,4 +1,5 @@
 ﻿using GoalTracker.Application.Goals.Dtos;
+using GoalTracker.Domain.Enums;
 using MediatR;
 
 namespace GoalTracker.Application.Goals.Commands.CreateGoal;
@@ -13,9 +14,8 @@ public class CreateGoalCommand : IRequest<int>
 
     public DateTime? TargetDate { get; set; }
 
-    public int? Status { get; set; }
-
-    public int? Priority { get; set; }
+    public GoalStatus? Status { get; set; }
+    public Priority? Priority { get; set; }
 
 
 }

@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<GoalTrackerDbContext>(Options => Options.UseSqlServer(connectionstring));
         services.AddScoped<IGoalTrackerSeeder, GoalTrackerSeeder>();
         services.AddScoped<IGoalsRepository, GoalRepository>();
+        services.AddScoped<IWorkItemRepository,  WorkItemRepository>();
 
 
     }

@@ -25,17 +25,16 @@ public class GoalsController(IMediator mediator ) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetGoalById([FromRoute] int id)
+    public async Task<ActionResult<IEnumerable<GoalDto>>> GetGoalById([FromRoute] int id)
     {
         var goal = await mediator.Send(new GetGoalByIdQuery(id));
-        if (goal == null)
-            return NotFound();
+       
         return Ok(goal);
 
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateGoal([FromBody] CreateGoalCommand command)
+    public async Task<ActionResult<GoalDto>> CreateGoal([FromBody] CreateGoalCommand command)
     {
         int id = await mediator.Send(command);
         return CreatedAtAction(nameof(GetGoalById), new { id }, null);
@@ -43,27 +42,29 @@ public class GoalsController(IMediator mediator ) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGoal([FromRoute] int id)
     {
-        var isDeleted = await mediator.Send(new DeleteGoalCommand(id));
-        if (isDeleted )
-
+        await mediator.Send(new DeleteGoalCommand(id));
             return NoContent();
 
-            return NotFound();
+       
        
 
     }
     [HttpPatch("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGoal([FromRoute] int id, UpdateGoalCommand command)
     {
         command.Id = id;
-        var isUpdated = await mediator.Send( command);
-        if (isUpdated)
+       
+        await mediator.Send( command);
+        
+        return NoContent();
 
-            return NoContent();
-
-        return NotFound();
+      
 
 
     }

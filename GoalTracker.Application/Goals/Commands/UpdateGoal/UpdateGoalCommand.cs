@@ -1,11 +1,12 @@
 ﻿
 
 
+using GoalTracker.Domain.Enums;
 using MediatR;
 
 namespace GoalTracker.Application.Goals.Commands.editGoal;
 
-public class UpdateGoalCommand: IRequest<bool>
+public class UpdateGoalCommand: IRequest
 {
     public int Id { get; set; }
     public string Title { get; set; } = default!;
@@ -15,9 +16,8 @@ public class UpdateGoalCommand: IRequest<bool>
   
     public DateTime? TargetDate { get; set; }
 
-    public int? Status { get; set; }
-
-    public int? Priority { get; set; }
+    public GoalStatus? Status { get; set; }
+    public Priority? Priority { get; set; }
 
 
 }

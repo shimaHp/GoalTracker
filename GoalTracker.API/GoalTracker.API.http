@@ -7,7 +7,7 @@ GET {{GoalTracker.API_HostAddress}}/api/goals
 
 ###
 
-GET {{GoalTracker.API_HostAddress}}/api/goals/1
+GET {{GoalTracker.API_HostAddress}}/api/goals/5
 
 ###
 
@@ -32,14 +32,63 @@ DELETE {{GoalTracker.API_HostAddress}}/api/goals/{{id}}
 
 ###
 
-PATCH {{GoalTracker.API_HostAddress}}/api/goals/1
+PATCH {{GoalTracker.API_HostAddress}}/api/goals/5
 Content-Type: application/json
 
 {
-  "title": "Learn edit sql Fundamentals2",
-    "description": "Master edit sql web development",
+  "title": "Learn edit sql Fundamentals Edited",
+    "description": "Master edit sql web development Edited",
     "status": 4,
     "priority": 4
+}
+
+###
+
+POST {{GoalTracker.API_HostAddress}}/api/goals/8/WorkItems
+Content-Type: application/json
+
+{
+        "Title": "Design User Interface 2",
+        "description": "Create Blazor components for goal tracking  2",
+       
+        "status": 3
+        
+       }
+
+###
+
+@GoalId=0
+POST {{GoalTracker.API_HostAddress}}/api/goal/3/WorkItems
+
+###
+
+###
+
+GET {{GoalTracker.API_HostAddress}}/api/goals/5/WorkItems
+
+###
+
+GET {{GoalTracker.API_HostAddress}}/api/goals/{{goalId}}/WorkItems
+
+###
+
+@workItemId=0
+GET {{GoalTracker.API_HostAddress}}/api/goals/50/workitems/70
+
+###
+
+DELETE {{GoalTracker.API_HostAddress}}/api/goals/5/workitems
+
+###
+
+POST {{GoalTracker.API_HostAddress}}/api/goals/5/WorkItems
+Content-Type: application/json
+
+{
+   "Title": "Design User Interface New",
+        "description": "Create Blazor components for goal tracking  2",
+       
+        "status": 3
 }
 
 ###

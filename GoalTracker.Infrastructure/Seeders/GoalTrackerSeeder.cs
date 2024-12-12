@@ -2,34 +2,68 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GoalTracker.Domain.Constants;
 using GoalTracker.Domain.Entities;
 using GoalTracker.Domain.Enums;
 using GoalTracker.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace GoalTracker.Infrastructure.Seeders
 {
-    internal class GoalTrackerSeeder : IGoalTrackerSeeder
+    internal class GoalTrackerSeeder(GoalTrackerDbContext dbContext) : IGoalTrackerSeeder
     {
-        private readonly GoalTrackerDbContext _dbContext;
+        
 
-        public GoalTrackerSeeder(GoalTrackerDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+      
 
         public async Task Seed()
         {
-            if (await _dbContext.Database.CanConnectAsync())
+            if (await dbContext.Database.CanConnectAsync())
             {
-                if (!_dbContext.Goals.Any())
+                if (!dbContext.Goals.Any())
                 {
                     var goals = GetGoals();
-                    _dbContext.Goals.AddRange(goals);
-                    await _dbContext.SaveChangesAsync();
+                    dbContext.Goals.AddRange(goals);
+                    await dbContext.SaveChangesAsync();
+                }
+                if (!dbContext.Roles.Any())
+                {
+                    var roles = GetRoles();
+                    dbContext.Roles.AddRange(roles);
+                    await dbContext.SaveChangesAsync();
                 }
             }
-        }
 
+        }
+        private IEnumerable<IdentityRole> GetRoles()
+        {
+    //        Admin = 1,      // Complete system control
+    //Owner = 2,      // Full project control
+    //Collaborator = 3, // Can create and modify goals
+    //Viewer = 4
+            List<IdentityRole> roles = [  
+            new (UserRoles.Owner)
+            {
+                NormalizedName= UserRoles.Owner.ToUpper(),
+            },
+            new(UserRoles.Admin)
+            {
+                NormalizedName = UserRoles.Admin.ToUpper(),
+            },
+            new(UserRoles.Collaborator)
+            {
+                NormalizedName = UserRoles.Collaborator.ToUpper(),
+            },
+            new(UserRoles.Viewer)
+            {
+                NormalizedName = UserRoles.Viewer.ToUpper(),
+            },
+
+        ];
+            return roles;
+        }
         private IEnumerable<Goal> GetGoals()
         {
             var goals = new List<Goal>

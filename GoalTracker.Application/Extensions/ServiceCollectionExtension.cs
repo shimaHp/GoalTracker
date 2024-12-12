@@ -2,22 +2,20 @@
 
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using GoalTracker.Application.Goals;
-using GoalTracker.Domain.Repository;
-using Microsoft.Extensions.Configuration;
+using GoalTracker.Application.Users;
 using Microsoft.Extensions.DependencyInjection;
-
 namespace GoalTracker.Application.Extensions;
 
 public static class ServiceCollectionExtensions
 {
     public static void AddApplication(this IServiceCollection services)
     {
-        var applicationAssembly = typeof(ServiceCollectionExtensions).Assembly;
-  
+        var applicationAssembly = (typeof(ServiceCollectionExtensions).Assembly);
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(applicationAssembly));
         services.AddAutoMapper(applicationAssembly);
         services.AddValidatorsFromAssembly(applicationAssembly).AddFluentValidationAutoValidation();
+        services.AddScoped<IUserContext, UserContext>();
+        services.AddHttpContextAccessor();
 
     }
 }

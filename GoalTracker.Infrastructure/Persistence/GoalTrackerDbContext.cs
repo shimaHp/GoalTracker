@@ -1,22 +1,18 @@
 ﻿
 using GoalTracker.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace GoalTracker.Infrastructure.Persistence;
 
-internal class GoalTrackerDbContext:DbContext
+internal class GoalTrackerDbContext(DbContextOptions<GoalTrackerDbContext> options) : IdentityDbContext<User>(options)
 {
-    public GoalTrackerDbContext(DbContextOptions<GoalTrackerDbContext> options):base(options)
-    {
-        
-    }
-    internal  DbSet<Goal> Goals { get; set; }
-    internal  DbSet<WorkItem> WorkItems { get; set; }
+    
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer();
-    }
+        internal DbSet<Goal> Goals { get; set; }
+    internal DbSet<WorkItem> WorkItems { get; set; }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -86,3 +82,4 @@ internal class GoalTrackerDbContext:DbContext
             .HasConversion<int>();
     }
 }
+

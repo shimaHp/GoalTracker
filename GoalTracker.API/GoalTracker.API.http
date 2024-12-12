@@ -1,11 +1,18 @@
 @GoalTracker.API_HostAddress = https://localhost:7124
-
-
-###
-
-GET {{GoalTracker.API_HostAddress}}/api/goals
+@host = http://localhost
+@port =5028
+@token = CfDJ8MB5-OYJQLpPqevddgGvLVi25NVsE1kmuiVMtrhcIKcoDftjztuXRiAoCEjUndI-P2Qp5tcUHPntaAuDFhaOnfgEmawYUAG5XhBjt4gvXH5q-j4CMxOn0wO6dlVcIpvtRjIvr1Lw3yKj90Nqq4UuogOlpq87oAVtzsGrOQpi9z9KEDD2WTWPxWU6Utc1tq-nOA3TOw5Yxlbylt51Mf_ibzEDLPABCqKHRVNSg6XhJt6EUKxdxZxo8fDkjctX4PEwITzo1pJnv7vq__5GwPbTWNYGND0UV-YqciPo3yN0zROLProNkL-RWJjxpUKId2aH-KbeiCj8jB2wshNnem3smobBaIpx31iUwNfiHzU5jNKfG3gdcFOSBd1FNrrd6Tv0Fx4OiFC5gREftwCZJp_kDKgMkjzdPGzCkYvAd6XCBoOHdK3CgBHJnNgqkbHXDw4RFiAz-J57HHVIOacuP8E4FXA-8JKFjSBZ133wuvJxgrfarn6XK6cwAqLmJ0ezCBpM3Q6JHyDI9xdBefxDkcUZN2BzDEKXalLwdIDCUbHv5lNWwhXmsgPJRKfe-RbOARfAEVzlgkDZrE36whLo5A0WkOVCN3xDykHshNCYbcyKTIM74iLJi8c1oYHSS_uN7fdCZa4aUN0cuYYrwJ59ywT2zKZ3QaKzNfOn2yYWBFe-_AXaUN2Q3BOG-KUNvwUPIEQZNcJb_Sy1SZ5_nqngQeu-8IQZv3kH5SUT_VfCazOgcCyre1nKZYafHefa9uW3aAs3C3fx7DhWIYmWsx7pjDTUU3uvYuJsr1q_kIVtOPVfJDQeIi8gmBeUZZNM4ynOL9S0qKeji8VxaAGjs4txXOt-JCc
 
 ###
+// "password": "P@ssw0rd1"
+POST {{GoalTracker.API_HostAddress}}/api/identity/login
+Content-Type: application/json
+{
+ "email":"ADMIN@GMAIL.COM",
+ "password":"Password1!"
+}
+###
+
 
 GET {{GoalTracker.API_HostAddress}}/api/goals/5
 
@@ -90,5 +97,28 @@ Content-Type: application/json
        
         "status": 3
 }
+
+###
+POST {{GoalTracker.API_HostAddress}}/api/register
+Content-Type: application/json
+{
+
+"email":"user1@test.com",
+"password":"Password1!"
+}
+
+###
+
+POST {{GoalTracker.API_HostAddress}}/login
+Content-Type: application/json
+{
+
+"email":"testuser@test.com",
+"password":"Password1!"
+}
+###
+GET {{GoalTracker.API_HostAddress}}/api/goals
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ###

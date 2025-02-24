@@ -17,19 +17,21 @@ namespace GoalTracker.API.Controllers;
 
 [ApiController]
 [Route("api/goals")]
-[Authorize]
+//[Authorize]
 public class GoalsController(IMediator mediator ) : ControllerBase
 {
     [HttpGet]
-    [Authorize(PolicyNames.AtLeast18)]
-    public async Task<IActionResult> GetAll()
+    //[Authorize(PolicyNames.AtLeast18)]
+    [AllowAnonymous]
+    public async Task<ActionResult<IEnumerable<GoalDto>>> GetAll([FromQuery] GetAllGoalsQuery query)
     {
-        var goals= await mediator.Send(new GetAllGoalsQuery()); 
+        var goals= await mediator.Send(query); 
         return Ok(goals);
             
     }
 
     [HttpGet("{id}")]
+
     public async Task<ActionResult<IEnumerable<GoalDto>>> GetGoalById([FromRoute] int id)
     {
         var goal = await mediator.Send(new GetGoalByIdQuery(id));
@@ -39,17 +41,15 @@ public class GoalsController(IMediator mediator ) : ControllerBase
     }
 
     [HttpPost]
-    //[Authorize(PolicyNames.AtLeast18)]
+
     public async Task<ActionResult<GoalDto>> CreateGoal([FromBody] CreateGoalCommand command)
     {
         int id = await mediator.Send(command);
         return CreatedAtAction(nameof(GetGoalById), new { id }, null);
-
     }
 
     [HttpDelete("{id}")]
-    //[Authorize(Roles = UserRoles.User)]
-
+    
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGoal([FromRoute] int id)
@@ -57,13 +57,10 @@ public class GoalsController(IMediator mediator ) : ControllerBase
         await mediator.Send(new DeleteGoalCommand(id));
             return NoContent();
 
-       
-       
-
     }
+
     [HttpPatch("{id}")]
-    //[Authorize(Roles = UserRoles.User)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGoal([FromRoute] int id, UpdateGoalCommand command)
     {

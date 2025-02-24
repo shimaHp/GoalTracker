@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalTracker.Application", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalTracker.Infrastructure", "GoalTracker.Infrastructure\GoalTracker.Infrastructure.csproj", "{D367B1DF-C762-4309-A296-67EC0E438014}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalTracker.Application.Tests", "GoalTracker.Application.Tests\GoalTracker.Application.Tests.csproj", "{5417EC22-35E3-4DEA-AC04-9C6C723988C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{D367B1DF-C762-4309-A296-67EC0E438014}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D367B1DF-C762-4309-A296-67EC0E438014}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D367B1DF-C762-4309-A296-67EC0E438014}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5417EC22-35E3-4DEA-AC04-9C6C723988C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5417EC22-35E3-4DEA-AC04-9C6C723988C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5417EC22-35E3-4DEA-AC04-9C6C723988C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5417EC22-35E3-4DEA-AC04-9C6C723988C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

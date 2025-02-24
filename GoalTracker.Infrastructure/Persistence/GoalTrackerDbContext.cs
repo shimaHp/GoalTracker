@@ -57,6 +57,27 @@ internal class GoalTrackerDbContext(DbContextOptions<GoalTrackerDbContext> optio
             entity.Property(w => w.CreatedDate)
                   .HasDefaultValueSql("GETDATE()");
 
+            // Creator relationship
+            entity.HasOne(w => w.Creator)
+                  .WithMany()
+                  .HasForeignKey(w => w.CreatorId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            // Assignee relationship
+            entity.HasOne(w => w.Assignee)
+                  .WithMany()
+                  .HasForeignKey(w => w.AssigneeId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            // LastUpdatedBy relationship
+            entity.HasOne(w => w.LastUpdatedBy)
+                  .WithMany()
+                  .HasForeignKey(w => w.LastUpdatedById)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+
+
+
             // Configure relationship with Goal
             entity.HasOne(w => w.Goal)
                   .WithMany(g => g.WorkItems)
@@ -80,6 +101,7 @@ internal class GoalTrackerDbContext(DbContextOptions<GoalTrackerDbContext> optio
         modelBuilder.Entity<WorkItem>()
             .Property(w => w.Status)
             .HasConversion<int>();
+
     }
 }
 

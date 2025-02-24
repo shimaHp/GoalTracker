@@ -13,4 +13,6 @@ public class Goal
     public Priority Priority { get; set; }
     // Collection of WorkItems related to this Goal
     public ICollection<WorkItem> WorkItems { get; set; } = new List<WorkItem>();
+    public string UserId { get; set; }=default!;
+    public User User { get; set; } = default!;
 }

@@ -1,8 +1,10 @@
 ﻿
+using GoalTracker.Domain;
 using GoalTracker.Domain.Entities;
 using GoalTracker.Domain.Repository;
 using GoalTracker.Infrastructure.Authorization;
 using GoalTracker.Infrastructure.Authorization.Requirement;
+using GoalTracker.Infrastructure.Authorization.Services;
 using GoalTracker.Infrastructure.Persistence;
 using GoalTracker.Infrastructure.Repositories;
 using GoalTracker.Infrastructure.Seeders;
@@ -38,11 +40,15 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IGoalsRepository, GoalRepository>();
         services.AddScoped<IWorkItemRepository, WorkItemRepository>();
         services.AddAuthorizationBuilder()
+
             .AddPolicy(PolicyNames.AtLeast18,
                  builder => builder.AddRequirements(new MinimumAgeRequirment(18)));
+      
 
 
         services.AddScoped<IAuthorizationHandler, MinimumAgeRequirmentHandler>();
+        services.AddScoped<IGoalAuthorizationService, GoalAuthorizationService>();
+
 
 
 

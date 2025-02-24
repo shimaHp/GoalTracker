@@ -3,6 +3,7 @@
 using AutoMapper;
 using GoalTracker.Application.WorkItems.Commands.CreateWorkItem;
 using GoalTracker.Application.WorkItems.Commands.DeleteWorkItems;
+using GoalTracker.Domain;
 using GoalTracker.Domain.Exceptions;
 using GoalTracker.Domain.Repository;
 using MediatR;
@@ -13,7 +14,10 @@ namespace GoalTracker.Application.WorkItems.Commands.DeleteWorkItemsForGoal;
 public class DeleteWorkItemsForGoalCommandHandler(ILogger<DeleteWorkItemsForGoalCommandHandler> logger,
     IMapper mapper,
     IGoalsRepository goalsRepository,
-    IWorkItemRepository workItemRepository) : IRequestHandler<DeleteWorkItemsForGoalCommand>
+    IWorkItemRepository workItemRepository,
+    IGoalAuthorizationService goalAuthorizationService
+    
+    ) : IRequestHandler<DeleteWorkItemsForGoalCommand>
 {
     public async Task Handle(DeleteWorkItemsForGoalCommand request, CancellationToken cancellationToken)
     {
@@ -22,7 +26,8 @@ public class DeleteWorkItemsForGoalCommandHandler(ILogger<DeleteWorkItemsForGoal
         var goal = await goalsRepository.GetGoalAsync(request.GoalId);
         if (goal == null) throw new NotFoundException(nameof(goal), request.GoalId.ToString());
 
-       
+        if (!goalAuthorizationService.Authorize(goal, ResourceOperation.Delete))
+            throw new ForbidException();
 
       await  workItemRepository.DeleteAsync(goal.WorkItems);
     }

@@ -1,14 +1,14 @@
 @GoalTracker.API_HostAddress = https://localhost:7124
 @host = http://localhost
 @port =5028
-@token = CfDJ8MB5-OYJQLpPqevddgGvLVi25NVsE1kmuiVMtrhcIKcoDftjztuXRiAoCEjUndI-P2Qp5tcUHPntaAuDFhaOnfgEmawYUAG5XhBjt4gvXH5q-j4CMxOn0wO6dlVcIpvtRjIvr1Lw3yKj90Nqq4UuogOlpq87oAVtzsGrOQpi9z9KEDD2WTWPxWU6Utc1tq-nOA3TOw5Yxlbylt51Mf_ibzEDLPABCqKHRVNSg6XhJt6EUKxdxZxo8fDkjctX4PEwITzo1pJnv7vq__5GwPbTWNYGND0UV-YqciPo3yN0zROLProNkL-RWJjxpUKId2aH-KbeiCj8jB2wshNnem3smobBaIpx31iUwNfiHzU5jNKfG3gdcFOSBd1FNrrd6Tv0Fx4OiFC5gREftwCZJp_kDKgMkjzdPGzCkYvAd6XCBoOHdK3CgBHJnNgqkbHXDw4RFiAz-J57HHVIOacuP8E4FXA-8JKFjSBZ133wuvJxgrfarn6XK6cwAqLmJ0ezCBpM3Q6JHyDI9xdBefxDkcUZN2BzDEKXalLwdIDCUbHv5lNWwhXmsgPJRKfe-RbOARfAEVzlgkDZrE36whLo5A0WkOVCN3xDykHshNCYbcyKTIM74iLJi8c1oYHSS_uN7fdCZa4aUN0cuYYrwJ59ywT2zKZ3QaKzNfOn2yYWBFe-_AXaUN2Q3BOG-KUNvwUPIEQZNcJb_Sy1SZ5_nqngQeu-8IQZv3kH5SUT_VfCazOgcCyre1nKZYafHefa9uW3aAs3C3fx7DhWIYmWsx7pjDTUU3uvYuJsr1q_kIVtOPVfJDQeIi8gmBeUZZNM4ynOL9S0qKeji8VxaAGjs4txXOt-JCc
-
+@token = CfDJ8MB5-OYJQLpPqevddgGvLViZQi5gHj0OsJkyViShCZFGGPxZatBZwzs_JPEn8jjC85YyxBPLOrd9tZ7MyCeZHK6Pto7ubxPIfi7aPmjFNiNYQ3HLKc9-rYF2HOAp7eEh4dMZ9r9a5ND09AaHg7FAyCRde5bl43dJ0GRbRmKitZhY8uoHDW8_NAUUoDeNs5SFGDwTrNg_OUa9V5u4tY2-gTCdMkRAWiZHH7kXLj1cI6Brf0bV1eu57QZ5O5K_V_MGwgoKzaoQehTGZf7K2HU1JDpl9nWYHX0AOc7_rwG6hqlQ3K019W5poJroc_o15mSFbe5v4Jdscd44cgV_zGX0DcfXEVthdPJ-yyPVVVXZSusexZZiqLeFzHcNkdXNX4hyxoq_wc2h8taXwasXOb1LFKiNoWsbJ1TaqWMbluHh4lU5S4k_BFTjREUJAsVTAeQ2nLADlmr-BztJwKvyQ0ls4Oxt7A2DSDE2C-dNdn5QnqLG4wJOcGYQSKpguc_YaElsNihiomujFsX5MLcEVXO8bgaH8FDs_bi3MGyCm-aExoRnTHrnOKPV7NIV1JApE4HjgbiTfjJD2jGnxmfz6GVmsF1UkkDZhTNCpCt93Kvyc6lz4tjtBhlbYcrpeYIFHiHrugu2X4biwt7Qd1H1YQyNqLn0QrnhzT6fw3TzQMiz-zyr4XG152jW0JUdfqOgkAU95q2oKdIRtm_ib0XZywJ2XQgbK7wQPeHHICyy6Rgs8v_eTg4Er-_09tUiDhQMMMSIWTZlrJXf7GnGm0BVxjEvvYDx--KzbcnhlPMNrYJKQ4qUl8sfMeySqewS5FenPjLZoB7YfdfqymXrceCAA-dd_Y8
+ 
 ###
 // "password": "P@ssw0rd1"
 POST {{GoalTracker.API_HostAddress}}/api/identity/login
 Content-Type: application/json
 {
- "email":"ADMIN@GMAIL.COM",
+ "email":"TESTUSER@TEST.COM",
  "password":"Password1!"
 }
 ###
@@ -39,11 +39,12 @@ DELETE {{GoalTracker.API_HostAddress}}/api/goals/{{id}}
 
 ###
 
-PATCH {{GoalTracker.API_HostAddress}}/api/goals/5
+PATCH {{GoalTracker.API_HostAddress}}/api/goals/2
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "title": "Learn edit sql Fundamentals Edited",
+  "title": "Learn edit sql Fundamentals Updated",
     "description": "Master edit sql web development Edited",
     "status": 4,
     "priority": 4
@@ -117,8 +118,32 @@ Content-Type: application/json
 "password":"Password1!"
 }
 ###
-GET {{GoalTracker.API_HostAddress}}/api/goals
+GET {{GoalTracker.API_HostAddress}}/api/goals?SearchPharse=blazore&pageSize=5&pageNumber=1&sortBy=Title
+Content-Type: application/json
+
+
+###
+
+POST {{GoalTracker.API_HostAddress}}/api/identity/userRole
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+{
+    "UserEmail":"testuser@test.com",
+    "RoleName":"Viewer"
+  
+}
+
+###
+
+DELETE {{GoalTracker.API_HostAddress}}/api/identity/userRole
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "UserEmail":"testuser@test.com",
+    "RoleName":"Viewer"
+  
+}
 
 ###

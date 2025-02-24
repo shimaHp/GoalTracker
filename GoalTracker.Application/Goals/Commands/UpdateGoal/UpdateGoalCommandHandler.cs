@@ -4,6 +4,7 @@ using AutoMapper;
 using GoalTracker.Application.Goals.Commands.CreateGoal;
 using GoalTracker.Application.Goals.Commands.editGoal;
 using GoalTracker.Application.Goals.Dtos;
+using GoalTracker.Domain;
 using GoalTracker.Domain.Entities;
 using GoalTracker.Domain.Exceptions;
 using GoalTracker.Domain.Repository;
@@ -12,7 +13,13 @@ using Microsoft.Extensions.Logging;
 
 namespace GoalTracker.Application.Goals.Commands.UpdateGoal;
 
-public class UpdateGoalCommandHandler(ILogger<UpdateGoalCommandHandler> logger, IMapper mapper, IGoalsRepository goalsRepository) : IRequestHandler<UpdateGoalCommand>
+public class UpdateGoalCommandHandler(
+    ILogger<UpdateGoalCommandHandler> logger,
+    IMapper mapper,
+    IGoalsRepository goalsRepository,
+    IGoalAuthorizationService goalAuthorizationService
+
+    ) : IRequestHandler<UpdateGoalCommand>
 {
     public async Task Handle(UpdateGoalCommand request, CancellationToken cancellationToken)
     {
@@ -21,7 +28,8 @@ public class UpdateGoalCommandHandler(ILogger<UpdateGoalCommandHandler> logger, 
         if (goal is null)
             throw new NotFoundException(nameof(Goal), request.Id.ToString());
 
-
+        if (!goalAuthorizationService.Authorize(goal, ResourceOperation.Update))
+            throw new ForbidException();
 
         mapper.Map(request,goal);
         await goalsRepository.SaveChanges();

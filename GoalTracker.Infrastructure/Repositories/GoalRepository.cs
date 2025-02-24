@@ -1,5 +1,8 @@
 ﻿
 
+using System.Linq.Expressions;
+using GoalTracker.Application.Goals.Dtos;
+using GoalTracker.Domain.Constants;
 using GoalTracker.Domain.Entities;
 using GoalTracker.Domain.Repository;
 using GoalTracker.Infrastructure.Persistence;
@@ -13,6 +16,51 @@ internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
     {
         var goals = await dbContext.Goals.Include(c => c.WorkItems).ToListAsync();
         return goals;
+    }
+ 
+
+    public async Task<(IEnumerable<Goal>, int)> GetAllMatchingAsync(string? searchPhrase
+        , int pageSize
+        , int pageNumber
+        , string? sortBy
+        , SortDirection sortDirection
+        )
+    {
+        var searchPhraseToLower = searchPhrase?.ToLower();
+
+        var baseQuery = dbContext.Goals
+            //.Goals.Include(r => r.WorkItems)
+            .Where(r => searchPhraseToLower == null ||
+            (r.Title.ToLower().Contains(searchPhraseToLower)
+            || r.Description.ToLower().Contains(searchPhraseToLower)));
+
+        var totalCount = await baseQuery.CountAsync();
+        if (sortBy != null)
+        {
+            var columnSelector = new Dictionary<string, Expression<Func<Goal, object>>>
+            {
+
+                { nameof(Goal.Title), r=>r.Title}
+          
+            };
+            var selectedColumn = columnSelector[sortBy];
+
+            baseQuery = sortDirection == SortDirection.Asceding
+              ? baseQuery.OrderBy(selectedColumn)
+              : baseQuery.OrderByDescending(selectedColumn);
+        }
+
+
+        var goals = await baseQuery
+            .Skip(pageSize * (pageNumber - 1))
+            .Take(pageSize)
+            .ToListAsync();
+
+
+
+        return (goals, totalCount);
+
+
     }
 
     public async Task<Goal?> GetGoalAsync(int GId)

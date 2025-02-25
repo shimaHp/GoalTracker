@@ -1,7 +1,7 @@
 # Reportlio
 🚀 A robust and scalable Goal Tracker API built using ASP.NET Core 8 and Azure Services. This project follows best practices in software architecture, ensuring maintainability, performance, and security.
 
-🌟 Features
+-Features
 
 ✅ RESTful API Design & Development - Built with industry best practices to ensure consistency and scalability.
 ✅ Clean Architecture - Ensures a maintainable and modular codebase.

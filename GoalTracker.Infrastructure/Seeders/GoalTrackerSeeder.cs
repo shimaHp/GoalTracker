@@ -14,12 +14,13 @@ namespace GoalTracker.Infrastructure.Seeders
 {
     internal class GoalTrackerSeeder(GoalTrackerDbContext dbContext) : IGoalTrackerSeeder
     {
-        
-
-      
-
-        public async Task Seed()
+      public async Task Seed()
         {
+            if(dbContext.Database.GetPendingMigrations().Any())
+            {
+                await dbContext.Database.MigrateAsync();
+            }
+
             if (await dbContext.Database.CanConnectAsync())
             {
                 if (!dbContext.Goals.Any())
@@ -66,10 +67,14 @@ namespace GoalTracker.Infrastructure.Seeders
         }
         private IEnumerable<Goal> GetGoals()
         {
+            User owner = new User()
+            {
+                Email="seed_user@test.com"
+            };
             var goals = new List<Goal>
     {
         new Goal
-        {
+        { User=owner,
             Title = "Learn Blazor Fundamentals",
             Description = "Master Blazor web development",
             CreatedDate = DateTime.UtcNow,
@@ -79,11 +84,15 @@ namespace GoalTracker.Infrastructure.Seeders
             {
                 new WorkItem
                 {
+                    
                     Title = "Complete Blazor Tutorial",
                     Description = "Follow official Microsoft Blazor documentation",
                     CreatedDate = DateTime.UtcNow,
                     Status = WorkItemStatus.Pending,
-                    Goal = null // Temporarily null; will be auto-linked by EF when added to the Goal's `WorkItems`
+                    Goal = null,// Temporarily null; will be auto-linked by EF when added to the Goal's `WorkItems`
+                    Creator=owner, 
+                    Assignee=owner,
+                    
                 },
                 new WorkItem
                 {
@@ -91,13 +100,16 @@ namespace GoalTracker.Infrastructure.Seeders
                     Description = "Create first Blazor component from scratch",
                     CreatedDate = DateTime.UtcNow,
                     Status = WorkItemStatus.Pending,
-                    Goal = null
+                    Goal = null,
+                          Creator=owner,
+                    Assignee=owner,
                 }
             }
         },
         new Goal
         {
-            Title = "Complete Portfolio Project",
+             User=owner,
+                        Title = "Complete Portfolio Project",
             Description = "Develop a full-stack task management application",
             CreatedDate = DateTime.UtcNow,
             Status = GoalStatus.InProgress,
@@ -110,7 +122,8 @@ namespace GoalTracker.Infrastructure.Seeders
                     Description = "Configure Entity Framework Core",
                     CreatedDate = DateTime.UtcNow,
                     Status = WorkItemStatus.Completed,
-                    Goal = null
+                    Goal = null,    Creator=owner,
+                    Assignee=owner,
                 },
                 new WorkItem
                 {
@@ -118,7 +131,8 @@ namespace GoalTracker.Infrastructure.Seeders
                     Description = "Create Blazor components for goal tracking",
                     CreatedDate = DateTime.UtcNow,
                     Status = WorkItemStatus.InProgress,
-                    Goal = null
+                    Goal = null,    Creator=owner,
+                    Assignee=owner,
                 }
             }
         }

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalTracker.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalTracker.Application.Tests", "GoalTracker.Application.Tests\GoalTracker.Application.Tests.csproj", "{5417EC22-35E3-4DEA-AC04-9C6C723988C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalTracker.UI.Blazor", "GoalTracker.UI.Blazor\GoalTracker.UI.Blazor.csproj", "{AFE8ADEB-5E21-4B50-B41F-5FC623FA0F54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5417EC22-35E3-4DEA-AC04-9C6C723988C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5417EC22-35E3-4DEA-AC04-9C6C723988C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5417EC22-35E3-4DEA-AC04-9C6C723988C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFE8ADEB-5E21-4B50-B41F-5FC623FA0F54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFE8ADEB-5E21-4B50-B41F-5FC623FA0F54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFE8ADEB-5E21-4B50-B41F-5FC623FA0F54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFE8ADEB-5E21-4B50-B41F-5FC623FA0F54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

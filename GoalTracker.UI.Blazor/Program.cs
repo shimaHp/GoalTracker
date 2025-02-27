@@ -4,6 +4,7 @@ using GoalTracker.UI.Blazor;
 using GoalTracker.UI.Blazor.Services.Base;
 using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Services;
+using System.Reflection;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -16,5 +17,6 @@ builder.Services.AddHttpClient<IClient,Client>(Client => Client.BaseAddress = ne
 
 builder.Services.AddScoped<IGoalService,GoalService>();
 builder.Services.AddScoped<IWorkItemService,WorkItemService>();
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 await builder.Build().RunAsync();

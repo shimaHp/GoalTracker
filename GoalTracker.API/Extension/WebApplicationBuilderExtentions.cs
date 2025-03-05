@@ -38,5 +38,15 @@ public static class WebApplicationBuilderExtentions
         builder.Host.UseSerilog((context, configuration) =>
         configuration.ReadFrom.Configuration(context.Configuration));
 
+        builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowClient", 
+        builder => builder
+           //.WithOrigins("https://localhost:7005")
+           .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
     }
 }

@@ -12,11 +12,7 @@ namespace GoalTracker.Infrastructure.Repositories;
 
 internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
 {
-    public async Task<IEnumerable<Goal>> GetAllAsync()
-    {
-        var goals = await dbContext.Goals.Include(c => c.WorkItems).ToListAsync();
-        return goals;
-    }
+    
  
 
     public async Task<(IEnumerable<Goal>, int)> GetAllMatchingAsync(string? searchPhrase
@@ -26,6 +22,14 @@ internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
         , SortDirection sortDirection
         )
     {
+
+
+        // Apply defaults if values are null or zero
+        searchPhrase ??= "";
+        pageSize = pageSize > 0 ? pageSize : 10;
+        pageNumber = pageNumber > 0 ? pageNumber : 1;
+        sortBy ??= "CreatedDate";
+        //--------------------
         var searchPhraseToLower = searchPhrase?.ToLower();
 
         var baseQuery = dbContext.Goals

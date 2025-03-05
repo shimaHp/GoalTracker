@@ -147,3 +147,19 @@ Authorization: Bearer {{token}}
 }
 
 ###
+
+GET {{GoalTracker.API_HostAddress}}/api/goals{
+   "searchPharse"": "",
+            "pageNumber": 1,     // Ensuring this is at least 1
+            "pageSize": 10,      // Using one of the allowed values (5, 10, 15, 30)
+            "sortBy": "Title",
+            "sortDirection": 1
+}
+
+###
+GET {{GoalTracker.API_HostAddress}}/api/goals?searchPharse=&pageNumber=1&pageSize=10&sortBy=Title&sortDirection=1
+###
+
+GET {{GoalTracker.API_HostAddress}}/api/goals?searchPharse=&pageNumber=1&pageSize=10&sortBy=Title&sortDirection=1
+
+###

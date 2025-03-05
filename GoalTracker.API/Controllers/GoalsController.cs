@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Metadata.Ecma335;
+using GoalTracker.Application.Common;
 using GoalTracker.Application.Goals;
 using GoalTracker.Application.Goals.Commands.CreateGoal;
 using GoalTracker.Application.Goals.Commands.DeleteGoal;
@@ -23,7 +24,8 @@ public class GoalsController(IMediator mediator ) : ControllerBase
     [HttpGet]
     //[Authorize(PolicyNames.AtLeast18)]
     [AllowAnonymous]
-    public async Task<ActionResult<IEnumerable<GoalDto>>> GetAll([FromQuery] GetAllGoalsQuery query)
+    [ProducesResponseType(typeof(PagedResult<GoalDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<PagedResult<GoalDto>>> GetAll([FromQuery] GetAllGoalsQuery query)
     {
         var goals= await mediator.Send(query); 
         return Ok(goals);

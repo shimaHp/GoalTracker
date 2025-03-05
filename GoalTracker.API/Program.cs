@@ -33,6 +33,8 @@ try {
 
 
     app.UseHttpsRedirection();
+    app.UseCors("AllowClient");
+
     app.MapGroup("api/identity")
         .WithTags("Identity")
         .MapIdentityApi<User>();

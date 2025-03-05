@@ -1,0 +1,82 @@
+﻿@page "/Goal/GoalDetails/{Id:int}"
+@namespace GoalTracker.UI.Blazor.Pages.Goals
+
+<div class="goal-details-container">
+    @if (IsLoading)
+    {
+        <div class="loading">Loading...</div>
+    }
+    else if (Goal != null)
+    {
+        <div class="goal-header">
+            <h1>@Goal.Title</h1>
+            <div class="goal-metadata">
+                <span class="status badge">@Goal.Status</span>
+                <span class="priority badge">@Goal.Priority Priority</span>
+            </div>
+        </div>
+
+        <div class="goal-details">
+            @if (!string.IsNullOrEmpty(Goal.Description))
+            {
+                <p class="description">@Goal.Description</p>
+            }
+
+            <div class="goal-dates">
+                <div class="created-date">
+                    <strong>Created:</strong> @Goal.CreatedDate.ToString("dd MMM yyyy")
+                </div>
+                @if (Goal.TargetDate.HasValue)
+                {
+                    <div class="target-date">
+                        <strong>Target Date:</strong> @Goal.TargetDate.Value.ToString("dd MMM yyyy")
+                    </div>
+                }
+            </div>
+
+            <div class="work-items">
+                <h2>Work Items</h2>
+                @if (Goal.WorkItems != null && Goal.WorkItems.Any())
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var workItem in Goal.WorkItems)
+                            {
+                                <tr>
+                                    <td>@workItem.Title</td>
+                                    <td>@workItem.Status</td>
+                                    <td>@workItem.Status</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No work items added yet.</p>
+                }
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" @onclick="EditGoal">Edit Goal</button>
+            <button class="btn btn-secondary" @onclick="GoBack">Back to Goals</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Message))
+        {
+            <div class="alert alert-danger">@Message</div>
+        }
+    }
+    else
+    {
+        <div class="error">Goal not found</div>
+    }
+</div>

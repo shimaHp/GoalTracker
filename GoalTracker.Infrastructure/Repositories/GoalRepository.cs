@@ -28,7 +28,7 @@ internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
         searchPhrase ??= "";
         pageSize = pageSize > 0 ? pageSize : 10;
         pageNumber = pageNumber > 0 ? pageNumber : 1;
-        sortBy ??= "CreatedDate";
+        sortBy ??= "CreatedAt";
         //--------------------
         var searchPhraseToLower = searchPhrase?.ToLower();
 
@@ -44,7 +44,8 @@ internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
             var columnSelector = new Dictionary<string, Expression<Func<Goal, object>>>
             {
 
-                { nameof(Goal.Title), r=>r.Title}
+                { nameof(Goal.Title), r=>r.Title},
+                { "CreatedAt", r => r.CreatedDate } // Add this line
           
             };
             var selectedColumn = columnSelector[sortBy];

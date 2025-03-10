@@ -1,20 +1,30 @@
 @GoalTracker.API_HostAddress = https://localhost:7124
-@host = http://localhost
 @port =5028
-@token = CfDJ8MB5-OYJQLpPqevddgGvLViZQi5gHj0OsJkyViShCZFGGPxZatBZwzs_JPEn8jjC85YyxBPLOrd9tZ7MyCeZHK6Pto7ubxPIfi7aPmjFNiNYQ3HLKc9-rYF2HOAp7eEh4dMZ9r9a5ND09AaHg7FAyCRde5bl43dJ0GRbRmKitZhY8uoHDW8_NAUUoDeNs5SFGDwTrNg_OUa9V5u4tY2-gTCdMkRAWiZHH7kXLj1cI6Brf0bV1eu57QZ5O5K_V_MGwgoKzaoQehTGZf7K2HU1JDpl9nWYHX0AOc7_rwG6hqlQ3K019W5poJroc_o15mSFbe5v4Jdscd44cgV_zGX0DcfXEVthdPJ-yyPVVVXZSusexZZiqLeFzHcNkdXNX4hyxoq_wc2h8taXwasXOb1LFKiNoWsbJ1TaqWMbluHh4lU5S4k_BFTjREUJAsVTAeQ2nLADlmr-BztJwKvyQ0ls4Oxt7A2DSDE2C-dNdn5QnqLG4wJOcGYQSKpguc_YaElsNihiomujFsX5MLcEVXO8bgaH8FDs_bi3MGyCm-aExoRnTHrnOKPV7NIV1JApE4HjgbiTfjJD2jGnxmfz6GVmsF1UkkDZhTNCpCt93Kvyc6lz4tjtBhlbYcrpeYIFHiHrugu2X4biwt7Qd1H1YQyNqLn0QrnhzT6fw3TzQMiz-zyr4XG152jW0JUdfqOgkAU95q2oKdIRtm_ib0XZywJ2XQgbK7wQPeHHICyy6Rgs8v_eTg4Er-_09tUiDhQMMMSIWTZlrJXf7GnGm0BVxjEvvYDx--KzbcnhlPMNrYJKQ4qUl8sfMeySqewS5FenPjLZoB7YfdfqymXrceCAA-dd_Y8
- 
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzZmEzNDRhYi1lMzY0LTRmYzEtYWY2NC1kMTc1NDFlMzdkMWYiLCJlbWFpbCI6IkFETUlOQEdNQUlMLkNPTSIsImp0aSI6IjkyOGQ0NDI5LWY2NDUtNDdlNy1iNTZjLWNlNzk4MDBmODQ0OSIsIm5iZiI6MTc0MTM0MzAwOCwiZXhwIjoxNzQxMzQ2NjA4LCJpYXQiOjE3NDEzNDMwMDgsImlzcyI6IkdvYWxUcmFja2VyQXBwIiwiYXVkIjoiR29hbFRyYWNrZXJVc2VycyJ9.tAMRPovXHylz9JB0BDk3yDVRL402DI61TXvbJXKO31E 
 ###
 // "password": "P@ssw0rd1"
 POST {{GoalTracker.API_HostAddress}}/api/identity/login
 Content-Type: application/json
 {
- "email":"TESTUSER@TEST.COM",
+ "email":"ADMIN@GMAIL.COM",
  "password":"Password1!"
 }
 ###
+GET {{GoalTracker.API_HostAddress}}/api/goals?searchPharse=&pageNumber=1&pageSize=10&sortBy=Title&sortDirection=1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Register a new user
+POST {{GoalTracker.API_HostAddress}}/api/Register
+Content-Type: application/json
+
+{
+  "userName": "test1user",
+  "email": "test1@example.com",
+  "password": "Password123!"
+}
 
 
-GET {{GoalTracker.API_HostAddress}}/api/goals/5
 
 ###
 
@@ -104,7 +114,7 @@ POST {{GoalTracker.API_HostAddress}}/api/register
 Content-Type: application/json
 {
 
-"email":"user1@test.com",
+"email":"haifa@test.com",
 "password":"Password1!"
 }
 

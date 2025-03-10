@@ -23,7 +23,8 @@ public class GoalsController(IMediator mediator ) : ControllerBase
 {
     [HttpGet]
     //[Authorize(PolicyNames.AtLeast18)]
-    [AllowAnonymous]
+    //[AllowAnonymous]
+    [Authorize]
     [ProducesResponseType(typeof(PagedResult<GoalDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<PagedResult<GoalDto>>> GetAll([FromQuery] GetAllGoalsQuery query)
     {

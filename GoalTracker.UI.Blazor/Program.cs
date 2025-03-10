@@ -7,6 +7,8 @@ using GoalTracker.UI.Blazor.Services;
 using System.Reflection;
 using Serilog;
 using GoalTracker.UI.Blazor.MappingProfiles;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -20,8 +22,15 @@ builder.Services.AddHttpClient<IClient,Client>(Client => Client.BaseAddress = ne
 // Configure Serilog to log to the browser's console
 
 
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<GoalTracker.UI.Blazor.Interfaces.Services.ILocalStorageService, ILocalStorageService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddAuthorizationCore();
+
+
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddScoped<IGoalService,GoalService>();
+builder.Services.AddScoped<IGoalService, GoalService>();
 builder.Services.AddScoped<IWorkItemService,WorkItemService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

@@ -7,13 +7,20 @@ using System.Text.Json;
 
 namespace GoalTracker.UI.Blazor.Services
 {
-    public class GoalService(IClient client, IMapper mapper) : BaseHttpService(client), IGoalService
+    public class GoalService : BaseHttpService, IGoalService
     {
+        private readonly IMapper _mapper;
+
+        public GoalService(IClient client, Blazored.LocalStorage.ILocalStorageService localStorage) 
+            : base(client, localStorage)
+        {
+        }
+
         public async Task<List<GoalViewModel>> GetGoals()
         {
             try
             {
-                var httpClient = client.HttpClient;
+                var httpClient = _client.HttpClient;
                 var response = await httpClient.GetAsync($"api/Goals?searchPharse=&pageNumber=1&pageSize=10&sortBy=Title&sortDirection=0");
 
                 if (response.IsSuccessStatusCode)
@@ -50,7 +57,7 @@ namespace GoalTracker.UI.Blazor.Services
 
                         try
                         {
-                            var viewModels = mapper.Map<List<GoalViewModel>>(goals);
+                            var viewModels = _mapper.Map<List<GoalViewModel>>(goals);
                             return viewModels;
                         }
                         catch (Exception mapEx)
@@ -79,7 +86,7 @@ namespace GoalTracker.UI.Blazor.Services
         {
             try
             {
-                var httpClient = client.HttpClient;
+                var httpClient = _client.HttpClient;
                 var response = await httpClient.GetAsync($"api/Goals/{id}");
 
                 if (response.IsSuccessStatusCode)
@@ -100,7 +107,7 @@ namespace GoalTracker.UI.Blazor.Services
 
                     try
                     {
-                        var viewModel = mapper.Map<GoalViewModel>(goal);
+                        var viewModel = _mapper.Map<GoalViewModel>(goal);
                         return viewModel;
                     }
                     catch (Exception mapEx)
@@ -127,8 +134,8 @@ namespace GoalTracker.UI.Blazor.Services
         {
             try
             {
-                var createGoalCommand = mapper.Map<CreateGoalCommand>(goal);
-                await client.GoalsPOSTAsync(createGoalCommand);
+                var createGoalCommand = _mapper.Map<CreateGoalCommand>(goal);
+                await _client.GoalsPOSTAsync(createGoalCommand);
                 return new Response<Guid> { Success = true };
             }
             catch (ApiException ex) { 
@@ -143,7 +150,7 @@ namespace GoalTracker.UI.Blazor.Services
             try
             {
                 
-                await client.GoalsDELETEAsync(goal.Id);
+                await _client.GoalsDELETEAsync(goal.Id);
                 return new Response<Guid> { Success = true };
             }
             catch (ApiException ex)
@@ -156,8 +163,8 @@ namespace GoalTracker.UI.Blazor.Services
         {
             try
             {
-                var updateGoalTypeCommand = mapper.Map<UpdateGoalCommand>(goal);
-                await client.GoalsPATCHAsync(id, updateGoalTypeCommand);
+                var updateGoalTypeCommand = _mapper.Map<UpdateGoalCommand>(goal);
+                await _client.GoalsPATCHAsync(id, updateGoalTypeCommand);
                 return new Response<Guid> { Success = true };
             }
             catch (ApiException ex)

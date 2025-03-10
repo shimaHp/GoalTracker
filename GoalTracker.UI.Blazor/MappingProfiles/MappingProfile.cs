@@ -29,8 +29,12 @@ namespace GoalTracker.UI.Blazor.MappingProfiles
                     opt => opt.MapFrom(src => src.CreatedDate.DateTime))
                 .ForMember(dest => dest.Status,
                     opt => opt.MapFrom(src => (WorkItemStatus)src.Status));
-                //.ForMember(dest => dest.Status,
-                //    opt => opt.MapFrom(src => (Priority)src.Status));
+            //.ForMember(dest => dest.Status,
+            //    opt => opt.MapFrom(src => (Priority)src.Status));
+
+            CreateMap<GoalViewModel, CreateGoalCommand>()
+    .ForMember(dest => dest.CreatedDate,
+        opt => opt.MapFrom(src => DateTime.Now));
 
         }
     }

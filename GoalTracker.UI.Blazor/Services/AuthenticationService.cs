@@ -2,6 +2,7 @@
 using GoalTracker.UI.Blazor.Dtos;
 using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models;
+using GoalTracker.UI.Blazor.Providers;
 using GoalTracker.UI.Blazor.Services.Base;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http;
@@ -14,8 +15,15 @@ namespace GoalTracker.UI.Blazor.Services;
 
 public class AuthenticationService : BaseHttpService, IAuthenticationService
 {
-    public AuthenticationService(IClient client, Blazored.LocalStorage.ILocalStorageService localStorage) : base(client, localStorage)
+
+    private readonly AuthenticationStateProvider _authenticationStateProvider;
+    public AuthenticationService(IClient client,
+       Blazored.LocalStorage.ILocalStorageService  localStorage,
+        AuthenticationStateProvider authenticationStateProvider
+        ) : base(client,localStorage)
     {
+
+        _authenticationStateProvider = authenticationStateProvider;
     }
 
     //private readonly HttpClient _httpClient;
@@ -34,6 +42,7 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
             {
                 await _localStorage.SetItemAsync("token", authenticationResponse.Token);
                 //set claims in blazor and login stat
+                await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedIn();
                 return true;
             }
             return false;
@@ -55,7 +64,7 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
     public async Task Logout()
     {
         await _localStorage.RemoveItemAsync("token");
-        //remove claims
+        await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedOut();
     }
 
     public Task<string> Register(RegisterRequestDto registerRequest)

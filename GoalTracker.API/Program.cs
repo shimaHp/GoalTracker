@@ -28,13 +28,16 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseHttpsRedirection();
-    app.UseCors("AllowClient");
+
+
 
     // Remove this line:
     // app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
 
     // Ensure this order
+    app.UseHttpsRedirection();
+    app.UseRouting();
+    app.UseCors("AllowClient");
     app.UseAuthentication();
     app.UseAuthorization();
 

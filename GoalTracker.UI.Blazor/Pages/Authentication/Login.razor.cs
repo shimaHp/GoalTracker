@@ -12,22 +12,45 @@ namespace GoalTracker.UI.Blazor.Pages.Authentication;
 
 public partial class Login
 {
-    [Inject]
-    private IAuthenticationService AuthService { get; set; }
+    
 
     [Inject]
-    private NavigationManager NavManager { get; set; }
+    private NavigationManager NavigationManager { get; set; }
+    public LoginViewModel Model { get; set; }
+    private string Message { get; set; }
 
-    private LoginRequestDto loginRequest = new();
-    private string errorMessage;
-    public LoginViewModel LoginViewModel { get; set; }
+    [Inject]
+    private IAuthenticationService AuthenticationService { get; set; }
 
     protected override void OnInitialized()
     {
-        LoginViewModel = new LoginViewModel();
+        Model= new LoginViewModel();
     }
-    //protected async Task HandleLogin()
-    //{
-       
-    //}
+    protected async Task HandleLogin()
+    {
+        // Clear any previous error message
+        Message = string.Empty;
+
+        try
+        {
+            // Attempt authentication
+            var result = await AuthenticationService.AuthenticateAsync(Model.Email, Model.Password);
+
+            if (result)
+            {
+                
+                // Success - navigate to home page
+                NavigationManager.NavigateTo("/");
+                return; // Important to return here
+            }
+
+            // Authentication failed
+            Message = "Username/password combination unknown";
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions
+            Message = $"An error occurred: {ex.Message}";
+        }
+    }
 }

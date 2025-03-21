@@ -20,6 +20,9 @@ namespace GoalTracker.UI.Blazor.Services
         {
             try
             {
+                await AddBearerToken();
+
+              
                 var httpClient = _client.HttpClient;
                 var response = await httpClient.GetAsync($"api/Goals?searchPharse=&pageNumber=1&pageSize=10&sortBy=Title&sortDirection=0");
 
@@ -134,6 +137,7 @@ namespace GoalTracker.UI.Blazor.Services
         {
             try
             {
+                AddBearerToken();
                 var createGoalCommand = _mapper.Map<CreateGoalCommand>(goal);
                 await _client.GoalsPOSTAsync(createGoalCommand);
                 return new Response<Guid> { Success = true };

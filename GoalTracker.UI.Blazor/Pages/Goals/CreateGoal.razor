@@ -1,40 +1,42 @@
 ﻿@page "/Goal/create"
 @namespace GoalTracker.UI.Blazor.Pages.Goals
 
-<div class="container mt-4">
-    <h3 class="mb-4">Create New Goal</h3>
+<div class="goal-create-container">
+    <div class="header">
+        <h1>Create New Goal</h1>
+        <p class="subtitle">Track your progress by setting clear objectives</p>
+    </div>
 
-    <EditForm Model="@goalModel" @* OnValidSubmit="HandleValidSubmit" *@>
+    <EditForm Model="@goalModel" class="goal-form">
         <DataAnnotationsValidator />
-        <ValidationSummary class="alert alert-danger" />
+        <ValidationSummary class="validation-summary" />
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group mb-3">
-                    <label for="title" class="form-label">Title *</label>
-                    <InputText id="title" class="form-control" @bind-Value="goalModel.Title" />
-                    <ValidationMessage For="@(() => goalModel.Title)" />
-                </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="title">Goal Title <span class="required">*</span></label>
+                <InputText id="title" class="form-input" @bind-Value="goalModel.Title" placeholder="Enter a clear, specific goal title" />
+                <ValidationMessage For="@(() => goalModel.Title)" />
             </div>
 
-            <div class="col-md-6">
-                <div class="form-group mb-3">
-                    <label for="targetDate" class="form-label">Target Date</label>
-                    <InputDate id="targetDate" class="form-control" @bind-Value="goalModel.TargetDate" />
+            <div class="form-group">
+                <label for="targetDate">Target Date</label>
+                <div class="date-input-container">
+                    <i class="calendar-icon"></i>
+                    <InputDate id="targetDate" class="form-input" @bind-Value="goalModel.TargetDate" />
                 </div>
             </div>
         </div>
 
-        <div class="form-group mb-3">
-            <label for="description" class="form-label">Description</label>
-            <InputTextArea id="description" class="form-control" @bind-Value="goalModel.Description" rows="4" />
+        <div class="form-group">
+            <label for="description">Description</label>
+            <InputTextArea id="description" class="form-input description-area" @bind-Value="goalModel.Description" rows="4" placeholder="Why is this goal important? What will success look like?" />
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group mb-3">
-                    <label for="status" class="form-label">Status</label>
-                    <InputSelect id="status" class="form-control" @bind-Value="goalModel.Status">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="status">Status</label>
+                <div class="select-container">
+                    <InputSelect id="status" class="form-input" @bind-Value="goalModel.Status">
                         @foreach (var status in Enum.GetValues(typeof(GoalStatus)))
                         {
                             <option value="@status">@status</option>
@@ -43,10 +45,10 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="form-group mb-3">
-                    <label for="priority" class="form-label">Priority</label>
-                    <InputSelect id="priority" class="form-control" @bind-Value="goalModel.Priority">
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <div class="select-container">
+                    <InputSelect id="priority" class="form-input" @bind-Value="goalModel.Priority">
                         @foreach (var priority in Enum.GetValues(typeof(Priority)))
                         {
                             <option value="@priority">@priority</option>
@@ -57,40 +59,43 @@
         </div>
 
         <div class="work-items-section">
-            <h4 class="mb-3">
-                Work Items
-                <button type="button" class="btn btn-sm btn-success ms-2" @onclick="AddWorkItem">
-                    <i class="oi oi-plus"></i> Add Work Item
+            <div class="section-header">
+                <h2>Work Items</h2>
+                <button type="button" class="add-button" @onclick="AddWorkItem">
+                    <span class="plus-icon">+</span> Add Work Item
                 </button>
-            </h4>
+            </div>
 
-            @for (int i = 0; i < goalModel.WorkItems.Count; i++)
+            @if (goalModel.WorkItems.Count == 0)
             {
-                int index = i;
-                <div class="card mb-2">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-2">
+                <div class="empty-state">
+                    <p>No work items added yet. Add work items to break down your goal into manageable tasks.</p>
+                </div>
+            }
+            else
+            {
+                <div class="work-items-list">
+                    @for (int i = 0; i < goalModel.WorkItems.Count; i++)
+                    {
+                        int index = i;
+                        <div class="work-item-card">
+                            <div class="work-item-grid">
+                                <div class="work-item-title">
                                     <label>Work Item Title</label>
-                                    <InputText class="form-control" @bind-Value="goalModel.WorkItems[index].Title" />
+                                    <InputText class="form-input" @bind-Value="goalModel.WorkItems[index].Title" placeholder="What needs to be done?" />
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group mb-2">
+                                <div class="work-item-status">
                                     <label>Status</label>
-                                    <InputSelect class="form-control" @bind-Value="goalModel.WorkItems[index].Status">
+                                    <InputSelect class="form-input" @bind-Value="goalModel.WorkItems[index].Status">
                                         @foreach (var status in Enum.GetValues(typeof(WorkItemStatus)))
                                         {
                                             <option value="@status">@status</option>
                                         }
                                     </InputSelect>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group mb-2">
+                                <div class="work-item-priority">
                                     <label>Priority</label>
-                                    <InputSelect class="form-control" @bind-Value="goalModel.WorkItems[index].Priority">
+                                    <InputSelect class="form-input" @bind-Value="goalModel.WorkItems[index].Priority">
                                         @foreach (var priority in Enum.GetValues(typeof(Priority)))
                                         {
                                             <option value="@priority">@priority</option>
@@ -98,20 +103,18 @@
                                     </InputSelect>
                                 </div>
                             </div>
-                        </div>
-                        <div class="text-end">
-                            <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemoveWorkItem(index)">
-                                <i class="oi oi-trash"></i> Remove
+                            <button type="button" class="remove-button" @onclick="() => RemoveWorkItem(index)">
+                                Remove
                             </button>
                         </div>
-                    </div>
+                    }
                 </div>
             }
         </div>
 
-        <div class="form-group mt-3">
-            <button type="submit" class="btn btn-primary me-2">Create Goal</button>
-            <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        <div class="form-actions">
+            <button type="submit" class="primary-button">Create Goal</button>
+            <button type="button" class="secondary-button" @onclick="Cancel">Cancel</button>
         </div>
     </EditForm>
 </div>

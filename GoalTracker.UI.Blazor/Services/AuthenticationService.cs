@@ -40,19 +40,21 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
             var authenticationResponse = await _client.LoginAsync(loginCommand);
             if (!string.IsNullOrEmpty(authenticationResponse.Token))
             {
-                await _localStorage.SetItemAsync("token", authenticationResponse.Token);
+                await _localStorage.SetItemAsync("authToken", authenticationResponse.Token);
                 //set claims in blazor and login stat
                 await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedIn();
                 return true;
             }
             return false;
         }
-        catch(Exception) {
-
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Authentication error: {ex.Message}");
+            // Or use a proper logging framework if available
             return false;
-        }   
-        
-        
+        }
+
+
 
     }
 
@@ -63,7 +65,7 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
 
     public async Task Logout()
     {
-        await _localStorage.RemoveItemAsync("token");
+        await _localStorage.RemoveItemAsync("authToken");
         await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedOut();
     }
 

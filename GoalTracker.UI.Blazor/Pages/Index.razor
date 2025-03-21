@@ -1,0 +1,200 @@
+﻿@page "/"
+
+
+<PageTitle>Welcome - Goal Tracker App</PageTitle>
+
+<div class="hero-container">
+    <div class="hero-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="text-center mb-4">
+                        <h1 class="display-4 text-white">Goal Tracker</h1>
+                        <p class="lead text-white">Track, manage, and achieve your goals</p>
+                    </div>
+
+                    <div class="card shadow-lg">
+                        <div class="card-body p-4">
+                            <Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+                                <Authorized>
+                                    <div class="text-center mb-4">
+                                        <h4>Welcome back, @context.User.Identity?.Name!</h4>
+                                        <p>You're already logged in.</p>
+                                    </div>
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary btn-lg" @onclick="GoToDashboard">
+                                            <i class="bi bi-speedometer2 me-2"></i>Go to Dashboard
+                                        </button>
+                                        <button class="btn btn-outline-danger" @onclick="GoToLogout">
+                                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                        </button>
+                                    </div>
+                                </Authorized>
+                                <NotAuthorized>
+                                    <ul class="nav nav-tabs mb-4" id="authTabs" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login"
+                                                    type="button" role="tab" aria-controls="login" aria-selected="true">
+                                                Login
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register"
+                                                    type="button" role="tab" aria-controls="register" aria-selected="false">
+                                                Register
+                                            </button>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content" id="authTabsContent">
+                                        <!-- Login Tab -->
+                                        <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+                                            <form>
+                                                <div class="mb-3">
+                                                    <label for="loginEmail" class="form-label">Email</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                                        <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="loginPassword" class="form-label">Password</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                                        <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 form-check">
+                                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                                                </div>
+                                                <div class="d-grid gap-2">
+                                                    <button type="button" class="btn btn-primary" @onclick="GoToLogin">Login</button>
+                                                </div>
+                                                <div class="text-center mt-2 mb-3">
+                                                    <a href="javascript:void(0)">Forgot password?</a>
+                                                </div>
+
+                                                <div class="separator">
+                                                    <span>OR</span>
+                                                </div>
+
+                                                <div class="d-grid gap-2 mt-3">
+                                                    <button type="button" class="btn btn-outline-primary btn-social">
+                                                        <i class="bi bi-google me-2"></i>Continue with Google
+                                                    </button>
+                                                    <button type="button" class="btn btn-outline-primary btn-social">
+                                                        <i class="bi bi-facebook me-2"></i>Continue with Facebook
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Register Tab -->
+                                        <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                                            <form>
+                                                <div class="mb-3">
+                                                    <label for="registerName" class="form-label">Full Name</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                                        <input type="text" class="form-control" id="registerName" placeholder="Enter your full name">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="registerEmail" class="form-label">Email</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                                        <input type="email" class="form-control" id="registerEmail" placeholder="Enter your email">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="registerPassword" class="form-label">Password</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                                        <input type="password" class="form-control" id="registerPassword" placeholder="Create a password">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="registerConfirmPassword" class="form-label">Confirm Password</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                                        <input type="password" class="form-control" id="registerConfirmPassword" placeholder="Confirm your password">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 form-check">
+                                                    <input type="checkbox" class="form-check-input" id="agreeTerms">
+                                                    <label class="form-check-label" for="agreeTerms">
+                                                        I agree to the <a href="javascript:void(0)">Terms of Service</a> and <a href="javascript:void(0)">Privacy Policy</a>
+                                                    </label>
+                                                </div>
+                                                <div class="d-grid gap-2">
+                                                    <button type="button" class="btn btn-primary" @onclick="GoToRegister">Create Account</button>
+                                                </div>
+
+                                                <div class="separator mt-3">
+                                                    <span>OR</span>
+                                                </div>
+
+                                                <div class="d-grid gap-2 mt-3">
+                                                    <button type="button" class="btn btn-outline-primary btn-social">
+                                                        <i class="bi bi-google me-2"></i>Register with Google
+                                                    </button>
+                                                    <button type="button" class="btn btn-outline-primary btn-social">
+                                                        <i class="bi bi-facebook me-2"></i>Register with Facebook
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </NotAuthorized>
+                            </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <p class="text-white small">© 2025 Goal Tracker. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .hero-container {
+        position: relative;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a75bb, #3a46a5);
+        padding: 40px 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-content {
+        width: 100%;
+    }
+
+    .separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: #6c757d;
+    }
+
+        .separator::before,
+        .separator::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .separator span {
+            padding: 0 10px;
+        }
+
+    .btn-social {
+        text-align: left;
+    }
+</style>

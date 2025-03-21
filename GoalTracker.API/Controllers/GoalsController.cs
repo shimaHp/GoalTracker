@@ -18,7 +18,7 @@ namespace GoalTracker.API.Controllers;
 
 [ApiController]
 [Route("api/goals")]
-//[Authorize]
+[Authorize]
 public class GoalsController(IMediator mediator ) : ControllerBase
 {
     [HttpGet]

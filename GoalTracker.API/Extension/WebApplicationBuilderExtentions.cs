@@ -77,10 +77,11 @@ public static class WebApplicationBuilderExtentions
             {
                 options.AddPolicy("AllowClient", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5001") // Add your frontend URL
+                    policy.WithOrigins("https://localhost:7005") // Change to HTTPS
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
+                    //todo check it for 
                 });
             });
 

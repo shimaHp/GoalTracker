@@ -24,15 +24,16 @@ namespace GoalTracker.UI.Blazor.Services
 
             return JsonSerializer.Deserialize<T>(json);
         }
+        public async Task SetItemAsync<T>(string key, T value)
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", key, JsonSerializer.Serialize(value));
+        }
 
         public async Task RemoveItemAsync(string key)
         {
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", key);
         }
 
-        public async Task SetItemAsync<T>(string key, T value)
-        {
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", key, JsonSerializer.Serialize(value));
-        }
+     
     }
 }

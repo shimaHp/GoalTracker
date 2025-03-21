@@ -35,10 +35,26 @@ namespace GoalTracker.UI.Blazor.Services.Base
 
         protected async Task AddBearerToken()
         {
-            if(await _localStorage.ContainKeyAsync("token"))
-                _client.HttpClient.DefaultRequestHeaders.Authorization=
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer",await
-                    _localStorage.GetItemAsync<string>("token"));
+            // Change "token" to match what you're using elsewhere (likely "authToken")
+            if (await _localStorage.ContainKeyAsync("authToken"))
+            {
+                // Clear any existing authorization header
+                if (_client.HttpClient.DefaultRequestHeaders.Contains("Authorization"))
+                {
+                    _client.HttpClient.DefaultRequestHeaders.Remove("Authorization");
+                }
+
+                // Add the token
+                var token = await _localStorage.GetItemAsync<string>("authToken");
+                _client.HttpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                Console.WriteLine("Bearer token added from BaseHttpService");
+            }
+            else
+            {
+                Console.WriteLine("No token found in storage - request will be unauthorized");
+            }
         }
 
     }

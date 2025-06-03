@@ -1,16 +1,36 @@
-# Reportlio
-🚀 A robust and scalable Goal Tracker API built using ASP.NET Core 8 and Azure Services. This project follows best practices in software architecture, ensuring maintainability, performance, and security.
+# GoalTracker 🎯
 
--Features
+A personal productivity web application to track goals, tasks, and categories — built with ASP.NET Core MVC and Entity Framework.
 
-✅ RESTful API Design & Development - Built with industry best practices to ensure consistency and scalability.
-✅ Clean Architecture - Ensures a maintainable and modular codebase.
-✅ Entity Framework Core & MS SQL - Efficient database interaction and management.
-✅ Serilog for Logging - Centralized logging to track application behavior.
-✅ Authentication & Authorization - Secure access control using ASP.NET Identity.
-✅ CQRS with MediatR - Enhances code organization and separation of concerns.
-✅ Optimized Performance - Includes pagination, sorting, and filtering for efficiency.
-✅ CI/CD Pipelines - Automates deployment and testing workflows.
-✅ Azure Cloud Deployment - Hosted on Azure App Service & Azure SQL.
-✅ Automated Testing - Ensures application quality and scalability before deployment.
+## 🌟 Features
+
+- ✅ Create, edit, and delete **Goals**
+- ✅ Add **Tasks** and associate them with specific goals
+- ✅ Categorize your goals with custom **Categories**
+- ⏳ Partial CRUDs still in progress (e.g. full category management)
+- 🔄 CI/CD (currently disabled for simplicity)
+- 📂 Organized project structure with ViewModels and EF migrations
+
+## 🛠 Tech Stack
+
+- **Backend**: ASP.NET Core MVC (C#)
+- **Database**: Entity Framework Core with SQL Server
+- **Frontend**: Razor Views, Bootstrap (optional)
+- **Other**: GitHub, Git CLI, CI/CD (in progress)
+
+## 🚧 Roadmap
+
+- [ ] Finish CRUD operations for all entities
+- [ ] Add input validation & error handling
+- [ ] Add user authentication (optional)
+- [ ] Add unit tests (xUnit or MSTest)
+- [ ] Deploy online (Render / Azure)
+- [ ] Add screenshots or demo video
+
+## 📁 How to Run Locally
+
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/shimaHp/GoalTracker.git
+   cd GoalTracker
 

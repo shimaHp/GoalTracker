@@ -11,9 +11,10 @@ namespace GoalTracker.UI.Blazor.Services
     {
         private readonly IMapper _mapper;
 
-        public GoalService(IClient client, Blazored.LocalStorage.ILocalStorageService localStorage) 
+        public GoalService(IMapper mapper, IClient client, Blazored.LocalStorage.ILocalStorageService localStorage) 
             : base(client, localStorage)
         {
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper)); 
         }
 
         public async Task<List<GoalViewModel>> GetGoals()
@@ -60,6 +61,15 @@ namespace GoalTracker.UI.Blazor.Services
 
                         try
                         {
+                            Console.WriteLine($"_mapper is null: {_mapper == null}");
+                            Console.WriteLine($"goals is null: {goals == null}");
+                            Console.WriteLine($"goals count: {goals?.Count}");
+
+                            if (_mapper == null)
+                            {
+                                Console.WriteLine("ERROR: _mapper is NULL - this is the problem!");
+                                return new List<GoalViewModel>();
+                            }
                             var viewModels = _mapper.Map<List<GoalViewModel>>(goals);
                             return viewModels;
                         }

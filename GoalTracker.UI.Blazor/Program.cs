@@ -10,6 +10,7 @@ using GoalTracker.UI.Blazor.MappingProfiles;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using GoalTracker.UI.Blazor.Providers;
+using GoalTracker.UI.Blazor.MappingProfiles.Goals;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -29,9 +30,9 @@ builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStatePr
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(typeof(GoalMappingProfile));
 builder.Services.AddScoped<IGoalService, GoalService>();
 //builder.Services.AddScoped<IWorkItemService,WorkItemService>();
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+//builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 await builder.Build().RunAsync();

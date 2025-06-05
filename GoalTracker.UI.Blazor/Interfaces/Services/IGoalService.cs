@@ -1,5 +1,8 @@
 ﻿using GoalTracker.UI.Blazor.Models.ViewModels;
 using GoalTracker.UI.Blazor.Services.Base;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GoalTracker.UI.Blazor.Interfaces.Services
 {

@@ -17,26 +17,15 @@ public class GoalProfile : Profile
 
 
 
-        // Map Goal
         CreateMap<Goal, GoalDto>()
-            .ForMember(dest => dest.Status,
-                opt => opt.MapFrom(src => (int)src.Status))
-            .ForMember(dest => dest.Priority,
-                opt => opt.MapFrom(src => (int)src.Priority))
-            .ForMember(dest => dest.WorkItems,
-                opt => opt.MapFrom(src => src.WorkItems.Select(w =>
-                    new WorkItemDto
-                    {
-                        Id = w.Id,
-                        Title = w.Title,
-                        Description = w.Description,
-                        Status = w.Status,
-                        CreatedDate = w.CreatedDate,
-                        DueDate = w.DueDate
-                    }).ToList()));
+    .ForMember(dest => dest.Status,
+        opt => opt.MapFrom(src => (int)src.Status))
+    .ForMember(dest => dest.Priority,
+        opt => opt.MapFrom(src => (int)src.Priority))
+    .ForMember(dest => dest.WorkItems,
+        opt => opt.MapFrom(src => src.WorkItems));
     }
 }
-
 
 
 

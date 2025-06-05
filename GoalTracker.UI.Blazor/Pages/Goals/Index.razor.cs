@@ -3,6 +3,9 @@ using GoalTracker.UI.Blazor.Models.ViewModels;
 using GoalTracker.UI.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GoalTracker.UI.Blazor.Pages.Goals
 {
@@ -44,8 +47,19 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
             }
         }
 
+        private string GetStatusBadge(GoalStatus status)
+        {
+            return status switch
+            {
+                GoalStatus.Completed => "<span class=\"badge bg-success rounded-pill\">Completed</span>",
+                GoalStatus.InProgress => "<span class=\"badge bg-warning text-dark rounded-pill\">In Progress</span>",
+                
+                GoalStatus.OnHold => "<span class=\"badge bg-info text-dark rounded-pill\">On Hold</span>",
+                GoalStatus.Cancelled => "<span class=\"badge bg-danger rounded-pill\">Cancelled</span>",
+                _ => "<span class=\"badge bg-dark rounded-pill\">Unknown</span>"
+            };
+        }
 
-        
         protected override async Task OnInitializedAsync()
         {
             Goals = await GoalService.GetGoals();

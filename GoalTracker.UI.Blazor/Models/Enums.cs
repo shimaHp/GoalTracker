@@ -4,7 +4,8 @@
         NotStarted = 0,
         InProgress = 1,
         Completed = 2,
-        Abandoned = 3
+        OnHold = 3,
+        Cancelled=4
     }
 
     public enum Priority

@@ -1,4 +1,6 @@
-﻿namespace GoalTracker.UI.Blazor.Services.Base
+﻿using System.Net.Http;
+
+namespace GoalTracker.UI.Blazor.Services.Base
 {
     public partial interface IClient
     {

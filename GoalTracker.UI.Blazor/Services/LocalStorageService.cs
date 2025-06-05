@@ -1,6 +1,7 @@
 ﻿using GoalTracker.UI.Blazor.Interfaces.Services;
 using Microsoft.JSInterop;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace GoalTracker.UI.Blazor.Services
 {
@@ -34,6 +35,19 @@ namespace GoalTracker.UI.Blazor.Services
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", key);
         }
 
-     
+        Task<T> ILocalStorageService.GetItemAsync<T>(string key)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        Task ILocalStorageService.SetItemAsync<T>(string key, T value)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        Task ILocalStorageService.RemoveItemAsync(string key)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

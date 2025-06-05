@@ -1,5 +1,6 @@
 ﻿using Microsoft.JSInterop;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace GoalTracker.UI.Blazor.Interfaces.Services
 {

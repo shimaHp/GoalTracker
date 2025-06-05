@@ -1442,8 +1442,29 @@ namespace GoalTracker.UI.Blazor.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("priority")]
         public Priority Priority { get; set; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("userId")]
+        public string UserId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("userName")]
+        public string UserName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("userEmail")]
+        public string UserEmail { get; set; }
+
         [System.Text.Json.Serialization.JsonPropertyName("workItems")]
         public System.Collections.Generic.ICollection<WorkItemDto> WorkItems { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("totalWorkItems")]
+        public int TotalWorkItems { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("completedWorkItems")]
+        public int CompletedWorkItems { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("overdueWorkItems")]
+        public int OverdueWorkItems { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("progressPercentage")]
+        public double ProgressPercentage { get; set; }
 
     }
 
@@ -1479,6 +1500,8 @@ namespace GoalTracker.UI.Blazor.Services.Base
         _2 = 2,
 
         _3 = 3,
+
+        _4 = 4,
 
     }
 
@@ -1640,6 +1663,39 @@ namespace GoalTracker.UI.Blazor.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("goalId")]
         public int GoalId { get; set; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("goalTitle")]
+        public string GoalTitle { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("goalDescription")]
+        public string GoalDescription { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("creatorId")]
+        public string CreatorId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("creatorName")]
+        public string CreatorName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("creatorEmail")]
+        public string CreatorEmail { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("assigneeId")]
+        public string AssigneeId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("assigneeName")]
+        public string AssigneeName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("assigneeEmail")]
+        public string AssigneeEmail { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("lastUpdatedById")]
+        public string LastUpdatedById { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("lastUpdatedByName")]
+        public string LastUpdatedByName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("lastUpdatedDate")]
+        public System.DateTimeOffset? LastUpdatedDate { get; set; }
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -1653,6 +1709,12 @@ namespace GoalTracker.UI.Blazor.Services.Base
         _2 = 2,
 
         _3 = 3,
+
+        _4 = 4,
+
+        _5 = 5,
+
+        _6 = 6,
 
     }
 

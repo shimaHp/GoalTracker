@@ -37,8 +37,7 @@ public class GoalsController(IMediator mediator ) : ControllerBase
 
     public async Task<ActionResult<IEnumerable<GoalDto>>> GetGoalById([FromRoute] int id)
     {
-        var goal = await mediator.Send(new GetGoalByIdQuery(id));
-       
+        var goal = await mediator.Send(new GetGoalByIdQuery(id));       
         return Ok(goal);
 
     }
@@ -58,7 +57,7 @@ public class GoalsController(IMediator mediator ) : ControllerBase
     public async Task<IActionResult> DeleteGoal([FromRoute] int id)
     {
         await mediator.Send(new DeleteGoalCommand(id));
-            return NoContent();
+        return NoContent();
 
     }
 
@@ -72,10 +71,7 @@ public class GoalsController(IMediator mediator ) : ControllerBase
         await mediator.Send( command);
         
         return NoContent();
-
-      
-
-
+        
     }
 
 

@@ -43,7 +43,11 @@
                             <tr>
                                 <th>Title</th>
                                 <th>Status</th>
-                                <th>Priority</th>
+                                <th>Due Date</th>
+                                <th>Creator</th>
+                                <th>Assignee</th>
+                                <th>astUpdatedByName</th>
+                                <th>astUpdatedByDate</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,7 +56,12 @@
                                 <tr>
                                     <td>@workItem.Title</td>
                                     <td>@workItem.Status</td>
-                                    <td>@workItem.Status</td>
+                                    <td>@(workItem.DueDate?.ToString("yyyy-MM-dd") ?? "-")</td>
+                                    <td>@workItem.CreatorId</td>
+                                    <td>@(string.IsNullOrEmpty(workItem.AssigneeName) ? "-" : workItem.AssigneeName)</td>
+                                    <td>@(string.IsNullOrEmpty(workItem.LastUpdatedByName) ? "-" : workItem.LastUpdatedByName)</td>
+                                    <td>@(workItem.LastUpdatedDate?.ToString("yyyy-MM-dd") ?? "-")</td>
+
                                 </tr>
                             }
                         </tbody>

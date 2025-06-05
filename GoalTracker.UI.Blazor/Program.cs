@@ -11,6 +11,8 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using GoalTracker.UI.Blazor.Providers;
 using GoalTracker.UI.Blazor.MappingProfiles.Goals;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

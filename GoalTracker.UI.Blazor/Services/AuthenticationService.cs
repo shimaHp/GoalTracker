@@ -5,9 +5,11 @@ using GoalTracker.UI.Blazor.Models;
 using GoalTracker.UI.Blazor.Providers;
 using GoalTracker.UI.Blazor.Services.Base;
 using Microsoft.AspNetCore.Components.Authorization;
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 
 namespace GoalTracker.UI.Blazor.Services;
 
@@ -74,5 +76,11 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
         //todo
         throw new NotImplementedException();
     }
+
+ 
+
+   
+
+   
 }
 

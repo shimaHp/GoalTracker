@@ -1,9 +1,10 @@
-﻿using GoalTracker.UI.Blazor.Dtos;
+﻿
+
 using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models.ViewModels;
-using GoalTracker.UI.Blazor.Services;
-using GoalTracker.UI.Blazor.Services.Base;
 using Microsoft.AspNetCore.Components;
+using System;
+using System.Threading.Tasks;
 
 namespace GoalTracker.UI.Blazor.Pages.Authentication;
 

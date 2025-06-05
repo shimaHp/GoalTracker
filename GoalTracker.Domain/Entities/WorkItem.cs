@@ -28,5 +28,6 @@ public class WorkItem
     // Last person who updated the work item
     public string? LastUpdatedById { get; set; }
     public User? LastUpdatedBy { get; set; }
+    public DateTime? LastUpdatedDate { get; set; }
 
 }

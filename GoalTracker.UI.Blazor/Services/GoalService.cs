@@ -2,12 +2,15 @@
 using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models.ViewModels;
 using GoalTracker.UI.Blazor.Services.Base;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace GoalTracker.UI.Blazor.Services
 {
-    public class GoalService : BaseHttpService, IGoalService
+    public class GoalService : BaseHttpService,IGoalService
     {
         private readonly IMapper _mapper;
 

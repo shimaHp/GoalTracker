@@ -3,7 +3,7 @@
 using GoalTracker.UI.Blazor.Dtos;
 using GoalTracker.UI.Blazor.Models;
 using GoalTracker.UI.Blazor.Services.Base;
-
+using System.Threading.Tasks;
 using LoginRequest = GoalTracker.UI.Blazor.Services.Base.LoginCommand;
 
 

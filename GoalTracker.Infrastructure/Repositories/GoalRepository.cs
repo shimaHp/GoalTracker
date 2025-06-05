@@ -71,9 +71,15 @@ internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
     public async Task<Goal?> GetGoalAsync(int GId)
     {
         var goal = await dbContext.Goals
-            .Include(c=>c.WorkItems)
-            .FirstOrDefaultAsync(g => g.Id == GId)
-            ;
+    .Include(g => g.WorkItems)
+        .ThenInclude(w => w.Creator)       // Include Creator user
+    .Include(g => g.WorkItems)
+        .ThenInclude(w => w.Assignee)      // Include Assignee user
+    .Include(g => g.WorkItems)
+        .ThenInclude(w => w.LastUpdatedBy) // Include last updated by user
+    .Include(g => g.User)                  // Include Goal's User property if needed
+    .FirstOrDefaultAsync(g => g.Id == GId);
+
         return goal;
     }
 

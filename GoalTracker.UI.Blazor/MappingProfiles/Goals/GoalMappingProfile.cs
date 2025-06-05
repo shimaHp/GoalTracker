@@ -8,9 +8,13 @@ public class GoalMappingProfile : Profile
 {
     public GoalMappingProfile()
     {
-         // Now it's simple - no date conversions needed!
         CreateMap<GoalDto, GoalViewModel>()
-            .ForMember(dest => dest.UserId, opt => opt.Ignore());
+            .ForMember(dest => dest.UserId, opt => opt.Ignore())
+            .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
 
+        CreateMap<WorkItemDto, WorkItemViewModel>()
+            .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate.DateTime))
+            .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => src.DueDate.HasValue ? src.DueDate.Value.DateTime : (DateTime?)null))
+            .ForMember(dest => dest.LastUpdatedDate, opt => opt.MapFrom(src => src.LastUpdatedDate.HasValue ? src.LastUpdatedDate.Value.DateTime : (DateTime?)null));
     }
 }

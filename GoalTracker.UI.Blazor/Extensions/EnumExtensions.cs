@@ -9,7 +9,7 @@
                 GoalStatus.NotStarted => "Not Started",
                 GoalStatus.InProgress => "In Progress",
                 GoalStatus.Completed => "Completed",
-                GoalStatus.Abandoned => "Abandoned",
+                GoalStatus.Cancelled => "Cancelled",
                 _ => status.ToString(),
             };
         }
@@ -21,7 +21,7 @@
                 GoalStatus.NotStarted => "status-not-started",
                 GoalStatus.InProgress => "status-in-progress",
                 GoalStatus.Completed => "status-completed",
-                GoalStatus.Abandoned => "status-abandoned",
+                GoalStatus.Cancelled => "status-abandoned",
                 _ => string.Empty,
             };
         }

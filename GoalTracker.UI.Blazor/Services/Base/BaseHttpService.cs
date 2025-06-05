@@ -1,4 +1,6 @@
 ﻿using Blazored.LocalStorage;
+using System;
+using System.Threading.Tasks;
 
 namespace GoalTracker.UI.Blazor.Services.Base
 {

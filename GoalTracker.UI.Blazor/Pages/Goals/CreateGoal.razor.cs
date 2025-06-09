@@ -1,5 +1,6 @@
 ﻿using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models.ViewModels;
+using GoalTracker.UI.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace GoalTracker.UI.Blazor.Pages.Goals
@@ -7,82 +8,56 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
     public partial class CreateGoal
     {
         [Inject]
-        public NavigationManager NavigationManager { get; set; }
+        public NavigationManager Navigation { get; set; } = default!;
+
 
         [Inject]
-        public IGoalService GoalService { get; set; }
+        public IGoalService GoalService { get; set; } = default!;
 
-        private CreateGoalViewModel goalModel = new CreateGoalViewModel();
-        //todo
-        //private async Task HandleValidSubmit()
-        //{
-        //    try
-        //    {
-        //        // Create the goal command with current date
-        //        var createGoalCommand = new CreateGoalCommand
-        //        {
-        //            Title = goalModel.Title,
-        //            Description = goalModel.Description,
-        //            CreatedDate = DateTime.Now,
-        //            TargetDate = goalModel.TargetDate,
-        //            Status = goalModel.Status ?? GoalStatus.NotStarted,
-        //            Priority = goalModel.Priority ?? Priority.Medium,
-        //            WorkItems = goalModel.WorkItems.Select(wi => new CreateWorkItemCommand
-        //            {
-        //                Title = wi.Title,
-        //                Status = wi.Status ?? WorkItemStatus.InProgress,
-        //                Priority = wi.Priority ?? Priority.Medium
-        //            }).ToList()
-        //        };
+        private CreateGoalViewModel goal = new();
+        private bool isSubmitting = false;
 
-        //        // Call service method to create goal
-        //        var newGoalId = await GoalService.CreateGoal(createGoalCommand);
+        private async Task HandleValidSubmit()
+        {
+            isSubmitting = true;
 
-        //        // Navigate back to goals list or goal details
-        //        NavigationManager.NavigateTo($"/Goal/GoalDetails/{newGoalId}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle any errors (you might want to add error display logic)
-        //        Console.WriteLine($"Error creating goal: {ex.Message}");
-        //    }
-        //}
-
+            try
+            {
+                var result = await GoalService.CreateGoal(goal);
+                if (result.Success)
+                {
+                    ToastService.ShowSuccess("Goal created successfully!");
+                    Navigation.NavigateTo("/goals");
+                }
+                else
+                {
+                    ToastService.ShowError(result.Message ?? "Failed to create goal.");
+                }
+            }
+            finally
+            {
+                isSubmitting = false;
+            }
+        }
         private void AddWorkItem()
         {
-            goalModel.WorkItems.Add(new CreateWorkItemViewModel());
+            if (goal.WorkItems == null)
+                goal.WorkItems = new List<CreateWorkItemViewModel>();
+
+            goal.WorkItems.Add(new CreateWorkItemViewModel());
         }
 
         private void RemoveWorkItem(int index)
         {
-            if (index >= 0 && index < goalModel.WorkItems.Count)
+            if (goal.WorkItems != null && index >= 0 && index < goal.WorkItems.Count)
             {
-                goalModel.WorkItems.RemoveAt(index);
+                goal.WorkItems.RemoveAt(index);
             }
         }
 
         private void Cancel()
         {
-            NavigationManager.NavigateTo("/Goals");
+            Navigation.NavigateTo("/goals");
         }
-    }
-
-    // ViewModel for Create Goal
-    public class CreateGoalViewModel
-    {
-        public string Title { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public DateTime? TargetDate { get; set; }
-        public GoalStatus? Status { get; set; }
-        public Priority? Priority { get; set; }
-        public List<CreateWorkItemViewModel> WorkItems { get; set; } = new List<CreateWorkItemViewModel>();
-    }
-
-    // ViewModel for Create Work Item
-    public class CreateWorkItemViewModel
-    {
-        public string Title { get; set; } = string.Empty;
-        public WorkItemStatus? Status { get; set; }
-        public Priority? Priority { get; set; }
     }
 }

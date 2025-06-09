@@ -1,4 +1,5 @@
 ﻿using GoalTracker.Application.Goals.Dtos;
+using GoalTracker.Application.WorkItems.Commands.CreateWorkItem;
 using GoalTracker.Domain.Enums;
 using MediatR;
 
@@ -14,8 +15,9 @@ public class CreateGoalCommand : IRequest<int>
 
     public DateTime? TargetDate { get; set; }
 
-    public GoalStatus? Status { get; set; }
-    public Priority? Priority { get; set; }
+    public GoalStatus Status { get; set; }
+    public Priority Priority { get; set; }
+    public List<CreateWorkItemCommand> WorkItems { get; set; } = new List<CreateWorkItemCommand>();
 
 
 }

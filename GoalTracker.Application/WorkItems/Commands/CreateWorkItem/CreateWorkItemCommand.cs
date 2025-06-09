@@ -10,9 +10,10 @@ public class CreateWorkItemCommand:IRequest<int>
 
     public string Title { get; set; } = default!;
     public string? Description { get; set; }
-    public WorkItemStatus Status { get; set; }
-    public int GoalId { get; set; }
-   
+    public DateTime? DueDate { get; set; }
+    public WorkItemStatus? Status { get; set; }
+
+
 
 
 }

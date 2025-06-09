@@ -19,7 +19,9 @@ public class JwtService(
         {
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.Email, user.Email),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+             new Claim(ClaimTypes.Name, user.UserName),
+
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
         var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);

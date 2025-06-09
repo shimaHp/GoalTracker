@@ -19,15 +19,15 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
         public string Message { get; set; } = string.Empty;
         protected void CreateGoal()
         {
-            NavigationManager.NavigateTo("/Goal/create");
+            NavigationManager.NavigateTo("/Goals/create");
         }
         protected void UpdateGoal(int id)
         {
-            NavigationManager.NavigateTo($"/Goal/upadete/{id}");
+            NavigationManager.NavigateTo($"/Goals/upadete/{id}");
         }
         protected void GetGoalDetail(int id)
         {
-            NavigationManager.NavigateTo($"/Goal/GoalDetails/{id}");
+            NavigationManager.NavigateTo($"/Goals/GoalDetails/{id}");
         }
         protected async void DeleteGoal(int id)
         {

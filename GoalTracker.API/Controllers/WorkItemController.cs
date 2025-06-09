@@ -19,15 +19,15 @@ public class WorkItemController(IMediator mediator) : ControllerBase
 
   
 
-    [HttpPost]
-    [Authorize(Policy = ResourcePolicies.WorkItem.Create)]
-    public async Task<IActionResult> CreateWorkItem([FromRoute] int goalId, CreateWorkItemCommand command)
-    {
-        command.GoalId = goalId;
-      var workItemId =  await mediator.Send(command);
-        return   CreatedAtAction(nameof(GetByIdForGoal), new { goalId,workItemId },null);
+    //[HttpPost]
+    //[Authorize(Policy = ResourcePolicies.WorkItem.Create)]
+    //public async Task<IActionResult> CreateWorkItem([FromRoute] int goalId, CreateWorkItemCommand command)
+    //{
+    //  //  command.GoalId = goalId;
+    //  var workItemId =  await mediator.Send(command);
+    //    return   CreatedAtAction(nameof(GetByIdForGoal), new { goalId,workItemId },null);
 
-    }
+    //}
 
     // GET: api/goals/{goalId}/workitems
     [HttpGet]

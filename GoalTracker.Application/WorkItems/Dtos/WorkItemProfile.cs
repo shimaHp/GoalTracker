@@ -17,8 +17,10 @@ public class WorkItemProfile : Profile
          .ForMember(dest => dest.AssigneeEmail, opt => opt.MapFrom(src => src.Assignee != null ? src.Assignee.Email : null))
          .ForMember(dest => dest.LastUpdatedByName, opt => opt.MapFrom(src => src.LastUpdatedBy != null ? src.LastUpdatedBy.UserName : null))
          .ForMember(dest => dest.LastUpdatedDate, opt => opt.MapFrom(src => src.LastUpdatedDate)); // If you track this field
+        // Map from CreateWorkItemCommand to WorkItem entity
         CreateMap<CreateWorkItemCommand, WorkItem > ();
-       
+
+
 
     }
 

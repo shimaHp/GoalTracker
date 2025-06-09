@@ -10,7 +10,10 @@ namespace GoalTracker.UI.Blazor.Interfaces.Services
     {
         Task<List<GoalViewModel>> GetGoals();
         Task<GoalViewModel> GetGoalDetail(int id);
-        Task<Response<Guid>> CreateGoal(GoalViewModel goal);
+       
+        Task<Response<GoalDto>> CreateGoal(CreateGoalViewModel goal);
+        //Task<Response<Guid>> CreateGoal(CreateGoalViewModel goal);
+
         Task<Response<Guid>> UpdateGoal(int id,GoalViewModel goal);
         Task<Response<Guid>> DeleteGoal(GoalViewModel goal);
         

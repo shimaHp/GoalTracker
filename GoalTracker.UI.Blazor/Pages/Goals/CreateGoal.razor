@@ -1,42 +1,48 @@
-﻿@page "/Goal/create"
-@namespace GoalTracker.UI.Blazor.Pages.Goals
+﻿@page "/goals/create"
+@inject Blazored.Toast.Services.IToastService ToastService
 
-<div class="goal-create-container">
-    <div class="header">
-        <h1>Create New Goal</h1>
-        <p class="subtitle">Track your progress by setting clear objectives</p>
-    </div>
 
-    <EditForm Model="@goalModel" class="goal-form">
-        <DataAnnotationsValidator />
-        <ValidationSummary class="validation-summary" />
+@using GoalTracker.UI.Blazor.Models.ViewModels
+@using System.ComponentModel.DataAnnotations
 
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="title">Goal Title <span class="required">*</span></label>
-                <InputText id="title" class="form-input" @bind-Value="goalModel.Title" placeholder="Enter a clear, specific goal title" />
-                <ValidationMessage For="@(() => goalModel.Title)" />
-            </div>
-
-            <div class="form-group">
-                <label for="targetDate">Target Date</label>
-                <div class="date-input-container">
-                    <i class="calendar-icon"></i>
-                    <InputDate id="targetDate" class="form-input" @bind-Value="goalModel.TargetDate" />
+<EditForm Model="goal" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="validation-summary" />
+    <div class="goal-create-container">
+        <div class="header">
+            <h1>Create a New Goal</h1>
+            <p class="subtitle">Define your objective and set a timeline.</p>
+        </div>
+        <div class="goal-form">
+            <div class="form-grid">
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="title">Title <span class="required">*</span></label>
+                    <InputText id="title" class="form-input" @bind-Value="goal.Title" />
+                    <ValidationMessage For="() => goal.Title" />
                 </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="description">Description</label>
-            <InputTextArea id="description" class="form-input description-area" @bind-Value="goalModel.Description" rows="4" placeholder="Why is this goal important? What will success look like?" />
-        </div>
-
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="status">Status</label>
-                <div class="select-container">
-                    <InputSelect id="status" class="form-input" @bind-Value="goalModel.Status">
+                <!-- Target Date -->
+                <div class="form-group date-input-container">
+                    <label for="targetDate">Target Date</label>
+                    <InputDate id="targetDate" class="form-input" @bind-Value="goal.TargetDate" />
+                    <span class="calendar-icon"></span>
+                </div>
+                <!-- Priority -->
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <InputSelect id="priority" class="form-input" @bind-Value="goal.Priority">
+                        <option value="">-- Select Priority --</option>
+                        @foreach (var priority in Enum.GetValues(typeof(Priority)))
+                        {
+                            <option value="@priority">@priority</option>
+                        }
+                    </InputSelect>
+                </div>
+                <!-- Status -->
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <InputSelect id="status" class="form-input" @bind-Value="goal.Status">
+                        <option value="">-- Select Status --</option>
                         @foreach (var status in Enum.GetValues(typeof(GoalStatus)))
                         {
                             <option value="@status">@status</option>
@@ -44,77 +50,86 @@
                     </InputSelect>
                 </div>
             </div>
-
+            <!-- Description -->
             <div class="form-group">
-                <label for="priority">Priority</label>
-                <div class="select-container">
-                    <InputSelect id="priority" class="form-input" @bind-Value="goalModel.Priority">
-                        @foreach (var priority in Enum.GetValues(typeof(Priority)))
+                <label for="description">Description</label>
+                <InputTextArea id="description" class="form-input description-area" @bind-Value="goal.Description" />
+                <ValidationMessage For="() => goal.Description" />
+            </div>
+            <!-- Work Items -->
+            <div class="work-items-section">
+                <div class="section-header">
+                    <h2>Work Items</h2>
+                    <button type="button" class="add-button" @onclick="AddWorkItem">
+                        <span class="plus-icon">+</span> Add Work Item
+                    </button>
+                </div>
+
+                @if (goal.WorkItems != null && goal.WorkItems.Any())
+                {
+                    <div class="work-items-list">
+                        @for (int i = 0; i < goal.WorkItems.Count; i++)
                         {
-                            <option value="@priority">@priority</option>
-                        }
-                    </InputSelect>
-                </div>
-            </div>
-        </div>
+                            var index = i;
+                            var workItem = goal.WorkItems[index];
 
-        <div class="work-items-section">
-            <div class="section-header">
-                <h2>Work Items</h2>
-                <button type="button" class="add-button" @onclick="AddWorkItem">
-                    <span class="plus-icon">+</span> Add Work Item
-                </button>
-            </div>
-
-            @if (goalModel.WorkItems.Count == 0)
-            {
-                <div class="empty-state">
-                    <p>No work items added yet. Add work items to break down your goal into manageable tasks.</p>
-                </div>
-            }
-            else
-            {
-                <div class="work-items-list">
-                    @for (int i = 0; i < goalModel.WorkItems.Count; i++)
-                    {
-                        int index = i;
-                        <div class="work-item-card">
-                            <div class="work-item-grid">
-                                <div class="work-item-title">
-                                    <label>Work Item Title</label>
-                                    <InputText class="form-input" @bind-Value="goalModel.WorkItems[index].Title" placeholder="What needs to be done?" />
+                            <div class="work-item">
+                                <div class="work-item-header">
+                                    <h4>Work Item @(index + 1)</h4>
+                                    <button type="button" class="remove-button" @onclick="() => RemoveWorkItem(index)">
+                                        <span class="times-icon">×</span>
+                                    </button>
                                 </div>
-                                <div class="work-item-status">
-                                    <label>Status</label>
-                                    <InputSelect class="form-input" @bind-Value="goalModel.WorkItems[index].Status">
-                                        @foreach (var status in Enum.GetValues(typeof(WorkItemStatus)))
-                                        {
-                                            <option value="@status">@status</option>
-                                        }
-                                    </InputSelect>
-                                </div>
-                                <div class="work-item-priority">
-                                    <label>Priority</label>
-                                    <InputSelect class="form-input" @bind-Value="goalModel.WorkItems[index].Priority">
-                                        @foreach (var priority in Enum.GetValues(typeof(Priority)))
-                                        {
-                                            <option value="@priority">@priority</option>
-                                        }
-                                    </InputSelect>
+                                <div class="work-item-fields">
+                                    <div class="form-group">
+                                        <label>Title <span class="required">*</span></label>
+                                        <InputText class="form-input" @bind-Value="workItem.Title" />
+                                        <ValidationMessage For="() => workItem.Title" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <InputTextArea class="form-input" @bind-Value="workItem.Description" />
+                                        <ValidationMessage For="() => workItem.Description" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Due Date</label>
+                                        <InputDate class="form-input" @bind-Value="workItem.DueDate" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label>
+                                        <InputSelect class="form-input" @bind-Value="workItem.Status">
+                                            @foreach (var status in Enum.GetValues(typeof(WorkItemStatus)))
+                                            {
+                                                <option value="@status">@status</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
                                 </div>
                             </div>
-                            <button type="button" class="remove-button" @onclick="() => RemoveWorkItem(index)">
-                                Remove
-                            </button>
-                        </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <p>No work items added yet. Click "Add Work Item" to get started.</p>
+                    </div>
+                }
+            </div>
+            <!-- Buttons -->
+            <div class="form-actions">
+                <button type="submit" class="primary-button" disabled="@isSubmitting">
+                    @if (isSubmitting)
+                    {
+                        <span>Saving...</span>
                     }
-                </div>
-            }
+                    else
+                    {
+                        <span>Create Goal</span>
+                    }
+                </button>
+                <button type="button" class="secondary-button" @onclick="Cancel">Cancel</button>
+            </div>
         </div>
-
-        <div class="form-actions">
-            <button type="submit" class="primary-button">Create Goal</button>
-            <button type="button" class="secondary-button" @onclick="Cancel">Cancel</button>
-        </div>
-    </EditForm>
-</div>
+    </div>
+</EditForm>

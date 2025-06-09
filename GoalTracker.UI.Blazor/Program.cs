@@ -6,13 +6,15 @@ using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Services;
 using System.Reflection;
 using Serilog;
-using GoalTracker.UI.Blazor.MappingProfiles;
+
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using GoalTracker.UI.Blazor.Providers;
 using GoalTracker.UI.Blazor.MappingProfiles.Goals;
-using Microsoft.Extensions.DependencyInjection;
+
 using System;
+using Blazored.Toast;
+
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -34,6 +36,9 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 builder.Services.AddAutoMapper(typeof(GoalMappingProfile));
 builder.Services.AddScoped<IGoalService, GoalService>();
+
+builder.Services.AddBlazoredToast();
+
 //builder.Services.AddScoped<IWorkItemService,WorkItemService>();
 //builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

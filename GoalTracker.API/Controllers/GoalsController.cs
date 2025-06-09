@@ -34,20 +34,28 @@ public class GoalsController(IMediator mediator ) : ControllerBase
     }
 
     [HttpGet("{id}")]
-
-    public async Task<ActionResult<IEnumerable<GoalDto>>> GetGoalById([FromRoute] int id)
+    [Authorize]
+    public async Task<ActionResult<GoalDto>> GetGoalById([FromRoute] int id)
     {
         var goal = await mediator.Send(new GetGoalByIdQuery(id));       
         return Ok(goal);
 
     }
 
+    [Authorize]
     [HttpPost]
-
     public async Task<ActionResult<GoalDto>> CreateGoal([FromBody] CreateGoalCommand command)
     {
-        int id = await mediator.Send(command);
-        return CreatedAtAction(nameof(GetGoalById), new { id }, null);
+        var createdGoalId = await mediator.Send(command);
+
+        // Fetch the complete created goal
+        var createdGoal = await mediator.Send(new GetGoalByIdQuery(createdGoalId));
+
+        return CreatedAtAction(
+            nameof(GetGoalById),
+            new { id = createdGoalId },
+            createdGoal
+        );
     }
 
     [HttpDelete("{id}")]

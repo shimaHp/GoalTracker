@@ -26,8 +26,8 @@ public class CreateWorkItemCommandHandler(
         logger.LogInformation("Creating new WorkItem: {@WorkItemRequest}", request);
 
 
-        var goal= await goalsRepository.GetGoalAsync(request.GoalId);
-        if (goal == null) throw new NotFoundException(nameof(goal),request.GoalId.ToString());
+        var goal= await goalsRepository.GetGoalAsync(1);
+        if (goal == null) throw new NotFoundException(nameof(goal),1.ToString());
         if (!goalAuthorizationService.Authorize(goal, ResourceOperation.Update))
             throw new ForbidException();
 

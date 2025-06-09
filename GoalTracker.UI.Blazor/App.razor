@@ -1,34 +1,26 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Blazored.Toast
+
 <Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>
+    <Blazored.Toast.BlazoredToast />
+
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
-                   <NotAuthorized>
-
-                    @if (@context.User?.Identity?.IsAuthenticated==false){
-                        <RedirectToLogin/>
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    @if (context.User?.Identity?.IsAuthenticated == false)
+                    {
+                        <RedirectToLogin />
                     }
-
-                    else{
-
+                    else
+                    {
                         <PageTitle>Not Authorized</PageTitle>
-
-                        <LayoutView Layout="@typeof(MainLayout)" >
-                            <p role="alert"><p>Sorry, You are not authorized to access this resource.</p> </p>
-
+                        <LayoutView Layout="@typeof(MainLayout)">
+                            <p role="alert">Sorry, You are not authorized to access this resource.</p>
                         </LayoutView>
-                        
-
                     }
-
-
-
-                      
-                      
-        
-                     </NotAuthorized>
-               
-                </AuthorizeRouteView>
+                </NotAuthorized>
+            </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
@@ -39,4 +31,3 @@
         </NotFound>
     </Router>
 </Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>
-

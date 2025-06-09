@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace GoalTracker.UI.Blazor.Services.Base
@@ -14,25 +15,79 @@ namespace GoalTracker.UI.Blazor.Services.Base
             _localStorage = localStorage;
         }
 
-        protected Response<Guid> ConvertApiExceptions<Guid>(ApiException exception)
+        protected Response<T> ConvertApiExceptions<T>(ApiException exception)
         {
+            // Handle 201 Created as success (for your current issue)
+            if (exception.StatusCode == 201)
+            {
+                try
+                {
+                    var data = JsonSerializer.Deserialize<T>(exception.Response, new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    });
 
+                    return new Response<T>
+                    {
+                        Success = true,
+                        Data = data,
+                        Message = "Created successfully"
+                    };
+                }
+                catch (JsonException)
+                {
+                    // If deserialization fails, still return success but without data
+                    return new Response<T>
+                    {
+                        Success = true,
+                        Message = "Created successfully"
+                    };
+                }
+            }
+
+            // Handle other status codes
             if (exception.StatusCode == 400)
             {
-                return new Response<Guid> 
-                { Message = "Invalid data was submitted",
-                    ValidationErrors = exception.Response, Success = false };
+                return new Response<T>
+                {
+                    Message = "Invalid data was submitted",
+                    ValidationErrors = exception.Response,
+                    Success = false
+                };
             }
             else if (exception.StatusCode == 404)
             {
-                return new Response<Guid>
+                return new Response<T>
                 {
                     Message = "The record was not found",
                     ValidationErrors = exception.Response,
                     Success = false
                 };
             }
-            else { return new Response<Guid>() { Message="Somthing went wrong, please try again later",Success = false}; }
+            else if (exception.StatusCode == 401)
+            {
+                return new Response<T>
+                {
+                    Message = "Unauthorized access",
+                    Success = false
+                };
+            }
+            else if (exception.StatusCode == 403)
+            {
+                return new Response<T>
+                {
+                    Message = "Access forbidden",
+                    Success = false
+                };
+            }
+            else
+            {
+                return new Response<T>()
+                {
+                    Message = "Something went wrong, please try again later",
+                    Success = false
+                };
+            }
         }
 
         protected async Task AddBearerToken()

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Blazored.Toast.Services;
 using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models.ViewModels;
 using GoalTracker.UI.Blazor.Services.Base;
@@ -13,11 +14,13 @@ namespace GoalTracker.UI.Blazor.Services
     public class GoalService : BaseHttpService,IGoalService
     {
         private readonly IMapper _mapper;
+        private readonly IToastService _toastService;
 
-        public GoalService(IMapper mapper, IClient client, Blazored.LocalStorage.ILocalStorageService localStorage) 
+        public GoalService(IMapper mapper,IToastService toastService, IClient client, Blazored.LocalStorage.ILocalStorageService localStorage) 
             : base(client, localStorage)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper)); 
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _toastService = toastService;
         }
 
         public async Task<List<GoalViewModel>> GetGoals()
@@ -102,8 +105,16 @@ namespace GoalTracker.UI.Blazor.Services
         {
             try
             {
+                await AddBearerToken();
                 var httpClient = _client.HttpClient;
+
+                Console.WriteLine($"Making request to: api/Goals/{id}");
+
                 var response = await httpClient.GetAsync($"api/Goals/{id}");
+
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+                Console.WriteLine($"Response Headers: {string.Join(", ", response.Headers.Select(h => $"{h.Key}: {string.Join(", ", h.Value)}"))}");
+
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -146,21 +157,7 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
-        public async Task<Response<Guid>> CreateGoal(GoalViewModel goal)
-        {
-            try
-            {
-                AddBearerToken();
-                var createGoalCommand = _mapper.Map<CreateGoalCommand>(goal);
-                await _client.GoalsPOSTAsync(createGoalCommand);
-                return new Response<Guid> { Success = true };
-            }
-            catch (ApiException ex) { 
-            return ConvertApiExceptions<Guid>(ex);
-            }
-
-           
-        }
+        
 
         public async Task<Response<Guid>> DeleteGoal(GoalViewModel goal)
         {
@@ -189,5 +186,43 @@ namespace GoalTracker.UI.Blazor.Services
                 return ConvertApiExceptions<Guid>(ex);
             }
         }
+
+
+
+
+
+        public async Task<Response<GoalDto>> CreateGoal(CreateGoalViewModel goal)
+        {
+            try
+            {
+                await AddBearerToken();
+                var createGoalCommand = _mapper.Map<CreateGoalCommand>(goal);
+
+                var createdGoal = await _client.GoalsPOSTAsync(createGoalCommand);
+
+                // Show success toast
+                _toastService.ShowSuccess($"Goal '{createdGoal.Title}' created successfully!");
+
+                return new Response<GoalDto>
+                {
+                    Success = true,
+                    Data = createdGoal,
+                    Message = "Goal created successfully"
+                };
+            }
+            catch (ApiException ex)
+            {
+                var response = ConvertApiExceptions<GoalDto>(ex);
+
+                if (!response.Success)
+                {
+                    _toastService.ShowError($"Failed to create goal: {response.Message}");
+                }
+
+                return response;
+            }
+        }
+
+
     }
 }

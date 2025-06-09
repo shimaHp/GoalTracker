@@ -1,8 +1,7 @@
-﻿
-
-using AutoMapper;
+﻿using AutoMapper;
 using GoalTracker.Application.Goals.Commands.CreateGoal;
 using GoalTracker.Application.Goals.Commands.editGoal;
+using GoalTracker.Application.WorkItems.Commands.CreateWorkItem;
 using GoalTracker.Application.WorkItems.Dtos;
 using GoalTracker.Domain.Entities;
 
@@ -12,7 +11,12 @@ public class GoalProfile : Profile
 {
     public GoalProfile()
     {
-        CreateMap<CreateGoalCommand, Goal>();
+        // Map from CreateGoalCommand to Goal entity
+        CreateMap<CreateGoalCommand, Goal>()
+            .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
+
+      
+    
         CreateMap<UpdateGoalCommand, Goal>();
 
 

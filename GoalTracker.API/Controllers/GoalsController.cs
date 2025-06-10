@@ -18,7 +18,7 @@ namespace GoalTracker.API.Controllers;
 
 [ApiController]
 [Route("api/goals")]
-[Authorize]
+//[Authorize]
 public class GoalsController(IMediator mediator ) : ControllerBase
 {
     [HttpGet]
@@ -69,18 +69,28 @@ public class GoalsController(IMediator mediator ) : ControllerBase
 
     }
 
-    [HttpPatch("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    // Single endpoint to update goal with its work items
+    [Authorize]
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(GoalDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateGoal([FromRoute] int id, UpdateGoalCommand command)
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<GoalDto>> UpdateGoal([FromRoute] int id, [FromBody] UpdateGoalDto updateGoalDto)
     {
-        command.Id = id;
-       
-        await mediator.Send( command);
-        
-        return NoContent();
-        
+        // Ensure the ID from route matches the DTO
+        if (id != updateGoalDto.Id)
+        {
+            return BadRequest("Route ID must match the goal ID in the request body");
+        }
+
+        var command = new UpdateGoalCommand
+        {
+            UpdateGoalDto = updateGoalDto
+        };
+
+        var updatedGoal = await mediator.Send(command);
+        return Ok(updatedGoal);
     }
-
-
 }
+

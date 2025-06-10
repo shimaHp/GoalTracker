@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using GoalTracker.Application.Common.Interfaces;
+using System.Security.Claims;
 
 
 namespace GoalTracker.API.Extension;
@@ -68,7 +69,10 @@ public static class WebApplicationBuilderExtentions
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+
+           RoleClaimType = ClaimTypes.Role, 
+        NameClaimType = ClaimTypes.NameIdentifier
     };
 });
 

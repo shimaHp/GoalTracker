@@ -19,6 +19,13 @@ public class WorkItemProfile : Profile
          .ForMember(dest => dest.LastUpdatedDate, opt => opt.MapFrom(src => src.LastUpdatedDate)); // If you track this field
         // Map from CreateWorkItemCommand to WorkItem entity
         CreateMap<CreateWorkItemCommand, WorkItem > ();
+        // Map from UpdateWorkItemDto to WorkItem
+        CreateMap<UpdateWorkItemDto, WorkItem>().ReverseMap();
+            
+         
+
+        // You might also need the reverse mapping
+        //CreateMap<WorkItem, UpdateWorkItemDto>();
 
 
 

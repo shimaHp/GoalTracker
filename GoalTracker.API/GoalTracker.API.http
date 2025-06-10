@@ -1,6 +1,6 @@
 @GoalTracker.API_HostAddress = https://localhost:7124
 @port =5028
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzZmEzNDRhYi1lMzY0LTRmYzEtYWY2NC1kMTc1NDFlMzdkMWYiLCJlbWFpbCI6IkFETUlOQEdNQUlMLkNPTSIsImp0aSI6IjkyOGQ0NDI5LWY2NDUtNDdlNy1iNTZjLWNlNzk4MDBmODQ0OSIsIm5iZiI6MTc0MTM0MzAwOCwiZXhwIjoxNzQxMzQ2NjA4LCJpYXQiOjE3NDEzNDMwMDgsImlzcyI6IkdvYWxUcmFja2VyQXBwIiwiYXVkIjoiR29hbFRyYWNrZXJVc2VycyJ9.tAMRPovXHylz9JB0BDk3yDVRL402DI61TXvbJXKO31E 
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzZmEzNDRhYi1lMzY0LTRmYzEtYWY2NC1kMTc1NDFlMzdkMWYiLCJlbWFpbCI6IkFETUlOQEdNQUlMLkNPTSIsInVuaXF1ZV9uYW1lIjoiQURNSU5AR01BSUwuQ09NIiwianRpIjoiYzc5NmVkZTItMzRjNi00NjkxLTgwZDYtM2FmZmNjMTgzYTZiIiwibmJmIjoxNzQ5NDY5MzIxLCJleHAiOjE3NDk0NzI5MjEsImlhdCI6MTc0OTQ2OTMyMSwiaXNzIjoiR29hbFRyYWNrZXJBcHAiLCJhdWQiOiJHb2FsVHJhY2tlclVzZXJzIn0.Ej7j1BgAx0mUp5SgrAt5TgDVH2apmz_5fj4InKT5728
 ###
 // "password": "P@ssw0rd1"
 POST {{GoalTracker.API_HostAddress}}/api/identity/login
@@ -44,7 +44,7 @@ Content-Type: application/json
 
 ###
 
-@id=3
+@id=4
 DELETE {{GoalTracker.API_HostAddress}}/api/goals/{{id}}
 
 ###
@@ -173,3 +173,18 @@ GET {{GoalTracker.API_HostAddress}}/api/goals?searchPharse=&pageNumber=1&pageSiz
 GET {{GoalTracker.API_HostAddress}}/api/goals?searchPharse=&pageNumber=1&pageSize=10&sortBy=Title&sortDirection=1
 
 ###
+
+### Test 1: Update Goal with Basic Properties Only
+PUT {{GoalTracker.API_HostAddress}}/api/goals/4
+Content-Type: application/json
+
+Authorization: Bearer {{token}}
+
+{
+  "id": 4,
+  "title": "Updated Goal Title - Basic Update",
+  "description": "This goal has been updated with basic properties only",
+  "targetDate": "2024-12-31T23:59:59Z",
+  "status": 1,
+  "priority": 2
+}

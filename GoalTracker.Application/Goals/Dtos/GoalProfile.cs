@@ -18,6 +18,13 @@ public class GoalProfile : Profile
       
     
         CreateMap<UpdateGoalCommand, Goal>();
+        CreateMap<UpdateGoalDto, Goal>()
+    .ForMember(dest => dest.Id, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+
+    .ForMember(dest => dest.WorkItems, opt => opt.Ignore());
+    //.ForMember(dest => dest.LastUpdatedDate, opt => opt.Ignore())
+    //.ForMember(dest => dest.LastUpdatedById, opt => opt.Ignore());
 
 
 

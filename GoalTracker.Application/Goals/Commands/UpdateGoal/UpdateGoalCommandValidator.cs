@@ -9,7 +9,7 @@ public class UpdateGoalCommandValidator:AbstractValidator<UpdateGoalCommand>
 {
     public UpdateGoalCommandValidator()
     {
-        RuleFor(x => x.Title)
+        RuleFor(x => x.UpdateGoalDto.Title)
              .NotEmpty().WithMessage("Title is required.")
              .MaximumLength(100).WithMessage("Title cannot exceed 100 characters.");
     }

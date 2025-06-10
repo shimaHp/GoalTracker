@@ -1,69 +1,171 @@
-﻿using GoalTracker.UI.Blazor.Interfaces.Services;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using GoalTracker.UI.Blazor.Interfaces.Services;
+using GoalTracker.UI.Blazor.Models;
+
 using GoalTracker.UI.Blazor.Models.ViewModels;
-using GoalTracker.UI.Blazor.Services;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoalTracker.UI.Blazor.Pages.Goals
 {
-    public partial class Index
+    public partial class Index : ComponentBase
     {
-        [Inject]
-        public NavigationManager NavigationManager { get; set; }
-        [Inject]
-        public IGoalService GoalService { get; set; }
-        public List<GoalViewModel> Goals { get; private set; }
-        public string Message { get; set; } = string.Empty;
-        protected void CreateGoal()
-        {
-            NavigationManager.NavigateTo("/Goals/create");
-        }
-        protected void UpdateGoal(int id)
-        {
-            NavigationManager.NavigateTo($"/Goals/upadete/{id}");
-        }
-        protected void GetGoalDetail(int id)
-        {
-            NavigationManager.NavigateTo($"/Goals/GoalDetails/{id}");
-        }
-        protected async void DeleteGoal(int id)
-        {
-            // bool confirmed = await JSRuntime.InvokeAsync<bool>(  "confirm"+ "Are you sure you want to delete this goal?");
-            //if (!confirmed) return;
-            var goalToDelete = Goals.FirstOrDefault(g => g.Id == id);
-            if (goalToDelete == null) return; // Safety check
-            var response = await GoalService.DeleteGoal(goalToDelete);
-            if (response.Success) // Assuming DeleteGoal returns true/false
-            {
-                Goals.Remove(goalToDelete); // Optimized: Remove item locally instead of refetching all goals
-                StateHasChanged(); // Refresh UI
-            }
-            else
-            {
-                Message = response.Message;
-            }
-        }
+        [Inject] public IGoalService GoalService { get; set; } = default!;
+        [Inject] public NavigationManager Navigation { get; set; } = default!;
 
-        private string GetStatusBadge(GoalStatus status)
-        {
-            return status switch
-            {
-                GoalStatus.Completed => "<span class=\"badge bg-success rounded-pill\">Completed</span>",
-                GoalStatus.InProgress => "<span class=\"badge bg-warning text-dark rounded-pill\">In Progress</span>",
-                
-                GoalStatus.OnHold => "<span class=\"badge bg-info text-dark rounded-pill\">On Hold</span>",
-                GoalStatus.Cancelled => "<span class=\"badge bg-danger rounded-pill\">Cancelled</span>",
-                _ => "<span class=\"badge bg-dark rounded-pill\">Unknown</span>"
-            };
-        }
+        protected PagedResult<GoalViewModel>? pagedGoals;
+        protected bool isLoading = false;
+        protected string searchPhrase = "";
+        protected int currentPage = 1;
+        protected int pageSize = 10;
+        protected string sortBy = "Title";
+        protected int sortDirection = 0;
+        protected string Message = "";
 
         protected override async Task OnInitializedAsync()
         {
-            Goals = await GoalService.GetGoals();
+            await LoadGoals();
+        }
+     
+        protected async Task LoadGoals()
+        {
+            isLoading = true;
+            try
+            {
+                //; // totalRecords Get total count
+                pagedGoals = await GoalService.GetGoals(searchPhrase, currentPage, pageSize, sortBy, sortDirection);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading goals: {ex.Message}");
+                Message = "Failed to load goals. Please try again.";
+            }
+            finally
+            {
+                isLoading = false;
+                StateHasChanged();
+            }
+        }
+
+
+        private int totalRecords = 0; // Set this when you load your data
+       
+        protected async Task GoToPage(int page)
+        {
+            if (page >= 1 && page <= totalPages && page != currentPage)
+            {
+                currentPage = page;
+                await LoadGoals();
+            }
+        }
+        // Add this method to debug the values:
+        private void DebugPagination()
+        {
+            Console.WriteLine($"totalRecords: {totalRecords}");
+            Console.WriteLine($"pageSize: {pageSize}");
+            Console.WriteLine($"currentPage: {currentPage}");
+            Console.WriteLine($"totalPages: {totalPages}");
+        }
+        // Fixed totalPages calculation with proper validation:
+        private int totalPages
+        {
+            get
+            {
+                if (totalRecords <= 0 || pageSize <= 0)
+                    return 1;
+
+                return (int)Math.Ceiling((double)totalRecords / pageSize);
+            }
+        }
+
+        protected async Task SearchGoals()
+        {
+            currentPage = 1; // Reset to first page when searching
+            await LoadGoals();
+        }
+
+     
+
+        protected async Task OnPageSizeChanged(ChangeEventArgs e)
+        {
+            if (int.TryParse(e.Value?.ToString(), out int newPageSize))
+            {
+                pageSize = newPageSize;
+                currentPage = 1; // Reset to first page when changing page size
+                await LoadGoals();
+            }
+        }
+
+        protected async Task OnSearchKeyPress(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter")
+            {
+                await SearchGoals();
+            }
+        }
+
+        protected void CreateGoal()
+        {
+            Navigation.NavigateTo("/goals/create");
+        }
+
+        protected async Task SortBy(string columnName)
+        {
+            if (sortBy == columnName)
+            {
+                // Toggle sort direction if same column
+                sortDirection = sortDirection == 0 ? 1 : 0;
+            }
+            else
+            {
+                // New column, default to ascending
+                sortBy = columnName;
+                sortDirection = 0;
+            }
+
+            currentPage = 1; // Reset to first page when sorting
+            await LoadGoals();
+        }
+
+        
+
+
+
+        protected string GetStatusColor(GoalStatus status)
+        {
+            return status switch
+            {
+                GoalStatus.Completed => "success",
+                GoalStatus.InProgress => "warning",
+                GoalStatus.NotStarted => "secondary",
+                GoalStatus.Cancelled => "danger",
+                _ => "secondary"
+            };
+        }
+
+        protected void ViewGoal(int goalId)
+        {
+            Navigation.NavigateTo($"/goals/{goalId}");
+        }
+
+        protected void EditGoal(int goalId)
+        {
+            Navigation.NavigateTo($"/goals/edit/{goalId}");
+        }
+
+        protected async Task DeleteGoal(int goalId)
+        {
+            // You would typically show a confirmation dialog here
+            try
+            {
+                // Implement delete functionality
+                // await GoalService.DeleteGoal(goalId);
+                // await LoadGoals(); // Refresh the list
+                Message = "Delete functionality not implemented yet.";
+            }
+            catch (Exception ex)
+            {
+                Message = $"Error deleting goal: {ex.Message}";
+            }
         }
     }
 }
-

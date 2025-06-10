@@ -22,6 +22,6 @@ public class GoalMappingProfile : Profile
             .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTimeOffset.Now)) // Set current time
             .ForMember(dest => dest.TargetDate, opt => opt.MapFrom(src =>
                 src.TargetDate.HasValue ? new DateTimeOffset(src.TargetDate.Value) : (DateTimeOffset?)null));
-        CreateMap<CreateWorkItemViewModel, CreateWorkItemCommand>();
+        CreateMap<CreateWorkItemViewModel, CreateWorkItemDto>();
     }
 }

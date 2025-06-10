@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Blazored.Toast.Services;
 using GoalTracker.UI.Blazor.Interfaces.Services;
+using GoalTracker.UI.Blazor.Models;
 using GoalTracker.UI.Blazor.Models.ViewModels;
 using GoalTracker.UI.Blazor.Services.Base;
 using System;
@@ -177,8 +178,8 @@ namespace GoalTracker.UI.Blazor.Services
         {
             try
             {
-                var updateGoalTypeCommand = _mapper.Map<UpdateGoalCommand>(goal);
-                await _client.GoalsPATCHAsync(id, updateGoalTypeCommand);
+                var updateGoalTypeCommand = _mapper.Map<UpdateGoalDto>(goal);
+                await _client.GoalsPUTAsync(id, updateGoalTypeCommand);
                 return new Response<Guid> { Success = true };
             }
             catch (ApiException ex)
@@ -223,6 +224,100 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
+        public async Task<PagedResult<GoalViewModel>> GetGoals(string searchPhrase = "", int pageNumber = 1, int pageSize = 10, string sortBy = "Title", int sortDirection = 0)
+        {
+            try
+            {
+                await AddBearerToken();
 
+                var httpClient = _client.HttpClient;
+                var response = await httpClient.GetAsync($"api/Goals?searchPharse={Uri.EscapeDataString(searchPhrase)}&pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}&sortDirection={sortDirection}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"API Response: {content}");
+
+                    var pagedResult = System.Text.Json.JsonSerializer.Deserialize<PagedResult<GoalDto>>(content, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    if (pagedResult?.Items == null)
+                    {
+                        Console.WriteLine("Deserialization resulted in null paged result");
+                        return new PagedResult<GoalViewModel>
+                        {
+                            Items = new List<GoalViewModel>(),
+                            TotalCount = 0,
+                            PageSize = pageSize,
+                            PageNumber = pageNumber
+                        };
+                    }
+
+                    Console.WriteLine($"Deserialized {pagedResult.Items.Count()} goal(s) out of {pagedResult.TotalCount} total");
+
+                    try
+                    {
+                        if (_mapper == null)
+                        {
+                            Console.WriteLine("ERROR: _mapper is NULL - this is the problem!");
+                            return new PagedResult<GoalViewModel>
+                            {
+                                Items = new List<GoalViewModel>(),
+                                TotalCount = 0,
+                                PageSize = pageSize,
+                                PageNumber = pageNumber
+                            };
+                        }
+
+                        var viewModels = _mapper.Map<List<GoalViewModel>>(pagedResult.Items);
+
+                        return new PagedResult<GoalViewModel>
+                        {
+                            Items = viewModels,
+                            TotalCount = pagedResult.TotalCount,
+                            PageSize = pagedResult.PageSize,
+                            PageNumber = pagedResult.PageNumber
+                        };
+                    }
+                    catch (Exception mapEx)
+                    {
+                        Console.WriteLine($"Mapping exception details: {mapEx}");
+                        return new PagedResult<GoalViewModel>
+                        {
+                            Items = new List<GoalViewModel>(),
+                            TotalCount = 0,
+                            PageSize = pageSize,
+                            PageNumber = pageNumber
+                        };
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"API returned non-success status code: {response.StatusCode}");
+                }
+
+                return new PagedResult<GoalViewModel>
+                {
+                    Items = new List<GoalViewModel>(),
+                    TotalCount = 0,
+                    PageSize = pageSize,
+                    PageNumber = pageNumber
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching goals: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                return new PagedResult<GoalViewModel>
+                {
+                    Items = new List<GoalViewModel>(),
+                    TotalCount = 0,
+                    PageSize = pageSize,
+                    PageNumber = pageNumber
+                };
+            }
+        }
     }
 }

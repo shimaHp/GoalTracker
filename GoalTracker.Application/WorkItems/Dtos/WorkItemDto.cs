@@ -1,7 +1,5 @@
 ﻿using GoalTracker.Domain.Enums;
-
 namespace GoalTracker.Application.WorkItems.Dtos;
-
 public class WorkItemDto
 {
     public int Id { get; set; }

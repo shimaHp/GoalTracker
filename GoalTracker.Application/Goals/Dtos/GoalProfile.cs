@@ -11,12 +11,22 @@ public class GoalProfile : Profile
 {
     public GoalProfile()
     {
-        // Map from CreateGoalCommand to Goal entity
-        CreateMap<CreateGoalCommand, Goal>()
-            .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
+        // Map from CreateGoalCommand to Goal entity and nested workitem as well
+        CreateMap<CreateGoalDto, Goal>()
+     .ForMember(dest => dest.Id, opt => opt.Ignore()) // DB will set it
+     .ForMember(dest => dest.CreatedDate, opt => opt.Ignore()) // Set in code
+     .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
 
-      
-    
+        CreateMap<CreateGoalCommand, Goal>()
+    .ForMember(dest => dest.Id, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+    .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
+
+        //=========
+
+
+
+
         CreateMap<UpdateGoalCommand, Goal>();
         CreateMap<UpdateGoalDto, Goal>()
     .ForMember(dest => dest.Id, opt => opt.Ignore())

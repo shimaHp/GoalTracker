@@ -231,8 +231,7 @@ namespace GoalTracker.UI.Blazor.Services
                 await AddBearerToken();
 
                 var httpClient = _client.HttpClient;
-                var response = await httpClient.GetAsync($"api/Goals?searchPharse={Uri.EscapeDataString(searchPhrase)}&pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}&sortDirection={sortDirection}");
-
+                var response = await httpClient.GetAsync($"api/Goals?searchPhrase={Uri.EscapeDataString(searchPhrase)}&pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}&sortDirection={sortDirection}");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();

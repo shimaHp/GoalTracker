@@ -1,13 +1,28 @@
-﻿namespace GoalTracker.UI.Blazor.Models
+﻿using System.Text.Json.Serialization;
+
+namespace GoalTracker.UI.Blazor.Models
 {
     public class PagedResult<T>
     {
         public IEnumerable<T> Items { get; set; } = new List<T>();
+
+        [JsonPropertyName("totalPages")]
+        public int TotalPages { get; set; }
+
+        [JsonPropertyName("totalItemsCount")]
         public int TotalCount { get; set; }
+
+        [JsonPropertyName("itemsFrom")]
+        public int ItemsFrom { get; set; }
+
+        [JsonPropertyName("itemsTo")]
+        public int ItemsTo { get; set; }
+
         public int PageSize { get; set; }
         public int PageNumber { get; set; }
-        public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
-        public bool HasNextPage => PageNumber < TotalPages;
+
+        // Calculated properties for convenience
         public bool HasPreviousPage => PageNumber > 1;
+        public bool HasNextPage => PageNumber < TotalPages;
     }
 }

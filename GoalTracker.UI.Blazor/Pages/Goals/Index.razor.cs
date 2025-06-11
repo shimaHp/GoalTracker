@@ -25,19 +25,31 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
         {
             await LoadGoals();
         }
-     
+
         protected async Task LoadGoals()
         {
             isLoading = true;
             try
             {
-                //; // totalRecords Get total count
                 pagedGoals = await GoalService.GetGoals(searchPhrase, currentPage, pageSize, sortBy, sortDirection);
+
+                // Debug what we actually got
+                Console.WriteLine($"pagedGoals.TotalCount: {pagedGoals?.TotalCount}");
+                Console.WriteLine($"pagedGoals.TotalPages: {pagedGoals?.TotalPages}");
+
+                // Set totalRecords - this is crucial for pagination
+                totalRecords = pagedGoals?.TotalCount ?? 0;
+
+                // Debug the calculated values
+                Console.WriteLine($"totalRecords: {totalRecords}");
+                Console.WriteLine($"totalPages: {totalPages}");
+                Console.WriteLine($"currentPage: {currentPage}");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading goals: {ex.Message}");
                 Message = "Failed to load goals. Please try again.";
+                totalRecords = 0;
             }
             finally
             {
@@ -48,13 +60,20 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
 
 
         private int totalRecords = 0; // Set this when you load your data
-       
+
         protected async Task GoToPage(int page)
         {
+            Console.WriteLine($"GoToPage called with page: {page}, totalPages: {totalPages}, totalRecords: {totalRecords}");
+
             if (page >= 1 && page <= totalPages && page != currentPage)
             {
                 currentPage = page;
+                Console.WriteLine($"Navigating to page: {currentPage}");
                 await LoadGoals();
+            }
+            else
+            {
+                Console.WriteLine($"Page navigation blocked: page={page}, totalPages={totalPages}, currentPage={currentPage}");
             }
         }
         // Add this method to debug the values:

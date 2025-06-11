@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models;
-
 using GoalTracker.UI.Blazor.Models.ViewModels;
+using Blazored.Toast.Services; // Add this
 
 namespace GoalTracker.UI.Blazor.Pages.Goals
 {
@@ -11,6 +11,7 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
     {
         [Inject] public IGoalService GoalService { get; set; } = default!;
         [Inject] public NavigationManager Navigation { get; set; } = default!;
+        [Inject] public IToastService ToastService { get; set; } = default!; // Add this
 
         protected PagedResult<GoalViewModel>? pagedGoals;
         protected bool isLoading = false;
@@ -20,6 +21,11 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
         protected string sortBy = "Title";
         protected int sortDirection = 0;
         protected string Message = "";
+
+        // Delete confirmation variables
+        private bool showConfirmDelete = false;
+        private int goalIdToDelete;
+        private string goalTitleToDelete = "";
 
         protected override async Task OnInitializedAsync()
         {
@@ -32,23 +38,12 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
             try
             {
                 pagedGoals = await GoalService.GetGoals(searchPhrase, currentPage, pageSize, sortBy, sortDirection);
-
-                // Debug what we actually got
-                Console.WriteLine($"pagedGoals.TotalCount: {pagedGoals?.TotalCount}");
-                Console.WriteLine($"pagedGoals.TotalPages: {pagedGoals?.TotalPages}");
-
-                // Set totalRecords - this is crucial for pagination
                 totalRecords = pagedGoals?.TotalCount ?? 0;
-
-                // Debug the calculated values
-                Console.WriteLine($"totalRecords: {totalRecords}");
-                Console.WriteLine($"totalPages: {totalPages}");
-                Console.WriteLine($"currentPage: {currentPage}");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading goals: {ex.Message}");
-                Message = "Failed to load goals. Please try again.";
+                ToastService.ShowError("Failed to load goals. Please try again.");
                 totalRecords = 0;
             }
             finally
@@ -58,58 +53,39 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
             }
         }
 
-
-        private int totalRecords = 0; // Set this when you load your data
+        private int totalRecords = 0;
 
         protected async Task GoToPage(int page)
         {
-            Console.WriteLine($"GoToPage called with page: {page}, totalPages: {totalPages}, totalRecords: {totalRecords}");
-
             if (page >= 1 && page <= totalPages && page != currentPage)
             {
                 currentPage = page;
-                Console.WriteLine($"Navigating to page: {currentPage}");
                 await LoadGoals();
             }
-            else
-            {
-                Console.WriteLine($"Page navigation blocked: page={page}, totalPages={totalPages}, currentPage={currentPage}");
-            }
         }
-        // Add this method to debug the values:
-        private void DebugPagination()
-        {
-            Console.WriteLine($"totalRecords: {totalRecords}");
-            Console.WriteLine($"pageSize: {pageSize}");
-            Console.WriteLine($"currentPage: {currentPage}");
-            Console.WriteLine($"totalPages: {totalPages}");
-        }
-        // Fixed totalPages calculation with proper validation:
+
         private int totalPages
         {
             get
             {
                 if (totalRecords <= 0 || pageSize <= 0)
                     return 1;
-
                 return (int)Math.Ceiling((double)totalRecords / pageSize);
             }
         }
 
         protected async Task SearchGoals()
         {
-            currentPage = 1; // Reset to first page when searching
+            currentPage = 1;
             await LoadGoals();
         }
-
-     
 
         protected async Task OnPageSizeChanged(ChangeEventArgs e)
         {
             if (int.TryParse(e.Value?.ToString(), out int newPageSize))
             {
                 pageSize = newPageSize;
-                currentPage = 1; // Reset to first page when changing page size
+                currentPage = 1;
                 await LoadGoals();
             }
         }
@@ -131,23 +107,16 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
         {
             if (sortBy == columnName)
             {
-                // Toggle sort direction if same column
                 sortDirection = sortDirection == 0 ? 1 : 0;
             }
             else
             {
-                // New column, default to ascending
                 sortBy = columnName;
                 sortDirection = 0;
             }
-
-            currentPage = 1; // Reset to first page when sorting
+            currentPage = 1;
             await LoadGoals();
         }
-
-        
-
-
 
         protected string GetStatusColor(GoalStatus status)
         {
@@ -171,20 +140,40 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
             Navigation.NavigateTo($"/goals/edit/{goalId}");
         }
 
-        protected async Task DeleteGoal(int goalId)
+        // Updated delete methods with Toast notifications
+        protected void ConfirmDeleteGoal(int goalId, string goalTitle)
         {
-            // You would typically show a confirmation dialog here
+            goalIdToDelete = goalId;
+            goalTitleToDelete = goalTitle;
+            showConfirmDelete = true;
+        }
+
+        protected async Task DeleteGoalConfirmed()
+        {
             try
             {
-                // Implement delete functionality
-                // await GoalService.DeleteGoal(goalId);
-                // await LoadGoals(); // Refresh the list
-                Message = "Delete functionality not implemented yet.";
+                showConfirmDelete = false; // Hide dialog first
+
+                // Show loading toast
+                ToastService.ShowInfo($"Deleting goal '{goalTitleToDelete}'...");
+
+                await GoalService.DeleteGoal(goalIdToDelete);
+                await LoadGoals(); // Refresh list
+
+                // Show success toast
+                ToastService.ShowSuccess($"Goal '{goalTitleToDelete}' deleted successfully!");
             }
             catch (Exception ex)
             {
-                Message = $"Error deleting goal: {ex.Message}";
+                Console.WriteLine($"Error deleting goal: {ex.Message}");
+                ToastService.ShowError($"Failed to delete goal. Error: {ex.Message}");
             }
+        }
+
+        protected void CancelDelete()
+        {
+            showConfirmDelete = false;
+            ToastService.ShowInfo("Delete operation cancelled.");
         }
     }
 }

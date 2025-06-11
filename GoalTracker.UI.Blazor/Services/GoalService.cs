@@ -158,19 +158,18 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
-        
 
-        public async Task<Response<Guid>> DeleteGoal(GoalViewModel goal)
+
+        public async Task<Response<int>> DeleteGoal(int goalId)
         {
             try
             {
-                
-                await _client.GoalsDELETEAsync(goal.Id);
-                return new Response<Guid> { Success = true };
+                await _client.GoalsDELETEAsync(goalId);
+                return new Response<int> { Success = true, Data = goalId };
             }
             catch (ApiException ex)
             {
-                return ConvertApiExceptions<Guid>(ex);
+                return ConvertApiExceptions<int>(ex);
             }
         }
 

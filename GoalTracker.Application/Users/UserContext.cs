@@ -22,12 +22,14 @@ public interface IUserContext
             {
                 return null;
             }
-            var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+     
+        var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var email = user.FindFirst(c => c.Type == ClaimTypes.Email)!.Value;
             var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role)!.Select(c => c.Value);
             var nationality = user.FindFirst(c => c.Type == "Nationality")?.Value;
             var dateOfBirthString = user.FindFirst(c => c.Type == "DateOfBirth")?.Value;
             var UserName= user.FindFirst(c => c.Type == ClaimTypes.Name)!.Value;
+
 
         var dateOfBirth_ = dateOfBirthString == null
     ? (DateOnly?)null

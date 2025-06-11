@@ -45,12 +45,12 @@ namespace GoalTracker.UI.Blazor.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GoalDto>> GoalsAllAsync(int id);
+        System.Threading.Tasks.Task<GoalDto> GoalsGET2Async(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GoalDto>> GoalsAllAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GoalDto> GoalsGET2Async(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -61,14 +61,14 @@ namespace GoalTracker.UI.Blazor.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task GoalsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>No Content</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task GoalsPATCHAsync(int id, UpdateGoalCommand body);
+        System.Threading.Tasks.Task<GoalDto> GoalsPUTAsync(int id, UpdateGoalDto body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task GoalsPATCHAsync(int id, UpdateGoalCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GoalDto> GoalsPUTAsync(int id, UpdateGoalDto body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -351,15 +351,15 @@ namespace GoalTracker.UI.Blazor.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GoalDto>> GoalsAllAsync(int id)
+        public virtual System.Threading.Tasks.Task<GoalDto> GoalsGET2Async(int id)
         {
-            return GoalsAllAsync(id, System.Threading.CancellationToken.None);
+            return GoalsGET2Async(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GoalDto>> GoalsAllAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GoalDto> GoalsGET2Async(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -404,7 +404,7 @@ namespace GoalTracker.UI.Blazor.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GoalDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GoalDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -517,17 +517,17 @@ namespace GoalTracker.UI.Blazor.Services.Base
             }
         }
 
-        /// <returns>No Content</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task GoalsPATCHAsync(int id, UpdateGoalCommand body)
+        public virtual System.Threading.Tasks.Task<GoalDto> GoalsPUTAsync(int id, UpdateGoalDto body)
         {
-            return GoalsPATCHAsync(id, body, System.Threading.CancellationToken.None);
+            return GoalsPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task GoalsPATCHAsync(int id, UpdateGoalCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GoalDto> GoalsPUTAsync(int id, UpdateGoalDto body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -542,7 +542,8 @@ namespace GoalTracker.UI.Blazor.Services.Base
                     var content_ = new System.Net.Http.ByteArrayContent(json_);
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("PATCH");
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
@@ -573,9 +574,24 @@ namespace GoalTracker.UI.Blazor.Services.Base
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 204)
+                        if (status_ == 200)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<GoalDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Bad Request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -586,6 +602,16 @@ namespace GoalTracker.UI.Blazor.Services.Base
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new ApiException<ProblemDetails>("Not Found", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 403)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Forbidden", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1308,18 +1334,21 @@ namespace GoalTracker.UI.Blazor.Services.Base
         public Priority Priority { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("workItems")]
-        public System.Collections.Generic.ICollection<CreateWorkItemCommand> WorkItems { get; set; }
+        public System.Collections.Generic.ICollection<CreateWorkItemDto> WorkItems { get; set; }
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CreateWorkItemCommand
+    public partial class CreateWorkItemDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("title")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.StringLength(200, MinimumLength = 1)]
         public string Title { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
+        [System.ComponentModel.DataAnnotations.StringLength(1000)]
         public string Description { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("dueDate")]
@@ -1327,6 +1356,12 @@ namespace GoalTracker.UI.Blazor.Services.Base
 
         [System.Text.Json.Serialization.JsonPropertyName("status")]
         public WorkItemStatus Status { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("priority")]
+        public Priority Priority { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("assigneeId")]
+        public int? AssigneeId { get; set; }
 
     }
 
@@ -1495,16 +1530,19 @@ namespace GoalTracker.UI.Blazor.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UpdateGoalCommand
+    public partial class UpdateGoalDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         public int Id { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("title")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.StringLength(200, MinimumLength = 1)]
         public string Title { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
+        [System.ComponentModel.DataAnnotations.StringLength(1000)]
         public string Description { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("targetDate")]
@@ -1516,6 +1554,18 @@ namespace GoalTracker.UI.Blazor.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("priority")]
         public Priority Priority { get; set; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("newWorkItems")]
+        public System.Collections.Generic.ICollection<CreateWorkItemDto> NewWorkItems { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("updatedWorkItems")]
+        public System.Collections.Generic.ICollection<UpdateWorkItemDto> UpdatedWorkItems { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("deletedWorkItemIds")]
+        public System.Collections.Generic.ICollection<int> DeletedWorkItemIds { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("rowVersion")]
+        public byte[] RowVersion { get; set; }
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -1525,6 +1575,36 @@ namespace GoalTracker.UI.Blazor.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("dateOfBirth")]
         [System.Text.Json.Serialization.JsonConverter(typeof(DateFormatConverter))]
         public System.DateTimeOffset? DateOfBirth { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class UpdateWorkItemDto
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("title")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.StringLength(200, MinimumLength = 1)]
+        public string Title { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("description")]
+        [System.ComponentModel.DataAnnotations.StringLength(1000)]
+        public string Description { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("dueDate")]
+        public System.DateTimeOffset? DueDate { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("status")]
+        public WorkItemStatus Status { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("assigneeId")]
+        public int? AssigneeId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("rowVersion")]
+        public byte[] RowVersion { get; set; }
 
     }
 
@@ -1599,6 +1679,8 @@ namespace GoalTracker.UI.Blazor.Services.Base
         _2 = 2,
 
         _3 = 3,
+
+        _4 = 4,
 
     }
 

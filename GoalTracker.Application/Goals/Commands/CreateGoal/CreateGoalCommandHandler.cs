@@ -9,33 +9,52 @@ using Microsoft.Extensions.Logging;
 
 namespace GoalTracker.Application.Goals.Commands.CreateGoal
 {
-    public class CreateGoalCommandHandler(ILogger<CreateGoalCommandHandler> logger, IMapper mapper, IGoalsRepository goalsRepository,IUserContext userContext ) : IRequestHandler<CreateGoalCommand, int>
+    public class CreateGoalCommandHandler : IRequestHandler<CreateGoalCommand, int>
     {
+        private readonly IMapper _mapper;
+        private readonly IGoalsRepository _goalsRepository;
+        private readonly IUserContext _userContext;
+        private readonly ILogger<CreateGoalCommandHandler> _logger;
+
+        public CreateGoalCommandHandler(
+            ILogger<CreateGoalCommandHandler> logger,
+            IMapper mapper,
+            IGoalsRepository goalsRepository,
+            IUserContext userContext)
+        {
+            _logger = logger;
+            _mapper = mapper;
+            _goalsRepository = goalsRepository;
+            _userContext = userContext;
+        }
+
         public async Task<int> Handle(CreateGoalCommand request, CancellationToken cancellationToken)
         {
-           
-            var currentUser = userContext.GetCurrentUser();
-            logger.LogInformation($"Creating a goal with title:{request.Title}");
+            var currentUser = _userContext.GetCurrentUser();
+            _logger.LogInformation($"Creating a goal with title: {request.Title}");
 
-            var goal = mapper.Map<Goal>(request);
+            // Map command to domain Goal
+            var goal = _mapper.Map<Goal>(request);
+
+            // Set properties manually
             goal.UserId = currentUser.Id;
-            
+            goal.CreatedDate = DateTime.UtcNow;
 
-            // Make sure WorkItems are also mapped and added
             if (request.WorkItems.Any())
             {
-                goal.WorkItems = mapper.Map<List<WorkItem>>(request.WorkItems);
+                goal.WorkItems = _mapper.Map<List<WorkItem>>(request.WorkItems);
 
-                // Set CreatorId for each work item
                 foreach (var workItem in goal.WorkItems)
                 {
-                    workItem.CreatorId = currentUser.Id; 
-                    workItem.GoalId = goal.Id; 
+                    workItem.CreatorId = currentUser.Id;
+                    workItem.Goal = goal; // navigation property
+                    workItem.CreatedDate = DateTime.UtcNow;
                 }
             }
 
-            int id = await goalsRepository.CreateAsync(goal);
-            return id;
+            // Save to DB
+            int goalId = await _goalsRepository.CreateAsync(goal);
+            return goalId;
         }
     }
 }

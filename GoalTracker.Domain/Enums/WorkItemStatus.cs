@@ -2,6 +2,7 @@
 
 public enum WorkItemStatus
 {
+    NotStarted,
     Pending,
     InProgress,
     Completed,

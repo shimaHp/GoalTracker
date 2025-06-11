@@ -21,7 +21,8 @@ public class GetAllGoalsQueryHandler(ILogger<GetAllGoalsQueryHandler> logger, IM
             , request.sortDirection);
 
         var goalDTOs = mapper.Map<IEnumerable<GoalDto>>(goals);
-        var result = new PagedResult<GoalDto>(goalDTOs, goalDTOs.Count(), request.PageSize, request.PageNumber);
+       // var result = new PagedResult<GoalDto>(goalDTOs, goalDTOs.Count(), request.PageSize, request.PageNumber);
+        var result = new PagedResult<GoalDto>(goalDTOs, totalCount, request.PageSize, request.PageNumber);
 
         return result!;
     }

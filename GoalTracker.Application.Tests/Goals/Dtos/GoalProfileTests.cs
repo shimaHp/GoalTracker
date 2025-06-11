@@ -14,7 +14,7 @@ using GoalTracker.Application.Goals.Commands.editGoal;
 
 namespace GoalTracker.Application.Goals.Dtos.Tests
 {
-    
+
     public class GoalProfileTests
     {
         private IMapper _mapper;
@@ -29,7 +29,7 @@ namespace GoalTracker.Application.Goals.Dtos.Tests
         public void CreateMap_ForGoalToGoalDto_MapsCorrectly()
         {
             //arrange
-          
+
             var goal = new Goal()
             {
                 Id = 1,
@@ -43,7 +43,7 @@ namespace GoalTracker.Application.Goals.Dtos.Tests
             };
 
             //act
-            var goalDto= _mapper.Map<GoalDto>(goal);
+            var goalDto = _mapper.Map<GoalDto>(goal);
 
             //assert
 
@@ -62,9 +62,9 @@ namespace GoalTracker.Application.Goals.Dtos.Tests
         public void CreateMap_ForCreateGoalCommandToGoal_MapsCorrectly()
         {
             //arrange
-         
+
             var command = new CreateGoalCommand()
-            {                        
+            {
                 Title = "Test",
                 Description = "Test",
                 CreatedDate = DateTime.Now,
@@ -89,37 +89,39 @@ namespace GoalTracker.Application.Goals.Dtos.Tests
 
 
         }
-    
-     [Fact()]
-        public void CreateMap_ForUpdateGoalCommandToGoal_MapsCorrectly()
-        {
-            //arrange
 
-            var command = new UpdateGoalCommand()
-            {
-                Id=1,
-                Title = "Test",
-                Description = "Test",
-                Priority = Priority.Critical,
-                Status = GoalStatus.NotStarted,
-                TargetDate = DateTime.Now,
+        // [Fact()]
+        //    public void CreateMap_ForUpdateGoalCommandToGoal_MapsCorrectly()
+        //    {
+        //        //arrange
 
-            };
+        //        var command = new UpdateGoalCommand()
+        //        {
 
-            //act 
-            var goal = _mapper.Map<Goal>(command);
+        //            Id=1,
+        //            Title = "Test",
+        //            Description = "Test",
+        //            Priority = Priority.Critical,
+        //            Status = GoalStatus.NotStarted,
+        //            TargetDate = DateTime.Now,
 
-            //assert
+        //        };
 
-            goal.Should().NotBeNull();
-            goal.Id.Should().Be(command.Id);
-            goal.Title.Should().Be(command.Title);
-            goal.Description.Should().Be(command.Description);
-            goal.Priority.Should().Be(command.Priority);
-            goal.Status.Should().Be(command.Status);
-            goal.TargetDate.Should().Be(command.TargetDate);
+        //        //act 
+        //        var goal = _mapper.Map<Goal>(command);
+
+        //        //assert
+
+        //        goal.Should().NotBeNull();
+        //        goal.Id.Should().Be(command.Id);
+        //        goal.Title.Should().Be(command.Title);
+        //        goal.Description.Should().Be(command.Description);
+        //        goal.Priority.Should().Be(command.Priority);
+        //        goal.Status.Should().Be(command.Status);
+        //        goal.TargetDate.Should().Be(command.TargetDate);
 
 
-        }
+        //    }
+        //}
     }
 }

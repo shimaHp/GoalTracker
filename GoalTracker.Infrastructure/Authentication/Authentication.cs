@@ -23,6 +23,11 @@ public class JwtService(
 
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
+        var roles = userManager.GetRolesAsync(user).Result;
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
         var tokenDescriptor = new SecurityTokenDescriptor

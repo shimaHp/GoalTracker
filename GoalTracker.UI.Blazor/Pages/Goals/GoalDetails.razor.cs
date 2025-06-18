@@ -28,16 +28,14 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
                 if (Goal == null)
                 {
                     Message = "Goal not found";
-                    IsLoading = false;
-                }
-                else
-                {
-                    IsLoading = false;
                 }
             }
             catch (Exception ex)
             {
                 Message = $"Error loading goal: {ex.Message}";
+            }
+            finally
+            {
                 IsLoading = false;
             }
         }

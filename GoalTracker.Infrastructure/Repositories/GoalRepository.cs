@@ -7,13 +7,14 @@ using GoalTracker.Domain.Entities;
 using GoalTracker.Domain.Repository;
 using GoalTracker.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GoalTracker.Infrastructure.Repositories;
 
 internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
 {
-    
- 
+    private IDbContextTransaction? _currentTransaction;
+
 
     public async Task<(IEnumerable<Goal>, int)> GetAllMatchingAsync(string? searchPhrase
         , int pageSize
@@ -82,9 +83,7 @@ internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
 
         return goal;
     }
-
-
-    
+          
     public async Task<int> CreateAsync(Goal goal)
     {
         dbContext.Goals.Add(goal);
@@ -98,7 +97,7 @@ internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<int> UpdateAsynce(Goal goal)
+    public async Task<int> UpdateAsync(Goal goal)
     {
         dbContext.Goals.Update(goal);
         await dbContext.SaveChangesAsync();
@@ -108,5 +107,32 @@ internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
     public Task SaveChanges()
     
        =>dbContext.SaveChangesAsync();
-     
+
+    public async Task BeginTransactionAsync()
+    {
+        if (_currentTransaction != null)
+            throw new InvalidOperationException("Transaction already started");
+
+        _currentTransaction = await dbContext.Database.BeginTransactionAsync();
+    }
+
+    public async Task CommitTransactionAsync()
+    {
+        if (_currentTransaction == null)
+            throw new InvalidOperationException("No transaction to commit");
+
+        await _currentTransaction.CommitAsync();
+        await _currentTransaction.DisposeAsync();
+        _currentTransaction = null;
+    }
+
+    public async Task RollbackTransactionAsync()
+    {
+        if (_currentTransaction == null)
+            throw new InvalidOperationException("No transaction to rollback");
+
+        await _currentTransaction.RollbackAsync();
+        await _currentTransaction.DisposeAsync();
+        _currentTransaction = null;
+    }
 }

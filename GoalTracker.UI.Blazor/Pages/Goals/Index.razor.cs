@@ -130,14 +130,16 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
             };
         }
 
+        //todo check the url please
         protected void ViewGoal(int goalId)
         {
-            Navigation.NavigateTo($"/goals/{goalId}");
+            Navigation.NavigateTo($"/Goal/GoalDetails/{goalId}");
         }
 
         protected void EditGoal(int goalId)
         {
-            Navigation.NavigateTo($"/goals/edit/{goalId}");
+            Navigation.NavigateTo($"/goals/update/{goalId}");
+            //update
         }
 
         // Updated delete methods with Toast notifications

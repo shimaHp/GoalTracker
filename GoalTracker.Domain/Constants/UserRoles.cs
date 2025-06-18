@@ -1,6 +1,7 @@
 ﻿
 namespace GoalTracker.Domain.Constants;
 
+//todo
 public static class UserRoles
 {
  

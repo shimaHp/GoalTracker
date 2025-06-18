@@ -23,6 +23,8 @@ namespace GoalTracker.UI.Blazor.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _toastService = toastService;
         }
+      
+       
 
         public async Task<List<GoalViewModel>> GetGoals()
         {
@@ -102,8 +104,18 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
+        public GoalViewModel CachedGoal { get; set; }
+
         public async Task<GoalViewModel> GetGoalDetail(int id)
         {
+            // Check if cached goal matches the requested ID
+            if (CachedGoal != null && CachedGoal.Id == id)
+            {
+                var cached = CachedGoal;
+                CachedGoal = null; // Clear after using once
+                return cached;
+            }
+
             try
             {
                 await AddBearerToken();
@@ -116,13 +128,11 @@ namespace GoalTracker.UI.Blazor.Services
                 Console.WriteLine($"Response Status: {response.StatusCode}");
                 Console.WriteLine($"Response Headers: {string.Join(", ", response.Headers.Select(h => $"{h.Key}: {string.Join(", ", h.Value)}"))}");
 
-
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"API Response for Goal Detail: {content}");
 
-                    // Deserialize the goal directly
                     var goal = System.Text.Json.JsonSerializer.Deserialize<GoalDto>(content);
 
                     if (goal == null)
@@ -160,6 +170,7 @@ namespace GoalTracker.UI.Blazor.Services
 
 
 
+
         public async Task<Response<int>> DeleteGoal(int goalId)
         {
             try
@@ -173,19 +184,7 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
-        public async Task<Response<Guid>> UpdateGoal(int id, GoalViewModel goal)
-        {
-            try
-            {
-                var updateGoalTypeCommand = _mapper.Map<UpdateGoalDto>(goal);
-                await _client.GoalsPUTAsync(id, updateGoalTypeCommand);
-                return new Response<Guid> { Success = true };
-            }
-            catch (ApiException ex)
-            {
-                return ConvertApiExceptions<Guid>(ex);
-            }
-        }
+
 
 
 
@@ -317,5 +316,101 @@ namespace GoalTracker.UI.Blazor.Services
                 };
             }
         }
+
+        public async Task<Response<GoalViewModel>> UpdateGoal(int id, UpdateGoalViewModel goalViewModel)
+        {
+            try
+            {
+                var updateGoalDto = new UpdateGoalDto
+                {
+                    Id = id,
+                    Title = goalViewModel.Title,
+                    Description = goalViewModel.Description,
+                    TargetDate = goalViewModel.TargetDate,
+                    //Status = goalViewModel.Status ?? GoalStatus.NotStarted,
+                    //Priority = goalViewModel.Priority ?? Priority.Medium,
+                    NewWorkItems = goalViewModel.GetNewWorkItems().Select(wi => new CreateWorkItemDto
+                    {
+                        Title = wi.Title,
+                        Description = wi.Description,
+                        DueDate = wi.DueDate,
+                        //Status = wi.Status ?? WorkItemStatus.NotStarted
+                    }).ToList(),
+
+                    UpdatedWorkItems = goalViewModel.GetExistingWorkItems().Select(wi => new UpdateWorkItemDto
+                    {
+                        Id = wi.Id,
+                        Title = wi.Title,
+                        Description = wi.Description,
+                        DueDate = wi.DueDate,
+                        //Status = wi.Status ?? WorkItemStatus.NotStarted
+                    }).ToList(),
+
+                    DeletedWorkItemIds = goalViewModel.DeletedWorkItemIds
+                };
+
+                var goalDto = await _client.GoalsPUTAsync(id, updateGoalDto);
+
+                _toastService.ShowSuccess("Goal updated successfully!");
+
+                // 🧠 Map DTO to ViewModel here
+                var viewModel = _mapper.Map<GoalViewModel>(goalDto);
+
+                return new Response<GoalViewModel>
+                {
+                    Data = viewModel,
+                    Success = true,
+                    Message = "Goal updated successfully"
+                };
+            }
+            catch (ApiException ex)
+            {
+                var errorMessage = ex.StatusCode switch
+                {
+                    404 => "Goal not found",
+                    403 => "You don't have permission to update this goal",
+                    400 => "Invalid goal data provided",
+                    _ => "An error occurred while updating the goal"
+                };
+
+                _toastService.ShowError(errorMessage);
+
+                return new Response<GoalViewModel>
+                {
+                    Success = false,
+                    Message = errorMessage,
+                    //ValidationErrors = ex.StatusCode == 400 ? ParseValidationErrors(ex.Response) : null
+                };
+            }
+            catch (Exception)
+            {
+                const string errorMessage = "An unexpected error occurred while updating the goal";
+                _toastService.ShowError(errorMessage);
+
+                return new Response<GoalViewModel>
+                {
+                    Success = false,
+                    Message = errorMessage
+                };
+            }
+        }
+
+
+        private List<string> ParseValidationErrors(string response)
+        {
+            // Simple validation error parsing - you might want to enhance this
+            // based on your API's error response format
+            try
+            {
+                // This is a basic implementation - adjust based on your API's error format
+                return new List<string> { response };
+            }
+            catch
+            {
+                return new List<string> { "Validation errors occurred" };
+            }
+        }
+
+       
     }
 }

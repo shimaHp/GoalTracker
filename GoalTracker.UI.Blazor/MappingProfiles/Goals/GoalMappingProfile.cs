@@ -9,6 +9,18 @@ public class GoalMappingProfile : Profile
     public GoalMappingProfile()
     {
 
+        CreateMap<UpdateGoalViewModel, UpdateGoalDto>()
+.ForMember(dest => dest.TargetDate, opt => opt.MapFrom(src =>
+    src.TargetDate.HasValue ? new DateTimeOffset(src.TargetDate.Value) : (DateTimeOffset?)null))
+.ForMember(dest => dest.UpdatedWorkItems, opt => opt.Ignore()) // manually added in the form
+.ForMember(dest => dest.NewWorkItems, opt => opt.Ignore())     // manually added in the form
+.ForMember(dest => dest.DeletedWorkItemIds, opt => opt.Ignore()); // manually added in the form
+
+        CreateMap<UpdateWorkItemViewModel, UpdateWorkItemDto>()
+            .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src =>
+                src.DueDate.HasValue ? new DateTimeOffset(src.DueDate.Value) : (DateTimeOffset?)null));
+
+
         CreateMap<GoalDto, GoalViewModel>()
             .ForMember(dest => dest.UserId, opt => opt.Ignore())
             .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
@@ -23,5 +35,7 @@ public class GoalMappingProfile : Profile
             .ForMember(dest => dest.TargetDate, opt => opt.MapFrom(src =>
                 src.TargetDate.HasValue ? new DateTimeOffset(src.TargetDate.Value) : (DateTimeOffset?)null));
         CreateMap<CreateWorkItemViewModel, CreateWorkItemDto>();
+
+    
     }
 }

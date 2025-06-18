@@ -1,0 +1,199 @@
+﻿@page "/goals/update/{Id:int}"
+
+
+<PageTitle>Update Goal</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-edit me-2"></i>Update Goal
+                    </h3>
+                    <button type="button" class="btn btn-outline-secondary" @onclick="GoBack">
+                        <i class="fas fa-arrow-left me-1"></i>Back
+                    </button>
+                </div>
+
+                <div class="card-body">
+                    @if (IsLoading)
+                    {
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading goal...</p>
+                        </div>
+                    }
+                    else if (Model != null)
+                    {
+                        <EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+                            <DataAnnotationsValidator />
+                            
+                            <!-- Goal Information Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2 mb-3">
+                                        <i class="fas fa-bullseye me-2"></i>Goal Information
+                                    </h5>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                                    <InputText id="title" class="form-control" @bind-Value="Model.Title" placeholder="Enter goal title" />
+                                    <ValidationMessage For="@(() => Model.Title)" class="text-danger" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="targetDate" class="form-label">Target Date</label>
+                                    <InputDate id="targetDate" class="form-control" @bind-Value="Model.TargetDate" />
+                                    <ValidationMessage For="@(() => Model.TargetDate)" class="text-danger" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="status" class="form-label">Status</label>
+                                    <InputSelect id="status" class="form-select" @bind-Value="Model.Status">
+                                        <option value="">Select Status</option>
+                                        @foreach (var status in Enum.GetValues<GoalStatus>())
+                                        {
+                                            <option value="@status">@status</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => Model.Status)" class="text-danger" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="priority" class="form-label">Priority</label>
+                                    <InputSelect id="priority" class="form-select" @bind-Value="Model.Priority">
+                                        <option value="">Select Priority</option>
+                                        @foreach (var priority in Enum.GetValues<Priority>())
+                                        {
+                                            <option value="@priority">@priority</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => Model.Priority)" class="text-danger" />
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <InputTextArea id="description" class="form-control" rows="3" @bind-Value="Model.Description" placeholder="Enter goal description (optional)" />
+                                    <ValidationMessage For="@(() => Model.Description)" class="text-danger" />
+                                </div>
+                            </div>
+
+                            <!-- Work Items Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-tasks me-2"></i>Work Items
+                                        </h5>
+                                        <button type="button" class="btn btn-success btn-sm" @onclick="AddNewWorkItem">
+                                            <i class="fas fa-plus me-1"></i>Add Work Item
+                                        </button>
+                                    </div>
+
+                                    @if (Model.WorkItems.Any(wi => !wi.IsDeleted))
+                                    {
+                                        <div class="row">
+                                            @foreach (var (workItem, index) in Model.WorkItems.Where(wi => !wi.IsDeleted).Select((wi, i) => (wi, i)))
+                                            {
+                                                <div class="col-12 mb-3">
+                                                    <div class="card @(workItem.IsNew ? "border-success" : "border-secondary")">
+                                                        <div class="card-header py-2">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <small class="text-muted">
+                                                                    @if (workItem.IsNew)
+                                                                    {
+                                                                        <span class="badge bg-success">New</span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span class="badge bg-secondary">Existing</span>
+                                                                    }
+                                                                </small>
+                                                                <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                                        @onclick="() => RemoveWorkItem(index)">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body py-2">
+                                                            <div class="row g-2">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label form-label-sm">Title <span class="text-danger">*</span></label>
+                                                                    <InputText class="form-control form-control-sm" @bind-Value="workItem.Title" placeholder="Work item title" />
+                                                                    <ValidationMessage For="@(() => workItem.Title)" class="text-danger" />
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label class="form-label form-label-sm">Due Date</label>
+                                                                    <InputDate class="form-control form-control-sm" @bind-Value="workItem.DueDate" />
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label class="form-label form-label-sm">Status</label>
+                                                                    <InputSelect class="form-select form-select-sm" @bind-Value="workItem.Status">
+                                                                        <option value="">Select</option>
+                                                                        @foreach (var status in Enum.GetValues<WorkItemStatus>())
+                                                                        {
+                                                                            <option value="@status">@status</option>
+                                                                        }
+                                                                    </InputSelect>
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <label class="form-label form-label-sm">Description</label>
+                                                                    <InputTextArea class="form-control form-control-sm" rows="2" @bind-Value="workItem.Description" placeholder="Work item description (optional)" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center py-4">
+                                            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">No work items yet. Click "Add Work Item" to get started!</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button type="button" class="btn btn-secondary" @onclick="GoBack" disabled="@IsSubmitting">
+                                            <i class="fas fa-times me-1"></i>Cancel
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" disabled="@IsSubmitting">
+                                            @if (IsSubmitting)
+                                            {
+                                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                                <span>Updating...</span>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-save me-1"></i>
+                                                <span>Update Goal</span>
+                                            }
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </EditForm>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Goal not found or failed to load.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

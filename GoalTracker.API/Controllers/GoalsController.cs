@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata.Ecma335;
 using GoalTracker.Application.Common;
 using GoalTracker.Application.Goals;
 using GoalTracker.Application.Goals.Commands.CreateGoal;
@@ -18,7 +19,7 @@ namespace GoalTracker.API.Controllers;
 
 [ApiController]
 [Route("api/goals")]
-//[Authorize]
+[Authorize]
 public class GoalsController(IMediator mediator ) : ControllerBase
 {
     [HttpGet]
@@ -69,28 +70,32 @@ public class GoalsController(IMediator mediator ) : ControllerBase
 
     }
 
-    // Single endpoint to update goal with its work items
-    [Authorize]
+    /// <summary>
+    /// Updates an existing goal with its work items
+    /// </summary>
+    /// <param name="id">The ID of the goal to update</param>
+    /// <param name="updateGoalDto">The goal data to update</param>
+    /// <returns>The updated goal</returns>
+[Authorize]
+    /// 
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(GoalDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<GoalDto>> UpdateGoal([FromRoute] int id, [FromBody] UpdateGoalDto updateGoalDto)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<GoalDto>> UpdateGoal(
+        [FromRoute] int id,
+        [FromBody][Required] UpdateGoalDto updateGoalDto)
     {
-        // Ensure the ID from route matches the DTO
-        if (id != updateGoalDto.Id)
-        {
-            return BadRequest("Route ID must match the goal ID in the request body");
-        }
+        // Ensure consistency between route parameter and DTO
+        updateGoalDto.Id = id;
 
-        var command = new UpdateGoalCommand
-        {
-            UpdateGoalDto = updateGoalDto
-        };
-
+        var command = new UpdateGoalCommand(updateGoalDto);
         var updatedGoal = await mediator.Send(command);
+
         return Ok(updatedGoal);
     }
 }
+
 

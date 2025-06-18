@@ -7,6 +7,8 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
 {
     public partial class CreateGoal
     {
+
+
         [Inject]
         public NavigationManager Navigation { get; set; } = default!;
 

@@ -11,6 +11,7 @@ using GoalTracker.Domain.Entities;
 using GoalTracker.Domain.Exceptions;
 using GoalTracker.Domain.Repository;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 
@@ -23,7 +24,7 @@ public class UpdateGoalCommandHandler(
     IMapper mapper,
     IGoalsRepository goalsRepository,
     IGoalAuthorizationService goalAuthorizationService
-   , IUserContext userContext  
+   , IUserContext userContext
     ) : IRequestHandler<UpdateGoalCommand, GoalDto>
 
 {
@@ -31,39 +32,41 @@ public class UpdateGoalCommandHandler(
     public async Task<GoalDto> Handle(UpdateGoalCommand request, CancellationToken cancellationToken)
     {
         var currentUser = userContext.GetCurrentUser();
-        
-        //goal.UserId = currentUser.Id;
 
         logger.LogInformation("Updating Goal with Title: {Title}", request.UpdateGoalDto.Title);
 
-        // Get goal with work items to avoid N+1 queries
-        var goal = await goalsRepository.GetGoalAsync(request.UpdateGoalDto.Id);
+        await goalsRepository.BeginTransactionAsync();
 
-        if (goal is null)
-            throw new NotFoundException(nameof(Goal), request.UpdateGoalDto.Id.ToString());
-
-        if (!goalAuthorizationService.Authorize(goal, ResourceOperation.Update))
-            throw new ForbidException();
-
-        // Update basic goal properties (excluding Id, CreatedDate, WorkItems)
-        mapper.Map(request.UpdateGoalDto, goal);
-   
-       
-
-        // Handle work items if any operations are specified
-        if (HasWorkItemOperations(request.UpdateGoalDto))
+        try
         {
-            await UpdateWorkItemsAsync(goal, request.UpdateGoalDto, cancellationToken);
+            var goal = await goalsRepository.GetGoalAsync(request.UpdateGoalDto.Id);
+
+            if (goal is null)
+                throw new NotFoundException(nameof(Goal), request.UpdateGoalDto.Id.ToString());
+
+            if (!goalAuthorizationService.Authorize(goal, ResourceOperation.Update))
+                throw new ForbidException();
+
+            mapper.Map(request.UpdateGoalDto, goal);
+
+            if (HasWorkItemOperations(request.UpdateGoalDto))
+            {
+                await UpdateWorkItemsAsync(goal, request.UpdateGoalDto, cancellationToken);
+            }
+
+            await goalsRepository.UpdateAsync(goal);  // Fixed the typo: UpdateAsync instead of UpdateAsynce
+            await goalsRepository.CommitTransactionAsync();
+
+            logger.LogInformation("Successfully updated Goal with id: {GoalId}", goal.Id);
+
+            return mapper.Map<GoalDto>(goal);
         }
-
-        await goalsRepository.UpdateAsynce(goal);
-
-        logger.LogInformation("Successfully updated Goal with id: {GoalId}", goal.Id);
-
-        // Return the updated goal as DTO
-        return mapper.Map<GoalDto>(goal);
+        catch
+        {
+            await goalsRepository.RollbackTransactionAsync();
+            throw;
+        }
     }
-
     private static bool HasWorkItemOperations(UpdateGoalDto updateGoalDto)
     {
         return (updateGoalDto.NewWorkItems?.Count > 0) ||
@@ -80,37 +83,43 @@ public class UpdateGoalCommandHandler(
         // Handle deletions first
         if (updateGoalDto.DeletedWorkItemIds?.Count > 0)
         {
-            await HandleWorkItemDeletions(goal, updateGoalDto.DeletedWorkItemIds);
+            HandleWorkItemDeletions(goal, updateGoalDto.DeletedWorkItemIds);
         }
 
         // Handle updates to existing items
         if (updateGoalDto.UpdatedWorkItems?.Count > 0)
         {
-            await HandleWorkItemUpdates(goal, updateGoalDto.UpdatedWorkItems, currentUserId, now);
+            HandleWorkItemUpdates(goal, updateGoalDto.UpdatedWorkItems, currentUserId, now);
         }
 
         // Handle new items
         if (updateGoalDto.NewWorkItems?.Count > 0)
         {
-            await HandleWorkItemCreations(goal, updateGoalDto.NewWorkItems, currentUserId, now);
+            HandleWorkItemCreations(goal, updateGoalDto.NewWorkItems, currentUserId, now);
         }
+
+        // Remove unnecessary await Task.CompletedTask
     }
 
-    private async Task HandleWorkItemDeletions(Goal goal, List<int> deletedWorkItemIds)
+    private void HandleWorkItemDeletions(Goal goal, List<int> deletedWorkItemIds)
     {
         var itemsToDelete = goal.WorkItems
             .Where(w => deletedWorkItemIds.Contains(w.Id))
             .ToList();
 
+        // Validate that all requested items exist
+        var foundIds = itemsToDelete.Select(w => w.Id).ToList();
+        var notFoundIds = deletedWorkItemIds.Except(foundIds).ToList();
+
+        if (notFoundIds.Count > 0)
+        {
+            logger.LogWarning("Work items with ids {NotFoundIds} not found for deletion in Goal {GoalId}",
+                string.Join(", ", notFoundIds), goal.Id);
+        }
+
         foreach (var itemToDelete in itemsToDelete)
         {
-            // Option 1: Hard delete
             goal.WorkItems.Remove(itemToDelete);
-
-            // Option 2: Soft delete (if you have IsDeleted property)
-            // itemToDelete.IsDeleted = true;
-            // itemToDelete.DeletedDate = DateTime.UtcNow;
-            // itemToDelete.DeletedById = currentUserService.GetCurrentUserId();
         }
 
         if (itemsToDelete.Count > 0)
@@ -118,11 +127,9 @@ public class UpdateGoalCommandHandler(
             logger.LogInformation("Deleted {Count} work items from Goal {GoalId}",
                 itemsToDelete.Count, goal.Id);
         }
-
-        await Task.CompletedTask; // Placeholder for any async deletion logic
     }
 
-    private async Task HandleWorkItemUpdates(Goal goal, List<UpdateWorkItemDto> updatedWorkItems,
+    private void HandleWorkItemUpdates(Goal goal, List<UpdateWorkItemDto> updatedWorkItems,
         string currentUserId, DateTime now)
     {
         foreach (var updateWorkItemDto in updatedWorkItems)
@@ -136,18 +143,22 @@ public class UpdateGoalCommandHandler(
                 continue;
             }
 
-            // Use AutoMapper for updates (excludes Id, CreatedDate, etc.)
+            // Store original values for logging
+            var originalTitle = existingItem.Title;
+
+            // Use AutoMapper for updates
             mapper.Map(updateWorkItemDto, existingItem);
 
-            // Set audit fields
-            existingItem.LastUpdatedDate = now;
-            existingItem.LastUpdatedById = currentUserId;
-        }
+            // Set audit fields if your WorkItem has them
+            // existingItem.LastUpdatedDate = now;
+            // existingItem.LastUpdatedById = currentUserId;
 
-        await Task.CompletedTask; // Placeholder for any async update logic
+            logger.LogDebug("Updated work item {WorkItemId}: '{OriginalTitle}' -> '{NewTitle}'",
+                existingItem.Id, originalTitle, existingItem.Title);
+        }
     }
 
-    private async Task HandleWorkItemCreations(Goal goal, List<CreateWorkItemDto> newWorkItems,
+    private void HandleWorkItemCreations(Goal goal, List<CreateWorkItemDto> newWorkItems,
         string currentUserId, DateTime now)
     {
         foreach (var createWorkItemDto in newWorkItems)
@@ -167,7 +178,5 @@ public class UpdateGoalCommandHandler(
             logger.LogInformation("Added {Count} new work items to Goal {GoalId}",
                 newWorkItems.Count, goal.Id);
         }
-
-        await Task.CompletedTask; // Placeholder for any async creation logic
     }
 }

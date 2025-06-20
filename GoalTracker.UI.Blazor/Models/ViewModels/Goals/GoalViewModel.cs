@@ -1,17 +1,17 @@
 ﻿using GoalTracker.UI.Blazor.Models.Enums;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using GoalTracker.UI.Blazor.Models.ViewModels.WorkItems;
 
-namespace GoalTracker.UI.Blazor.Models.ViewModels
+
+namespace GoalTracker.UI.Blazor.Models.ViewModels.Goals
+
 {
     public class GoalViewModel
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "Title is required")]
-        [StringLength(100, ErrorMessage = "Title cannot be longer than 100 characters")]
+        //[Required(ErrorMessage = "Title is required")]
+        //[StringLength(100, ErrorMessage = "Title cannot be longer than 100 characters")]
         public string Title { get; set; } = string.Empty;
-        [StringLength(500, ErrorMessage = "Description cannot be longer than 500 characters")]
+        //[StringLength(500, ErrorMessage = "Description cannot be longer than 500 characters")]
         public string? Description { get; set; }
 
         // Change these to DateTimeOffset

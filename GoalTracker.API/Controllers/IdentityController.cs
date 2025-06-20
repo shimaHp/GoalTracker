@@ -3,6 +3,8 @@ using GoalTracker.Application.Users.Commands.AssignUserRole;
 using GoalTracker.Application.Users.Commands.Login;
 using GoalTracker.Application.Users.Commands.UnassignUserRole;
 using GoalTracker.Application.Users.Commands.UpdateUserDetails;
+using GoalTracker.Application.Users.Dtos;
+using GoalTracker.Application.Users.Queries.GetUsersInRoleQuery;
 using GoalTracker.Domain.Constants;
 using GoalTracker.Domain.Entities;
 using GoalTracker.Infrastructure.Authentication;
@@ -55,5 +57,33 @@ public class IdentityController(
     {
         await mediator.Send(command);
         return NoContent();
+    }
+
+    
+
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UsersController(UserManager<User> userManager) : ControllerBase
+    {
+        [HttpGet("in-role/{roleName}")]
+        public async Task<IActionResult> GetUsersInRole(string roleName)
+        {
+            var users = await userManager.GetUsersInRoleAsync(roleName);
+            return Ok(users.Select(u => new { u.Id, u.UserName, u.Email }));
+        }
+    }
+
+  
+    [HttpGet("byrole/{roleName}")]
+    public async Task<ActionResult<List<CollaboratorDto>>> GetUsersByRole(string roleName)
+    {
+        var users = await mediator.Send(new GetUsersInRoleQuery(roleName));
+        var result = users.Select(u => new CollaboratorDto
+        {
+            Id = u.Id,
+            FullName = u.FullName,
+            Email = u.Email
+        }).ToList();
+        return Ok(result);
     }
 }

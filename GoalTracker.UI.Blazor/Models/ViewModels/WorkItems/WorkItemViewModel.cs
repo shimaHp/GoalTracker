@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace GoalTracker.UI.Blazor.Models.ViewModels
+namespace GoalTracker.UI.Blazor.Models.ViewModels.WorkItems
 {
     public class WorkItemViewModel
     {
@@ -18,7 +18,7 @@ namespace GoalTracker.UI.Blazor.Models.ViewModels
         public DateTime CreatedDate { get; set; }
         //todo
 
-       // [FutureDate(ErrorMessage = "Due date must be in the future")]
+        // [FutureDate(ErrorMessage = "Due date must be in the future")]
         public DateTime? DueDate { get; set; }
 
         public WorkItemStatus Status { get; set; }

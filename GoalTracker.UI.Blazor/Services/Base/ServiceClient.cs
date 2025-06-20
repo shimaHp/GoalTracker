@@ -108,6 +108,15 @@ namespace GoalTracker.UI.Blazor.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CollaboratorDto>> ByroleAsync(string roleName);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CollaboratorDto>> ByroleAsync(string roleName, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WorkItemDto>> WorkitemsAllAsync(int goalId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -954,6 +963,88 @@ namespace GoalTracker.UI.Blazor.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CollaboratorDto>> ByroleAsync(string roleName)
+        {
+            return ByroleAsync(roleName, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CollaboratorDto>> ByroleAsync(string roleName, System.Threading.CancellationToken cancellationToken)
+        {
+            if (roleName == null)
+                throw new System.ArgumentNullException("roleName");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/identity/byrole/{roleName}"
+                    urlBuilder_.Append("api/identity/byrole/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(roleName, System.Globalization.CultureInfo.InvariantCulture)));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<CollaboratorDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WorkItemDto>> WorkitemsAllAsync(int goalId)
         {
             return WorkitemsAllAsync(goalId, System.Threading.CancellationToken.None);
@@ -1321,6 +1412,21 @@ namespace GoalTracker.UI.Blazor.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CollaboratorDto
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("fullName")]
+        public string FullName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("email")]
+        public string Email { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CreateGoalCommand
     {
 
@@ -1337,10 +1443,12 @@ namespace GoalTracker.UI.Blazor.Services.Base
         public System.DateTimeOffset? TargetDate { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("status")]
-        public GoalStatus Status { get; set; }
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public CreateGoalCommandStatus Status { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("priority")]
-        public Priority Priority { get; set; }
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public CreateGoalCommandPriority Priority { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("workItems")]
         public System.Collections.Generic.ICollection<CreateWorkItemDto> WorkItems { get; set; }
@@ -1364,10 +1472,12 @@ namespace GoalTracker.UI.Blazor.Services.Base
         public System.DateTimeOffset? DueDate { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("status")]
-        public WorkItemStatus Status { get; set; }
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public CreateWorkItemDtoStatus Status { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("priority")]
-        public Priority Priority { get; set; }
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public CreateWorkItemDtoPriority Priority { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("assigneeId")]
         public int? AssigneeId { get; set; }
@@ -1394,10 +1504,12 @@ namespace GoalTracker.UI.Blazor.Services.Base
         public System.DateTimeOffset? TargetDate { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("status")]
-        public GoalStatus Status { get; set; }
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public GoalDtoStatus Status { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("priority")]
-        public Priority Priority { get; set; }
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public GoalDtoPriority Priority { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("workItems")]
         public System.Collections.Generic.ICollection<WorkItemDto> WorkItems { get; set; }
@@ -1422,20 +1534,6 @@ namespace GoalTracker.UI.Blazor.Services.Base
 
         [System.Text.Json.Serialization.JsonPropertyName("itemsTo")]
         public int ItemsTo { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum GoalStatus
-    {
-
-        _0 = 0,
-
-        _1 = 1,
-
-        _2 = 2,
-
-        _3 = 3,
 
     }
 
@@ -1473,20 +1571,6 @@ namespace GoalTracker.UI.Blazor.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Priority
-    {
-
-        _0 = 0,
-
-        _1 = 1,
-
-        _2 = 2,
-
-        _3 = 3,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ProblemDetails
     {
 
@@ -1513,16 +1597,6 @@ namespace GoalTracker.UI.Blazor.Services.Base
             get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
             set { _additionalProperties = value; }
         }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum SortDirection
-    {
-
-        _0 = 0,
-
-        _1 = 1,
 
     }
 
@@ -1555,10 +1629,12 @@ namespace GoalTracker.UI.Blazor.Services.Base
         public System.DateTimeOffset? TargetDate { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("status")]
-        public GoalStatus Status { get; set; }
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public UpdateGoalDtoStatus Status { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("priority")]
-        public Priority Priority { get; set; }
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public UpdateGoalDtoPriority Priority { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("newWorkItems")]
         public System.Collections.Generic.ICollection<CreateWorkItemDto> NewWorkItems { get; set; }
@@ -1604,7 +1680,8 @@ namespace GoalTracker.UI.Blazor.Services.Base
         public System.DateTimeOffset? DueDate { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("status")]
-        public WorkItemStatus Status { get; set; }
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public UpdateWorkItemDtoStatus Status { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("assigneeId")]
         public int? AssigneeId { get; set; }
@@ -1667,7 +1744,8 @@ namespace GoalTracker.UI.Blazor.Services.Base
         public System.DateTimeOffset? DueDate { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("status")]
-        public WorkItemStatus Status { get; set; }
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public WorkItemDtoStatus Status { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("goalId")]
         public int GoalId { get; set; }
@@ -1708,18 +1786,203 @@ namespace GoalTracker.UI.Blazor.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum WorkItemStatus
+    public enum SortDirection
     {
 
-        _0 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"Asceding")]
+        Asceding = 0,
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Desceding")]
+        Desceding = 1,
 
-        _2 = 2,
+    }
 
-        _3 = 3,
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateGoalCommandStatus
+    {
 
-        _4 = 4,
+        [System.Runtime.Serialization.EnumMember(Value = @"NotStarted")]
+        NotStarted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InProgress")]
+        InProgress = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Completed")]
+        Completed = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"OnHold")]
+        OnHold = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateGoalCommandPriority
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Critical")]
+        Critical = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateWorkItemDtoStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NotStarted")]
+        NotStarted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Pending")]
+        Pending = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InProgress")]
+        InProgress = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Completed")]
+        Completed = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Cancelled")]
+        Cancelled = 4,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateWorkItemDtoPriority
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Critical")]
+        Critical = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GoalDtoStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NotStarted")]
+        NotStarted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InProgress")]
+        InProgress = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Completed")]
+        Completed = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"OnHold")]
+        OnHold = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GoalDtoPriority
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Critical")]
+        Critical = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum UpdateGoalDtoStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NotStarted")]
+        NotStarted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InProgress")]
+        InProgress = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Completed")]
+        Completed = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"OnHold")]
+        OnHold = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum UpdateGoalDtoPriority
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Low")]
+        Low = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Medium")]
+        Medium = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"High")]
+        High = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Critical")]
+        Critical = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum UpdateWorkItemDtoStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NotStarted")]
+        NotStarted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Pending")]
+        Pending = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InProgress")]
+        InProgress = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Completed")]
+        Completed = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Cancelled")]
+        Cancelled = 4,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum WorkItemDtoStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NotStarted")]
+        NotStarted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Pending")]
+        Pending = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InProgress")]
+        InProgress = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Completed")]
+        Completed = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Cancelled")]
+        Cancelled = 4,
 
     }
 

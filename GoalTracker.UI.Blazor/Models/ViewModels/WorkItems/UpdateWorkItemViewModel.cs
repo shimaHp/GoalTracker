@@ -1,7 +1,7 @@
 ﻿using GoalTracker.UI.Blazor.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace GoalTracker.UI.Blazor.Models.ViewModels
+namespace GoalTracker.UI.Blazor.Models.ViewModels.WorkItems
 {
     public class UpdateWorkItemViewModel
     {

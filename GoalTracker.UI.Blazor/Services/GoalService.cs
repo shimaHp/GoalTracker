@@ -2,6 +2,7 @@
 using Blazored.Toast.Services;
 using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models;
+using GoalTracker.UI.Blazor.Models.Enums;
 using GoalTracker.UI.Blazor.Models.ViewModels;
 using GoalTracker.UI.Blazor.Services.Base;
 using System;
@@ -222,6 +223,69 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
+        public async Task<Response<GoalViewModel>> UpdateGoal(int id, UpdateGoalViewModel goalViewModel)
+        {
+            try
+            {
+                await AddBearerToken();
+
+                // 🧠 Use AutoMapper to map everything (including enums)
+                var updateGoalDto = _mapper.Map<UpdateGoalDto>(goalViewModel);
+                updateGoalDto.Id = id;
+
+                // Manually assign work items only if needed
+                updateGoalDto.NewWorkItems = goalViewModel.GetNewWorkItems()
+                    .Select(wi => _mapper.Map<CreateWorkItemDto>(wi)).ToList();
+
+                updateGoalDto.UpdatedWorkItems = goalViewModel.GetExistingWorkItems()
+                    .Select(wi => _mapper.Map<UpdateWorkItemDto>(wi)).ToList();
+
+                updateGoalDto.DeletedWorkItemIds = goalViewModel.DeletedWorkItemIds;
+
+                var goalDto = await _client.GoalsPUTAsync(id, updateGoalDto);
+
+                _toastService.ShowSuccess("Goal updated successfully!");
+
+                var viewModel = _mapper.Map<GoalViewModel>(goalDto);
+
+                return new Response<GoalViewModel>
+                {
+                    Data = viewModel,
+                    Success = true,
+                    Message = "Goal updated successfully"
+                };
+            }
+            catch (ApiException ex)
+            {
+                var errorMessage = ex.StatusCode switch
+                {
+                    404 => "Goal not found",
+                    403 => "You don't have permission to update this goal",
+                    400 => "Invalid goal data provided",
+                    _ => "An error occurred while updating the goal"
+                };
+
+                _toastService.ShowError(errorMessage);
+
+                return new Response<GoalViewModel>
+                {
+                    Success = false,
+                    Message = errorMessage,
+                };
+            }
+            catch (Exception)
+            {
+                const string errorMessage = "An unexpected error occurred while updating the goal";
+                _toastService.ShowError(errorMessage);
+
+                return new Response<GoalViewModel>
+                {
+                    Success = false,
+                    Message = errorMessage
+                };
+            }
+        }
+
         public async Task<PagedResult<GoalViewModel>> GetGoals(string searchPhrase = "", int pageNumber = 1, int pageSize = 10, string sortBy = "Title", int sortDirection = 0)
         {
             try
@@ -317,84 +381,7 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
-        public async Task<Response<GoalViewModel>> UpdateGoal(int id, UpdateGoalViewModel goalViewModel)
-        {
-            try
-            {
-                var updateGoalDto = new UpdateGoalDto
-                {
-                    Id = id,
-                    Title = goalViewModel.Title,
-                    Description = goalViewModel.Description,
-                    TargetDate = goalViewModel.TargetDate,
-                    //Status = goalViewModel.Status ?? GoalStatus.NotStarted,
-                    //Priority = goalViewModel.Priority ?? Priority.Medium,
-                    NewWorkItems = goalViewModel.GetNewWorkItems().Select(wi => new CreateWorkItemDto
-                    {
-                        Title = wi.Title,
-                        Description = wi.Description,
-                        DueDate = wi.DueDate,
-                        //Status = wi.Status ?? WorkItemStatus.NotStarted
-                    }).ToList(),
-
-                    UpdatedWorkItems = goalViewModel.GetExistingWorkItems().Select(wi => new UpdateWorkItemDto
-                    {
-                        Id = wi.Id,
-                        Title = wi.Title,
-                        Description = wi.Description,
-                        DueDate = wi.DueDate,
-                        //Status = wi.Status ?? WorkItemStatus.NotStarted
-                    }).ToList(),
-
-                    DeletedWorkItemIds = goalViewModel.DeletedWorkItemIds
-                };
-
-                var goalDto = await _client.GoalsPUTAsync(id, updateGoalDto);
-
-                _toastService.ShowSuccess("Goal updated successfully!");
-
-                // 🧠 Map DTO to ViewModel here
-                var viewModel = _mapper.Map<GoalViewModel>(goalDto);
-
-                return new Response<GoalViewModel>
-                {
-                    Data = viewModel,
-                    Success = true,
-                    Message = "Goal updated successfully"
-                };
-            }
-            catch (ApiException ex)
-            {
-                var errorMessage = ex.StatusCode switch
-                {
-                    404 => "Goal not found",
-                    403 => "You don't have permission to update this goal",
-                    400 => "Invalid goal data provided",
-                    _ => "An error occurred while updating the goal"
-                };
-
-                _toastService.ShowError(errorMessage);
-
-                return new Response<GoalViewModel>
-                {
-                    Success = false,
-                    Message = errorMessage,
-                    //ValidationErrors = ex.StatusCode == 400 ? ParseValidationErrors(ex.Response) : null
-                };
-            }
-            catch (Exception)
-            {
-                const string errorMessage = "An unexpected error occurred while updating the goal";
-                _toastService.ShowError(errorMessage);
-
-                return new Response<GoalViewModel>
-                {
-                    Success = false,
-                    Message = errorMessage
-                };
-            }
-        }
-
+      
 
         private List<string> ParseValidationErrors(string response)
         {

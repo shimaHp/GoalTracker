@@ -29,11 +29,13 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(GoalMappingProfile));
 
 // Add your services
 builder.Services.AddScoped<IGoalService, GoalService>();
+builder.Services.AddScoped<IUserService, UserService>();
 //builder.Services.AddScoped<IWorkItemService, WorkItemService>();
 
 // Build and run the app

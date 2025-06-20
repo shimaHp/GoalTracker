@@ -1,4 +1,5 @@
 ﻿using GoalTracker.UI.Blazor.Interfaces.Services;
+using GoalTracker.UI.Blazor.Models.Enums;
 using GoalTracker.UI.Blazor.Models.ViewModels;
 using GoalTracker.UI.Blazor.Services;
 using GoalTracker.UI.Blazor.Services.Base;
@@ -121,7 +122,7 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
                 Title = string.Empty,
                 Description = null,
                 DueDate = null,
-                Status = WorkItemStatus.Todo,
+                Status = WorkItemStatus.NotStarted,
                 IsDeleted = false
             });
 

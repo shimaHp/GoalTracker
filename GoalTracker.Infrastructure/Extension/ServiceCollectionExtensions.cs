@@ -43,6 +43,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IGoalTrackerSeeder, GoalTrackerSeeder>();
         services.AddScoped<IGoalsRepository, GoalRepository>();
         services.AddScoped<IWorkItemRepository, WorkItemRepository>();
+   
 
         services.AddAuthorizationBuilder()
             .AddPolicy(PolicyNames.AtLeast18,

@@ -1,7 +1,8 @@
 ﻿@page "/goals/create"
-@inject Blazored.Toast.Services.IToastService ToastService
 
 
+
+@using GoalTracker.UI.Blazor.Models.Enums
 @using GoalTracker.UI.Blazor.Models.ViewModels
 @using System.ComponentModel.DataAnnotations
 
@@ -101,6 +102,16 @@
                                             @foreach (var status in Enum.GetValues(typeof(WorkItemStatus)))
                                             {
                                                 <option value="@status">@status</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Assignee</label>
+                                        <InputSelect class="form-input" @bind-Value="workItem.AssigneeId">
+                                            <option value="">-- Select Assignee --</option>
+                                            @foreach (var user in users)
+                                            {
+                                                <option value="@user.Id">@user.Email</option>
                                             }
                                         </InputSelect>
                                     </div>

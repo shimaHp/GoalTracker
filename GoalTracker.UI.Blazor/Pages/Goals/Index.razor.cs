@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Components.Web;
 using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models;
 using GoalTracker.UI.Blazor.Models.ViewModels;
-using Blazored.Toast.Services; // Add this
+using Blazored.Toast.Services;
+using GoalTracker.UI.Blazor.Models.Enums; // Add this
 
 namespace GoalTracker.UI.Blazor.Pages.Goals
 {
@@ -11,7 +12,7 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
     {
         [Inject] public IGoalService GoalService { get; set; } = default!;
         [Inject] public NavigationManager Navigation { get; set; } = default!;
-        [Inject] public IToastService ToastService { get; set; } = default!; // Add this
+        [Inject] public IToastService ToastService { get; set; } = default!; 
 
         protected PagedResult<GoalViewModel>? pagedGoals;
         protected bool isLoading = false;
@@ -133,7 +134,7 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
         //todo check the url please
         protected void ViewGoal(int goalId)
         {
-            Navigation.NavigateTo($"/Goal/{goalId}");
+            Navigation.NavigateTo($"/goals/{goalId}");
         }
 
         protected void EditGoal(int goalId)

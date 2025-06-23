@@ -5,5 +5,6 @@ public enum GoalStatus
     NotStarted,
     InProgress,
     Completed,
-    OnHold
+    OnHold,
+    Cancelled 
 }

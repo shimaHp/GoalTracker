@@ -21,7 +21,7 @@ namespace GoalTracker.UI.Blazor.Models.ViewModels
         public DateTime? TargetDate { get; set; }
 
         public GoalStatus? Status { get; set; }
-        public Priority? Priority { get; set; }
+       public Priority? Priority { get; set; }
 
         public List<CreateWorkItemViewModel> WorkItems { get; set; } = new();
       

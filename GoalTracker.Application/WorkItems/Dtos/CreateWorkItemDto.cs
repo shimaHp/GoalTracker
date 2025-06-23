@@ -23,7 +23,7 @@ namespace GoalTracker.Application.WorkItems.Dtos
 
         public Priority Priority { get; set; } = Priority.Medium;
 
-        public int? AssigneeId { get; set; }
+        public string? AssigneeId { get; set; }
     }
 
 }

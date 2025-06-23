@@ -1,12 +1,10 @@
 ﻿@page "/goals/create"
 
-
-
 @using GoalTracker.UI.Blazor.Models.Enums
 @using GoalTracker.UI.Blazor.Models.ViewModels
 @using System.ComponentModel.DataAnnotations
 
-<EditForm Model="goal" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="@goal" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary class="validation-summary" />
     <div class="goal-create-container">
@@ -58,6 +56,15 @@
                 <ValidationMessage For="() => goal.Description" />
             </div>
             <!-- Work Items -->
+            @if (customErrors?.Any() == true)
+            {
+                <ul class="validation-summary">
+                    @foreach (var error in customErrors)
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            }
             <div class="work-items-section">
                 <div class="section-header">
                     <h2>Work Items</h2>
@@ -84,8 +91,8 @@
                                 <div class="work-item-fields">
                                     <div class="form-group">
                                         <label>Title <span class="required">*</span></label>
-                                        <InputText class="form-input" @bind-Value="workItem.Title" />
-                                        <ValidationMessage For="() => workItem.Title" />
+                                        <InputText class="form-input" @bind-Value="workItem.Title" @oninput="@(() => NotifyFieldChanged())" />
+                                        <ValidationMessage For="@(() => goal.WorkItems[index].Title)" />
                                     </div>
                                     <div class="form-group">
                                         <label>Description</label>
@@ -93,8 +100,9 @@
                                         <ValidationMessage For="() => workItem.Description" />
                                     </div>
                                     <div class="form-group">
-                                        <label>Due Date</label>
-                                        <InputDate class="form-input" @bind-Value="workItem.DueDate" />
+                                        <label>Due Date <span class="required">*</span></label>
+                                        <InputDate class="form-input" @bind-Value="workItem.DueDate" @oninput="@(() => NotifyFieldChanged())" />
+                                        <ValidationMessage For="@(() => goal.WorkItems[index].DueDate)" />
                                     </div>
                                     <div class="form-group">
                                         <label>Status</label>

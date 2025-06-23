@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Blazored.Toast.Services;
+using GoalTracker.UI.Blazor.Services;
+using System.ComponentModel.DataAnnotations;
 using static GoalTracker.UI.Blazor.Pages.Goals.CreateGoal;
 
 namespace GoalTracker.UI.Blazor.Models.ViewModels
@@ -28,3 +30,4 @@ namespace GoalTracker.UI.Blazor.Models.ViewModels
     }
 
 }
+

@@ -15,7 +15,6 @@ namespace GoalTracker.UI.Blazor.Models.ViewModels
         [StringLength(500, ErrorMessage = "Description cannot be longer than 500 characters")]
         public string? Description { get; set; }
         [Required(ErrorMessage = "Work item DueDate is required")]
-
         [FutureDateIfPresent(ErrorMessage = "Target date cannot be in the past.")]
         public DateTime? DueDate { get; set; }
 

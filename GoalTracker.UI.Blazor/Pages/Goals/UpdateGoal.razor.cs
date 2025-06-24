@@ -91,7 +91,7 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
                     // Optionally cache the updated goal if you want
                      GoalService.CachedGoal = response.Data;
 
-                    Navigation.NavigateTo($"/goals/details/{response.Data.Id}");
+                    Navigation.NavigateTo($"/goals/{response.Data.Id}");
                 }
                 else
                 {

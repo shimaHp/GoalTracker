@@ -21,7 +21,7 @@ namespace GoalTracker.UI.Blazor.Models.ViewModels.WorkItems
         public string? AssigneeEmail { get; set; }
 
         public string? LastUpdatedById { get; set; }
-        public string? LastUpdatedByEmail { get; set; }
+        public string? LastUpdatedByName { get; set; }
         public DateTimeOffset? LastUpdatedDate { get; set; }
     }
 }

@@ -60,10 +60,9 @@
                                         <span class="badge @workItem.Status.ToString().ToLower()">@workItem.Status</span>
                                     </td>
                                     <td>@(workItem.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
-                                    <td>@(!string.IsNullOrEmpty(workItem.CreatorEmail) ? workItem.CreatorEmail : workItem.CreatorId)</td>
-                                    <td>@(!string.IsNullOrEmpty(workItem.AssigneeEmail) ? workItem.AssigneeEmail : workItem.AssigneeId)</td>
-                                    <td>@(string.IsNullOrEmpty(workItem.AssigneeEmail) ? "-" : workItem.AssigneeEmail)</td>
-                                    <td>@(string.IsNullOrEmpty(workItem.LastUpdatedByEmail) ? "-" : workItem.LastUpdatedByEmail)</td>
+                                    <td>@(string.IsNullOrEmpty(workItem.CreatorEmail) ? "-" : workItem.CreatorEmail)</td>
+                                     <td>@(string.IsNullOrEmpty(workItem.AssigneeEmail) ? "-" : workItem.AssigneeEmail)</td>
+                                    <td>@(string.IsNullOrEmpty(workItem.LastUpdatedByName) ? "-" : workItem.LastUpdatedByName)</td>
                                     <td>@(workItem.LastUpdatedDate?.ToString("dd MMM yyyy") ?? "-")</td>
                                 </tr>
                             }

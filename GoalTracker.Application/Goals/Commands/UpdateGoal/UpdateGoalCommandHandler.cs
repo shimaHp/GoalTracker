@@ -149,9 +149,9 @@ public class UpdateGoalCommandHandler(
             // Use AutoMapper for updates
             mapper.Map(updateWorkItemDto, existingItem);
 
-            // Set audit fields if your WorkItem has them
-            // existingItem.LastUpdatedDate = now;
-            // existingItem.LastUpdatedById = currentUserId;
+            // Set audit fields
+            existingItem.LastUpdatedDate = now;
+            existingItem.LastUpdatedById = currentUserId;
 
             logger.LogDebug("Updated work item {WorkItemId}: '{OriginalTitle}' -> '{NewTitle}'",
                 existingItem.Id, originalTitle, existingItem.Title);

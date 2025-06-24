@@ -1,6 +1,6 @@
 ﻿.badge.notstarted {
-    background-color: #6c757d; 
-
+    /*background-color: #6f42c1;*/
+    background-color: #ffc107;
 }
 .badge.open {
     background-color: #17a2b8;

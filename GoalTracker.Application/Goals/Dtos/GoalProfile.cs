@@ -36,11 +36,23 @@ public class GoalProfile : Profile
         //.ForMember(dest => dest.LastUpdatedDate, opt => opt.Ignore())
         //.ForMember(dest => dest.LastUpdatedById, opt => opt.Ignore());
 
+//        CreateMap<WorkItem, WorkItemDto>()
+//.ForMember(dest => dest.CreatorEmail, opt => opt.MapFrom(src => src.Creator.Email))
+//.ForMember(dest => dest.AssigneeEmail, opt => opt.MapFrom(src => src.Assignee != null ? src.Assignee.Email : null))
+//.ForMember(dest => dest.LastUpdatedByName, opt => opt.MapFrom(src => src.LastUpdatedBy != null ? src.LastUpdatedBy.NormalizedEmail : null));
+
         CreateMap<WorkItem, WorkItemDto>()
-.ForMember(dest => dest.CreatorEmail, opt => opt.MapFrom(src => src.Creator.Email))
-.ForMember(dest => dest.AssigneeEmail, opt => opt.MapFrom(src => src.Assignee != null ? src.Assignee.Email : null))
-.ForMember(dest => dest.LastUpdatedByName, opt => opt.MapFrom(src => src.LastUpdatedBy != null ? src.LastUpdatedBy.NormalizedEmail : null));
-      
+    .ForMember(dest => dest.CreatorEmail, opt => opt.MapFrom(src => src.Creator.Email))
+    .ForMember(dest => dest.AssigneeEmail, opt => opt.MapFrom(src => src.Assignee.Email))
+    .ForMember(dest => dest.LastUpdatedByName, opt => opt.MapFrom(src => src.LastUpdatedBy.Email))
+    .ForMember(dest => dest.CreatorId, opt => opt.MapFrom(src => src.Creator.Id)) 
+    .ForMember(dest => dest.AssigneeId, opt => opt.MapFrom(src => src.Assignee.Id)) 
+    .ForMember(dest => dest.LastUpdatedById, opt => opt.MapFrom(src => src.LastUpdatedBy.Id));  
+
+
+
+
+
 
         CreateMap<Goal, GoalDto>()
     .ForMember(dest => dest.Status,

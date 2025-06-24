@@ -23,5 +23,6 @@ namespace GoalTracker.UI.Blazor.Models.ViewModels.WorkItems
 
         // Helper property to identify new items
         public bool IsNew => Id == 0;
+        public string? AssigneeId { get; set; }
     }
 }

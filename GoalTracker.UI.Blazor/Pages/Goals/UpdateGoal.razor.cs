@@ -1,7 +1,9 @@
-﻿using GoalTracker.UI.Blazor.Interfaces.Services;
+﻿using Blazored.Toast.Services;
+using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models.Enums;
 using GoalTracker.UI.Blazor.Models.ViewModels;
 using GoalTracker.UI.Blazor.Models.ViewModels.Goals;
+using GoalTracker.UI.Blazor.Models.ViewModels.UsersViewModel;
 using GoalTracker.UI.Blazor.Models.ViewModels.WorkItems;
 using GoalTracker.UI.Blazor.Services;
 using GoalTracker.UI.Blazor.Services.Base;
@@ -14,15 +16,20 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
     {
         [Inject] public IGoalService GoalService { get; set; } = default!;
         [Inject] public NavigationManager Navigation { get; set; } = default!;
+        [Inject] private IUserService UserService { get; set; }
         [Parameter] public int Id { get; set; }
+        [Inject] private IToastService ToastService { get; set; }
 
         private UpdateGoalViewModel? Model { get; set; }
         private bool IsLoading { get; set; } = true;
         private bool IsSubmitting { get; set; } = false;
         private string? ErrorMessage { get; set; }
+        private List<CollaboratorViewModel> users = new();
 
         protected override async Task OnInitializedAsync()
         {
+            await LoadUsers();
+
             await LoadGoal();
         }
 
@@ -54,7 +61,9 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
                             Description = wi.Description,
                             DueDate = wi.DueDate?.DateTime, // Already DateTime?
                             Status = wi.Status,
-                            IsDeleted = false
+                            IsDeleted = false,
+                            AssigneeId=wi.AssigneeId
+
                         }).ToList() ?? new List<UpdateWorkItemViewModel>()
                     };
                 }
@@ -72,6 +81,19 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
             finally
             {
                 IsLoading = false;
+            }
+        }
+        private async Task LoadUsers()
+        {
+            try
+            {
+                users = await UserService.GetCollaboratorsAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading users: {ex.Message}");
+                ToastService.ShowError("Failed to load users for assignment");
+                users = new List<CollaboratorViewModel>();
             }
         }
 

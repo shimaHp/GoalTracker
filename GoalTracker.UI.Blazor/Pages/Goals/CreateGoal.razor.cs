@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using GoalTracker.UI.Blazor.Models.ViewModels;
 using GoalTracker.UI.Blazor.Models.Enums;
 using GoalTracker.UI.Blazor.Interfaces.Services;
 using System.ComponentModel.DataAnnotations;
 using Blazored.Toast.Services;
 using System.Linq;
 using GoalTracker.UI.Blazor.Models.ViewModels.UsersViewModel;
+using GoalTracker.UI.Blazor.Models.ViewModels.Goals;
+using GoalTracker.UI.Blazor.Models.ViewModels.WorkItems;
 
 namespace GoalTracker.UI.Blazor.Pages.Goals
 {

@@ -1,0 +1,28 @@
+﻿.badge.notstarted {
+    background-color: #6c757d; 
+
+}
+.badge.open {
+    background-color: #17a2b8;
+}
+/* info */
+.badge.completed {
+    background-color: #28a745;
+}
+/* success */
+.badge.inprogress {
+    background-color: #ffc107;
+}
+/* warning */
+.badge.high {
+    background-color: #dc3545;
+}
+/* danger */
+.badge.medium {
+    background-color: #fd7e14;
+}
+/* orange */
+.badge.low {
+    background-color: #6c757d;
+}
+/* secondary */

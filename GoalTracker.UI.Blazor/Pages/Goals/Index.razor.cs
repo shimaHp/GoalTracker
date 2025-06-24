@@ -4,7 +4,8 @@ using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models;
 using GoalTracker.UI.Blazor.Models.ViewModels;
 using Blazored.Toast.Services;
-using GoalTracker.UI.Blazor.Models.Enums; // Add this
+using GoalTracker.UI.Blazor.Models.Enums;
+using GoalTracker.UI.Blazor.Models.ViewModels.Goals; // Add this
 
 namespace GoalTracker.UI.Blazor.Pages.Goals
 {

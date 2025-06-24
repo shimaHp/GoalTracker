@@ -11,34 +11,35 @@
         <div class="goal-header">
             <h1>@Goal.Title</h1>
             <div class="goal-metadata">
-                <span class="status badge">@Goal.Status</span>
-                <span class="priority badge">@Goal.Priority Priority</span>
+                <span class="status badge @Goal.Status.ToString().ToLower()">@Goal.Status</span>
+                <span class="priority badge @Goal.Priority.ToString().ToLower()">@Goal.Priority Priority</span>
             </div>
         </div>
 
         <div class="goal-details">
-            @if (!string.IsNullOrEmpty(Goal.Description))
+            @if (!string.IsNullOrWhiteSpace(Goal.Description))
             {
                 <p class="description">@Goal.Description</p>
             }
 
             <div class="goal-dates">
-                <div class="created-date">
+                <div>
                     <strong>Created:</strong> @Goal.CreatedDate.ToString("dd MMM yyyy")
                 </div>
                 @if (Goal.TargetDate.HasValue)
                 {
-                    <div class="target-date">
+                    <div>
                         <strong>Target Date:</strong> @Goal.TargetDate.Value.ToString("dd MMM yyyy")
                     </div>
                 }
             </div>
 
             <div class="work-items">
-                <h2>Work Items</h2>
+          
+                <h2>Work Items (@(Goal.WorkItems?.Count ?? 0))</h2>
                 @if (Goal.WorkItems != null && Goal.WorkItems.Any())
                 {
-                    <table class="table">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>Title</th>
@@ -46,8 +47,8 @@
                                 <th>Due Date</th>
                                 <th>Creator</th>
                                 <th>Assignee</th>
-                                <th>astUpdatedByName</th>
-                                <th>astUpdatedByDate</th>
+                                <th>Last Updated By</th>
+                                <th>Last Updated Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -55,13 +56,15 @@
                             {
                                 <tr>
                                     <td>@workItem.Title</td>
-                                    <td>@workItem.Status</td>
-                                    <td>@(workItem.DueDate?.ToString("yyyy-MM-dd") ?? "-")</td>
-                                    <td>@workItem.CreatorId</td>
-                                    <td>@(string.IsNullOrEmpty(workItem.AssigneeName) ? "-" : workItem.AssigneeName)</td>
-                                    <td>@(string.IsNullOrEmpty(workItem.LastUpdatedByName) ? "-" : workItem.LastUpdatedByName)</td>
-                                    <td>@(workItem.LastUpdatedDate?.ToString("yyyy-MM-dd") ?? "-")</td>
-
+                                    <td>
+                                        <span class="badge @workItem.Status.ToString().ToLower()">@workItem.Status</span>
+                                    </td>
+                                    <td>@(workItem.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
+                                    <td>@(!string.IsNullOrEmpty(workItem.CreatorEmail) ? workItem.CreatorEmail : workItem.CreatorId)</td>
+                                    <td>@(!string.IsNullOrEmpty(workItem.AssigneeEmail) ? workItem.AssigneeEmail : workItem.AssigneeId)</td>
+                                    <td>@(string.IsNullOrEmpty(workItem.AssigneeEmail) ? "-" : workItem.AssigneeEmail)</td>
+                                    <td>@(string.IsNullOrEmpty(workItem.LastUpdatedByEmail) ? "-" : workItem.LastUpdatedByEmail)</td>
+                                    <td>@(workItem.LastUpdatedDate?.ToString("dd MMM yyyy") ?? "-")</td>
                                 </tr>
                             }
                         </tbody>
@@ -70,22 +73,24 @@
                 else
                 {
                     <p>No work items added yet.</p>
+                    
+
                 }
             </div>
         </div>
 
-        <div class="actions">
-            <button class="btn btn-primary" @onclick="EditGoal">Edit Goal</button>
+        <div class="actions mt-3">
+            <button class="btn btn-primary me-2" @onclick="EditGoal">Edit Goal</button>
             <button class="btn btn-secondary" @onclick="GoBack">Back to Goals</button>
         </div>
 
         @if (!string.IsNullOrEmpty(Message))
         {
-            <div class="alert alert-danger">@Message</div>
+            <div class="alert alert-danger mt-3">@Message</div>
         }
     }
     else
     {
-        <div class="error">Goal not found</div>
+        <div class="error alert alert-warning">Goal not found</div>
     }
 </div>

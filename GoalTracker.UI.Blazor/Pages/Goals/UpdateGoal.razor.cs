@@ -1,6 +1,8 @@
 ﻿using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models.Enums;
 using GoalTracker.UI.Blazor.Models.ViewModels;
+using GoalTracker.UI.Blazor.Models.ViewModels.Goals;
+using GoalTracker.UI.Blazor.Models.ViewModels.WorkItems;
 using GoalTracker.UI.Blazor.Services;
 using GoalTracker.UI.Blazor.Services.Base;
 using Microsoft.AspNetCore.Components;
@@ -50,7 +52,7 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
                             Id = wi.Id,
                             Title = wi.Title,
                             Description = wi.Description,
-                            DueDate = wi.DueDate, // Already DateTime?
+                            DueDate = wi.DueDate?.DateTime, // Already DateTime?
                             Status = wi.Status,
                             IsDeleted = false
                         }).ToList() ?? new List<UpdateWorkItemViewModel>()

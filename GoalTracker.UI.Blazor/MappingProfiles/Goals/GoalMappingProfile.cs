@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using GoalTracker.UI.Blazor.Models.Enums;
 using GoalTracker.UI.Blazor.Models.ViewModels;
+using GoalTracker.UI.Blazor.Models.ViewModels.Goals;
 using GoalTracker.UI.Blazor.Models.ViewModels.UsersViewModel;
+using GoalTracker.UI.Blazor.Models.ViewModels.WorkItems;
 using GoalTracker.UI.Blazor.Services.Base;
 
 namespace GoalTracker.UI.Blazor.MappingProfiles.Goals;
@@ -36,6 +38,14 @@ public class GoalMappingProfile : Profile
             .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => ConvertToDateTime(src.CreatedDate)))
             .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => ConvertToNullableDateTime(src.DueDate)))
             .ForMember(dest => dest.LastUpdatedDate, opt => opt.MapFrom(src => ConvertToNullableDateTime(src.LastUpdatedDate)));
+
+        CreateMap<WorkItemDto, DetailWorkItemViewModel>()
+    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => ConvertToDateTime(src.CreatedDate)))
+    .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => ConvertToNullableDateTime(src.DueDate)))
+    .ForMember(dest => dest.LastUpdatedDate, opt => opt.MapFrom(src => ConvertToNullableDateTime(src.LastUpdatedDate)))
+    .ForMember(dest => dest.CreatorEmail, opt => opt.MapFrom(src => src.CreatorEmail))
+    .ForMember(dest => dest.AssigneeEmail, opt => opt.MapFrom(src => src.AssigneeEmail));
+    
     }
 
     #endregion
@@ -64,6 +74,12 @@ public class GoalMappingProfile : Profile
             .ForMember(dest => dest.TargetDate, opt => opt.MapFrom(src => ConvertToNullableDateTime(src.TargetDate)))
             .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => ConvertToDateTime(src.CreatedDate)))
             .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
+
+        CreateMap<GoalDto, DetailGoalViewModel>()
+    .ForMember(dest => dest.UserId, opt => opt.Ignore()) // Optional: set manually from auth context
+    .ForMember(dest => dest.TargetDate, opt => opt.MapFrom(src => ConvertToNullableDateTime(src.TargetDate)))
+    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => ConvertToDateTime(src.CreatedDate)))
+    .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
     }
 
     #endregion

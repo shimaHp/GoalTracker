@@ -4,6 +4,7 @@ using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models;
 using GoalTracker.UI.Blazor.Models.Enums;
 using GoalTracker.UI.Blazor.Models.ViewModels;
+using GoalTracker.UI.Blazor.Models.ViewModels.Goals;
 using GoalTracker.UI.Blazor.Services.Base;
 using System;
 using System.Collections.Generic;
@@ -25,9 +26,7 @@ namespace GoalTracker.UI.Blazor.Services
             _toastService = toastService;
         }
       
-       
-
-        public async Task<List<GoalViewModel>> GetGoals()
+  public async Task<List<GoalViewModel>> GetGoals()
         {
             try
             {
@@ -105,74 +104,7 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
-        public GoalViewModel CachedGoal { get; set; }
-
-        public async Task<GoalViewModel> GetGoalDetail(int id)
-        {
-            // Check if cached goal matches the requested ID
-            if (CachedGoal != null && CachedGoal.Id == id)
-            {
-                var cached = CachedGoal;
-                CachedGoal = null; // Clear after using once
-                return cached;
-            }
-
-            try
-            {
-                await AddBearerToken();
-                var httpClient = _client.HttpClient;
-
-                Console.WriteLine($"Making request to: api/Goals/{id}");
-
-                var response = await httpClient.GetAsync($"api/Goals/{id}");
-
-                Console.WriteLine($"Response Status: {response.StatusCode}");
-                Console.WriteLine($"Response Headers: {string.Join(", ", response.Headers.Select(h => $"{h.Key}: {string.Join(", ", h.Value)}"))}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"API Response for Goal Detail: {content}");
-
-                    var goal = System.Text.Json.JsonSerializer.Deserialize<GoalDto>(content);
-
-                    if (goal == null)
-                    {
-                        Console.WriteLine("Deserialization resulted in null goal");
-                        return null;
-                    }
-
-                    Console.WriteLine($"Deserialized Goal: Id={goal.Id}, Title={goal.Title}");
-
-                    try
-                    {
-                        var viewModel = _mapper.Map<GoalViewModel>(goal);
-                        return viewModel;
-                    }
-                    catch (Exception mapEx)
-                    {
-                        Console.WriteLine($"Mapping exception details: {mapEx}");
-                        return null;
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"API returned non-success status code: {response.StatusCode}");
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error fetching goal detail: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
-                return null;
-            }
-        }
-
-
-
-
-        public async Task<Response<int>> DeleteGoal(int goalId)
+  public async Task<Response<int>> DeleteGoal(int goalId)
         {
             try
             {
@@ -184,14 +116,7 @@ namespace GoalTracker.UI.Blazor.Services
                 return ConvertApiExceptions<int>(ex);
             }
         }
-
-
-
-
-
-
-
-        public async Task<Response<GoalDto>> CreateGoal(CreateGoalViewModel goal)
+ public async Task<Response<GoalDto>> CreateGoal(CreateGoalViewModel goal)
         {
             try
             {
@@ -223,7 +148,7 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
-        public async Task<Response<GoalViewModel>> UpdateGoal(int id, UpdateGoalViewModel goalViewModel)
+ public async Task<Response<GoalViewModel>> UpdateGoal(int id, UpdateGoalViewModel goalViewModel)
         {
             try
             {
@@ -286,7 +211,7 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
-        public async Task<PagedResult<GoalViewModel>> GetGoals(string searchPhrase = "", int pageNumber = 1, int pageSize = 10, string sortBy = "Title", int sortDirection = 0)
+ public async Task<PagedResult<GoalViewModel>> GetGoals(string searchPhrase = "", int pageNumber = 1, int pageSize = 10, string sortBy = "Title", int sortDirection = 0)
         {
             try
             {
@@ -381,9 +306,7 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
-      
-
-        private List<string> ParseValidationErrors(string response)
+ private List<string> ParseValidationErrors(string response)
         {
             // Simple validation error parsing - you might want to enhance this
             // based on your API's error response format
@@ -398,6 +321,71 @@ namespace GoalTracker.UI.Blazor.Services
             }
         }
 
-       
+        public GoalViewModel CachedGoal { get; set; }
+        public DetailGoalViewModel CachedDetailGoal { get; set; }
+        public async Task<DetailGoalViewModel> GetGoalDetail(int id)
+
+        {
+            // Check if cached goal matches the requested ID
+            if (CachedDetailGoal != null && CachedDetailGoal.Id == id)
+            {
+                var cached = CachedDetailGoal;
+                CachedGoal = null; // Clear after using once
+                return cached;
+            }
+
+            try
+            {
+                await AddBearerToken();
+                var httpClient = _client.HttpClient;
+
+                Console.WriteLine($"Making request to: api/Goals/{id}");
+
+                var response = await httpClient.GetAsync($"api/Goals/{id}");
+
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+                Console.WriteLine($"Response Headers: {string.Join(", ", response.Headers.Select(h => $"{h.Key}: {string.Join(", ", h.Value)}"))}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"API Response for Goal Detail: {content}");
+
+                    var goal = System.Text.Json.JsonSerializer.Deserialize<GoalDto>(content);
+
+                    if (goal == null)
+                    {
+                        Console.WriteLine("Deserialization resulted in null goal");
+                        return null;
+                    }
+
+                    Console.WriteLine($"Deserialized Goal: Id={goal.Id}, Title={goal.Title}");
+
+                    try
+                    {
+                      //  var viewModel = _mapper.Map<DetailGoalViewModel>(goal);
+                        var viewModel = _mapper.Map<DetailGoalViewModel>(goal);
+                       
+                        return viewModel;
+                    }
+                    catch (Exception mapEx)
+                    {
+                        Console.WriteLine($"Mapping exception details: {mapEx}");
+                        return null;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"API returned non-success status code: {response.StatusCode}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching goal detail: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                return null;
+            }
+        }
     }
 }

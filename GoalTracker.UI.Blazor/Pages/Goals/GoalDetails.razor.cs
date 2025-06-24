@@ -1,5 +1,6 @@
 ﻿using GoalTracker.UI.Blazor.Interfaces.Services;
 using GoalTracker.UI.Blazor.Models.ViewModels;
+using GoalTracker.UI.Blazor.Models.ViewModels.Goals;
 using Microsoft.AspNetCore.Components;
 
 namespace GoalTracker.UI.Blazor.Pages.Goals
@@ -15,7 +16,8 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
         [Parameter]
         public int Id { get; set; }
 
-        public GoalViewModel Goal { get; private set; }
+        //public GoalViewModel Goal { get; private set; }
+        public DetailGoalViewModel Goal { get; private set; }
         public string Message { get; set; } = string.Empty;
         public bool IsLoading { get; set; } = true;
 
@@ -42,7 +44,7 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
 
         protected void EditGoal()
         {
-            NavigationManager.NavigateTo($"/Goal/update/{Id}");
+            NavigationManager.NavigateTo($"/Goals/update/{Id}");
         }
 
         protected void GoBack()

@@ -1,4 +1,5 @@
 ﻿using GoalTracker.UI.Blazor.Models.Enums;
+using GoalTracker.UI.Blazor.Models.ViewModels.WorkItems;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,5 +23,4 @@ namespace GoalTracker.UI.Blazor.Models.ViewModels
         public Priority Priority { get; set; }
         public ICollection<WorkItemViewModel> WorkItems { get; set; } = new List<WorkItemViewModel>();
         public string UserId { get; set; } = string.Empty;
-    }
-}
+    }}

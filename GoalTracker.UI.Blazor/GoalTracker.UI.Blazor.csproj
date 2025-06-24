@@ -15,6 +15,10 @@
 
   <ItemGroup>
     <Compile Remove="Models\Enums.cs" />
+    <Compile Remove="Models\ViewModels\GoalViewModel.cs" />
+    <Compile Remove="Models\ViewModels\UpdateGoalViewModel.cs" />
+    <Compile Remove="Models\ViewModels\UpdateWorkItemViewModel.cs" />
+    <Compile Remove="Models\ViewModels\WorkItemViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1684,7 +1684,7 @@ namespace GoalTracker.UI.Blazor.Services.Base
         public UpdateWorkItemDtoStatus Status { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("assigneeId")]
-        public int? AssigneeId { get; set; }
+        public string AssigneeId { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("rowVersion")]
         public byte[] RowVersion { get; set; }

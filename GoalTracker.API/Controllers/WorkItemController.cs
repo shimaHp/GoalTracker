@@ -26,10 +26,9 @@ public class WorkItemController(IMediator mediator) : ControllerBase
     //  //  command.GoalId = goalId;
     //  var workItemId =  await mediator.Send(command);
     //    return   CreatedAtAction(nameof(GetByIdForGoal), new { goalId,workItemId },null);
-
     //}
-
     // GET: api/goals/{goalId}/workitems
+
     [HttpGet]
     [Authorize(Policy = ResourcePolicies.WorkItem.Read)]
     public async Task<ActionResult<IEnumerable<WorkItemDto>>> GetAllForGoal([FromRoute] int goalId)

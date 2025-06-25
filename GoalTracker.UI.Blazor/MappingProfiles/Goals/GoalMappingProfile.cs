@@ -80,6 +80,12 @@ public class GoalMappingProfile : Profile
     .ForMember(dest => dest.TargetDate, opt => opt.MapFrom(src => ConvertToNullableDateTime(src.TargetDate)))
     .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => ConvertToDateTime(src.CreatedDate)))
     .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
+
+        CreateMap<UpdateWorkItemViewModel, CreateWorkItemDto>()
+      .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => ConvertToDateTimeOffset(src.DueDate)))
+      .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapWorkItemStatus(src.Status)));
+     
+
     }
 
     #endregion

@@ -8,6 +8,7 @@ using GoalTracker.Application.Users;
 using GoalTracker.Application.WorkItems.Dtos;
 using GoalTracker.Domain;
 using GoalTracker.Domain.Entities;
+using GoalTracker.Domain.Enums;
 using GoalTracker.Domain.Exceptions;
 using GoalTracker.Domain.Repository;
 using MediatR;
@@ -52,6 +53,7 @@ public class UpdateGoalCommandHandler(
             if (HasWorkItemOperations(request.UpdateGoalDto))
             {
                 await UpdateWorkItemsAsync(goal, request.UpdateGoalDto, cancellationToken);
+                UpdateGoalStatusBasedOnWorkItems(goal);
             }
 
             await goalsRepository.UpdateAsync(goal);  // Fixed the typo: UpdateAsync instead of UpdateAsynce
@@ -157,7 +159,15 @@ public class UpdateGoalCommandHandler(
                 existingItem.Id, originalTitle, existingItem.Title);
         }
     }
-
+    private void UpdateGoalStatusBasedOnWorkItems(Goal goal)
+    {
+        if (goal.WorkItems.Any() &&
+            goal.WorkItems.All(w => w.Status == WorkItemStatus.Completed))
+        {
+            goal.Status = GoalStatus.Completed;
+            logger.LogInformation("All work items completed. Auto-marked Goal {GoalId} as Completed.", goal.Id);
+        }
+    }
     private void HandleWorkItemCreations(Goal goal, List<CreateWorkItemDto> newWorkItems,
         string currentUserId, DateTime now)
     {

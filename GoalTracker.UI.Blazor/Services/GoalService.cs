@@ -154,7 +154,7 @@ namespace GoalTracker.UI.Blazor.Services
             {
                 await AddBearerToken();
 
-                // 🧠 Use AutoMapper to map everything (including enums)
+                //  AutoMapper to map everything (including enums)
                 var updateGoalDto = _mapper.Map<UpdateGoalDto>(goalViewModel);
                 updateGoalDto.Id = id;
 
@@ -198,10 +198,11 @@ namespace GoalTracker.UI.Blazor.Services
                     Message = errorMessage,
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 const string errorMessage = "An unexpected error occurred while updating the goal";
                 _toastService.ShowError(errorMessage);
+                Console.WriteLine(ex);
 
                 return new Response<GoalViewModel>
                 {

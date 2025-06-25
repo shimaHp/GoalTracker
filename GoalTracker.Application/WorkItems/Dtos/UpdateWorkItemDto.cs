@@ -26,7 +26,7 @@ namespace GoalTracker.Application.WorkItems.Dtos
 
 
 
-        public int? AssigneeId { get; set; }
+        public string? AssigneeId { get; set; }
 
         // Optional: Version for optimistic concurrency control
         public byte[]? RowVersion { get; set; }

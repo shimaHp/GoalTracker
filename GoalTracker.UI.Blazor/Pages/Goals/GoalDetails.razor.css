@@ -26,3 +26,7 @@
     background-color: #6c757d;
 }
 /* secondary */
+.badge.Cancelled {
+    background-color: #6c75ff;
+}
+

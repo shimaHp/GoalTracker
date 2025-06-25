@@ -21,6 +21,8 @@ namespace GoalTracker.UI.Blazor.Models.ViewModels
 
         public Priority? Priority { get; set; }
 
+        public string? MyProperty { get; set; }
+
         // Work Items - combining existing, new, and tracking deletions
         public List<UpdateWorkItemViewModel> WorkItems { get; set; } = new();
 

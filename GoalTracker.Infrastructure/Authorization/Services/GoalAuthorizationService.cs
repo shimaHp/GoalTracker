@@ -9,7 +9,7 @@ namespace GoalTracker.Infrastructure.Authorization.Services;
 
 public class GoalAuthorizationService(ILogger<GoalAuthorizationService> logger, IUserContext userContext) : IGoalAuthorizationService
 {
-    //todo fix it later
+ 
     public bool Authorize(Goal goal, ResourceOperation resourceOperation)
     {
         var user = userContext.GetCurrentUser();
@@ -49,6 +49,13 @@ public class GoalAuthorizationService(ILogger<GoalAuthorizationService> logger, 
                 "Authorization failed: Viewer attempted {Operation}",
                 resourceOperation);
             return false;
+        }
+        // Allow Collaborators to create or update goals
+        if (user.IsInRole(UserRoles.Collaborator) &&
+            (resourceOperation == ResourceOperation.Create || resourceOperation == ResourceOperation.Update))
+        {
+            logger.LogInformation("Collaborator - authorized to create or update goals");
+            return true;
         }
 
         logger.LogWarning(

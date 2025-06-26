@@ -16,9 +16,7 @@ namespace GoalTracker.UI.Blazor.Models.ViewModels.WorkItems
         public string? Description { get; set; }
 
         public DateTime CreatedDate { get; set; }
-        //todo
-
-        // [FutureDate(ErrorMessage = "Due date must be in the future")]
+       
         public DateTime? DueDate { get; set; }
 
         public WorkItemStatus Status { get; set; }

@@ -132,7 +132,7 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
             };
         }
 
-        //todo check the url please
+   
         protected void ViewGoal(int goalId)
         {
             Navigation.NavigateTo($"/goals/{goalId}");

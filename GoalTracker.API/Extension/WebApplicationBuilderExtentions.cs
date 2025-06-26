@@ -81,7 +81,7 @@ public static class WebApplicationBuilderExtentions
             {
                 options.AddPolicy("AllowClient", policy =>
                 {
-                    policy.WithOrigins("https://localhost:7005") // Change to HTTPS
+                    policy.WithOrigins("https://localhost:7005") 
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();

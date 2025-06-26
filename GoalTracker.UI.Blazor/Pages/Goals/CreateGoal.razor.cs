@@ -81,7 +81,8 @@ namespace GoalTracker.UI.Blazor.Pages.Goals
 
         private void NotifyFieldChanged()
         {
-            // This method will be called when work item fields change
+            // Handle changes in work item fields
+
             editContext?.NotifyValidationStateChanged();
         }
 

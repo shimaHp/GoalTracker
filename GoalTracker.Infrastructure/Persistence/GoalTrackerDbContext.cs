@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GoalTracker.Infrastructure.Persistence;
 
-internal class GoalTrackerDbContext(DbContextOptions<GoalTrackerDbContext> options) : IdentityDbContext<User>(options)
+public class GoalTrackerDbContext(DbContextOptions<GoalTrackerDbContext> options) : IdentityDbContext<User>(options)
 {
     
 
-        internal DbSet<Goal> Goals { get; set; }
+        public DbSet<Goal> Goals { get; set; }
     internal DbSet<WorkItem> WorkItems { get; set; }
 
 

@@ -17,6 +17,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalTracker.UI.Blazor", "Go
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalTracker.Infrastructure.Tests", "GoalTracker.Infrastructure.Tests\GoalTracker.Infrastructure.Tests.csproj", "{E19725B7-B791-441A-B900-56DD8F69D774}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoalTracker.API.Tests", "GoalTracker.API.Tests\GoalTracker.API.Tests.csproj", "{177C342C-976E-4719-A825-93CD5DBCE5EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{CEDE9EB5-D6CE-4F0A-8432-50A522CE1E5A}"
+	ProjectSection(SolutionItems) = preProject
+		..\ReportlioScreenShot\GoalEdit.png = ..\ReportlioScreenShot\GoalEdit.png
+		..\ReportlioScreenShot\GoalEdit_.png = ..\ReportlioScreenShot\GoalEdit_.png
+		..\ReportlioScreenShot\GoalList.png = ..\ReportlioScreenShot\GoalList.png
+		..\ReportlioScreenShot\Login.png = ..\ReportlioScreenShot\Login.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +61,10 @@ Global
 		{E19725B7-B791-441A-B900-56DD8F69D774}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E19725B7-B791-441A-B900-56DD8F69D774}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E19725B7-B791-441A-B900-56DD8F69D774}.Release|Any CPU.Build.0 = Release|Any CPU
+		{177C342C-976E-4719-A825-93CD5DBCE5EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{177C342C-976E-4719-A825-93CD5DBCE5EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{177C342C-976E-4719-A825-93CD5DBCE5EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{177C342C-976E-4719-A825-93CD5DBCE5EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

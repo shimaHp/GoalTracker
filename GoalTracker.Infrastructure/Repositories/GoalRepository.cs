@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GoalTracker.Infrastructure.Repositories;
 
-public class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
+internal class GoalRepository(GoalTrackerDbContext dbContext) : IGoalsRepository
 {
     private IDbContextTransaction? _currentTransaction;
 

@@ -81,15 +81,25 @@ Easily extendable to support:
 - Expand unit + integration tests
 - Host live version on Azure or GitHub Pages
 ---
+## 🌟 UI Preview
 
-
+### GoalsTracker Login 
+![Login](assets/Login.png)
+### Goals List with Pagination
+![Goals List](assets/GoalList.png)
+### Goals Details with WorkItems
+![Goals Detail](assets/GoalDetail.png)
+### Goal and WorkItems Edit
+![Goal Edit](assets/GoalEdit_.png)
 ## 🌟 How to Run Locally
 
 1. **Clone the repository**
    ```bash
    git clone https://github.com/shimaHp/GoalTracker.git
+   
 ## 🌟 Contact
 Author: Shima Hosseini
 🔗 GitHub: @shimaHp
 E-mail:Shimahp0@gmail.com
+
 This is a portfolio project developed after graduating with distinction in Advanced Computer Science. I’m currently seeking software development roles and always open to feedback, contributions, or mentorship.

@@ -1,105 +1,63 @@
 ﻿using Xunit;
-using Moq;
-using AutoMapper;
-using Microsoft.Extensions.Logging;
 using GoalTracker.Application.Goals.Commands.CreateGoal;
-using GoalTracker.Domain.Repository;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
 using GoalTracker.Application.Users;
-using GoalTracker.Application.WorkItems.Dtos;
+using GoalTracker.Domain.Repository;
+using Microsoft.Extensions.Logging;
+using Moq;
+using System.Data;
+using System.Security.Cryptography.Xml;
 using GoalTracker.Domain.Entities;
-
 using FluentAssertions;
-using Shouldly;
+using GoalTracker.Application.Tests;
 
-namespace GoalTracker.Application.Tests.Goals.Commands.CreateGoal;
-
-public class CreateGoalCommandHandlerTests
+namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
 {
-    private readonly Mock<IGoalsRepository> _goalsRepositoryMock;
-    private readonly Mock<IUserContext> _userContextMock;
-    private readonly Mock<IMapper> _mapperMock;
-    private readonly Mock<ILogger<CreateGoalCommandHandler>> _loggerMock;
-    private readonly CreateGoalCommandHandler _handler;
-
-    public CreateGoalCommandHandlerTests()
-    {
-        _goalsRepositoryMock = new Mock<IGoalsRepository>();
-        _userContextMock = new Mock<IUserContext>();
-        _mapperMock = new Mock<IMapper>();
-        _loggerMock = new Mock<ILogger<CreateGoalCommandHandler>>();
-
-        _handler = new CreateGoalCommandHandler(
-            _loggerMock.Object,
-            _mapperMock.Object,
-            _goalsRepositoryMock.Object,
-            _userContextMock.Object
-        );
-    }
-
-    [Fact]
-    public async Task Handle_ForValidCommand_ReturnsNewGoalId()
-    {
-        // Arrange
-        var command = new CreateGoalCommand
-        {
-            Title = "Test Goal",
-            Description = "Some description",
-            TargetDate = DateTime.UtcNow.AddDays(5),
-            CreatedDate = DateTime.UtcNow,
-            WorkItems = new List<CreateWorkItemDto>()
-
-        };
-        var user = new CurrentUser(
-         Id: Guid.NewGuid().ToString(),
-        UserName: "test@example.com",
-        Email: "test@example.com",
-        Roles: new List<string> { "Owner" }, 
-        DateOfBirth:null
-        );
-    
-
-        // Set up the Goal that will be created
-        var goal = new Goal
-        {
-            Id = 1,
-            Title = command.Title,
-            Description = command.Description,
-            TargetDate = command.TargetDate,
-            CreatedDate = command.CreatedDate,
-            UserId = user.Id
-        };
-        _userContextMock.Setup(x => x.GetCurrentUser()).Returns(user);
-
-        _mapperMock.Setup(m => m.Map<Goal>(command)).Returns(goal);
-
-        // Simulate repository returning a new goal ID
-        _goalsRepositoryMock.Setup(r => r.CreateAsync(goal)).ReturnsAsync(goal.Id);
-        //act
-        var handler = new CreateGoalCommandHandler(
-    _loggerMock.Object,
-    _mapperMock.Object,
-    _goalsRepositoryMock.Object,
-    _userContextMock.Object
-);
-
-        var result = await handler.Handle(command, CancellationToken.None);
-        // Assert
-        result.ShouldBe(goal.Id);
-        _goalsRepositoryMock.Verify(r => r.CreateAsync(goal), Times.Once);
+    public class CreateGoalCommandHandlerTests
+    {  
      
+       
+        [Fact()]
+        public async void CreateGoalCommandHandler_createGoalWithutWorkItem_ReturnGoalId()
+        {
+           //arrange
+           var loggerMock= new Mock<ILogger<CreateGoalCommandHandler>>();
 
+            var mapperMock = new Mock<IMapper>();
+            var command = TestObjectMother.CreateGoalCommandWithoutWorkItems();
+            var goal = TestObjectMother.CreateTestGoal();
+            mapperMock.Setup(m=>m.Map<Goal>(command)).Returns(goal);
+
+
+            var goalRepositoryMock = new Mock<IGoalsRepository>();
+            goalRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<Goal>())).ReturnsAsync(1);
+
+            var userContextMock = new Mock<IUserContext>();
+            var currentUser = TestObjectMother.CreateTestUser();
+            userContextMock.Setup(u => u.GetCurrentUser()).Returns(currentUser);
+            var commandHandler= new CreateGoalCommandHandler(loggerMock.Object,mapperMock.Object,goalRepositoryMock.Object, userContextMock.Object);    
+
+            //act
+
+            var result= await commandHandler.Handle(command,CancellationToken.None);
+
+            //assert
+
+            result.Should().Be(1);
+            goalRepositoryMock.Verify(r=>r.CreateAsync(goal),Times.Once());
+
+
+        }
+
+        [Fact()]
+        public void HandleTest()
+        {
+
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

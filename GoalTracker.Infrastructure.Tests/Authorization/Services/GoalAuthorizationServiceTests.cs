@@ -30,7 +30,7 @@ namespace GoalTracker.Infrastructure.Authorization.Services.Tests
         }
 
 
-        [Fact]
+        [Fact()]
         public void Authorize_AdminUser_ShouldReturnTrue()
         {
             // Arrange

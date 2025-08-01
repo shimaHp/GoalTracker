@@ -15,43 +15,76 @@ using System.Security.Cryptography.Xml;
 using GoalTracker.Domain.Entities;
 using FluentAssertions;
 using GoalTracker.Application.Tests;
+using System.Reflection.Metadata;
+using Assert = Xunit.Assert;
 
 namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
 {
     public class CreateGoalCommandHandlerTests
-    {  
-     
-       
+    {
+
+
         [Fact()]
         public async void CreateGoalCommandHandler_createGoalWithutWorkItem_ReturnGoalId()
         {
-           //arrange
-           var loggerMock= new Mock<ILogger<CreateGoalCommandHandler>>();
+            //A
+            var loggerMock = new Mock<ILogger<CreateGoalCommandHandler>>();
+            var mapperMock = new Mock<IMapper>();
+            var userContextMock = new Mock<IUserContext>();
+            var goalsRepositoryMock = new Mock<IGoalsRepository>();
+
+            var commandTest = TestObjectMother.CreateGoalCommand(withWorkItems: false);
+            var currentUserTest = TestObjectMother.CreateUser();
+            var expectedGoal = TestObjectMother.CreateGoal();
+
+            userContextMock.Setup(u => u.GetCurrentUser()).Returns(currentUserTest);
+            mapperMock.Setup(m => m.Map<Goal>(commandTest)).Returns(expectedGoal);
+            goalsRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<Goal>())).ReturnsAsync(1);
+
+            var handler = new CreateGoalCommandHandler(loggerMock.Object, mapperMock.Object, goalsRepositoryMock.Object, userContextMock.Object);
+            //A
+            var result = await handler.Handle(commandTest, CancellationToken.None);
+
+            //Assert
+            result.Should().Be(1);
+            goalsRepositoryMock.Verify(repo => repo.CreateAsync(It.IsAny<Goal>()), Times.Once);
+
+
+
+        }
+
+        [Fact()]
+        public async void CreateGoalCommandHandler_createGoalWithWorkItems_ReturnGoalId()
+        {
 
             var mapperMock = new Mock<IMapper>();
-            var command = TestObjectMother.CreateGoalCommandWithoutWorkItems();
-            var goal = TestObjectMother.CreateTestGoal();
-            mapperMock.Setup(m=>m.Map<Goal>(command)).Returns(goal);
-
-
-            var goalRepositoryMock = new Mock<IGoalsRepository>();
-            goalRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<Goal>())).ReturnsAsync(1);
-
+            var goalsRepositoryMock = new Mock<IGoalsRepository>();
             var userContextMock = new Mock<IUserContext>();
-            var currentUser = TestObjectMother.CreateTestUser();
-            userContextMock.Setup(u => u.GetCurrentUser()).Returns(currentUser);
-            var commandHandler= new CreateGoalCommandHandler(loggerMock.Object,mapperMock.Object,goalRepositoryMock.Object, userContextMock.Object);    
+            var loggerMock = new Mock<ILogger<CreateGoalCommandHandler>>();
+            //
+            var currentUserTest = TestObjectMother.CreateUser();
+            userContextMock.Setup(u => u.GetCurrentUser()).Returns(currentUserTest);
 
-            //act
+            var expectedGoal = TestObjectMother.CreateGoal();
+            var expectedWorkItems = TestObjectMother.CreateWorkItems();
+            var commandTest = TestObjectMother.CreateGoalCommand(true);
+            mapperMock.Setup(m => m.Map<Goal>(commandTest)).Returns(expectedGoal);
+            mapperMock.Setup(m => m.Map<List<WorkItem>>(commandTest.WorkItems)).Returns(expectedWorkItems);
 
-            var result= await commandHandler.Handle(command,CancellationToken.None);
+
+            goalsRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<Goal>())).ReturnsAsync(1);
+            var handler = new CreateGoalCommandHandler(loggerMock.Object, mapperMock.Object, goalsRepositoryMock.Object, userContextMock.Object);
+            // Arange
+            var result = await handler.Handle(commandTest, CancellationToken.None);
 
             //assert
-
             result.Should().Be(1);
-            goalRepositoryMock.Verify(r=>r.CreateAsync(goal),Times.Once());
-
-
+            goalsRepositoryMock.Verify(repo => repo.CreateAsync(It.Is<Goal>(g =>
+                g.UserId == currentUserTest.Id &&
+                g.WorkItems.Count == expectedWorkItems.Count &&
+                g.WorkItems.All(w => w.CreatorId == currentUserTest.Id)
+                )), Times.Once);
+            //I enjoyed
         }
 
         [Fact()]

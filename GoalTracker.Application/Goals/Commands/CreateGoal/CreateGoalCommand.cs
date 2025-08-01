@@ -14,8 +14,7 @@ public class CreateGoalCommand : IRequest<int>
     public DateTime? TargetDate { get; set; }
     public GoalStatus Status { get; set; }
     public Priority Priority { get; set; }
-
-    // Use DTOs here, not commands
+    
     public List<CreateWorkItemDto> WorkItems { get; set; } = new();
 
 

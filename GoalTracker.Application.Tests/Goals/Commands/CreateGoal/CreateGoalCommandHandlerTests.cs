@@ -88,8 +88,26 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
         }
 
         [Fact()]
-        public void HandleTest()
+        public async void CreateGoalCommandHandler_WhenUserContextReturnsNull_ThrowsException()
         {
+            //Arange
+            var loggerMock = new Mock<ILogger<CreateGoalCommandHandler>>();
+            var mapperMock = new Mock<IMapper>();
+            var userContextMock = new Mock<IUserContext>();
+             var goalsRepositoryMock = new Mock<IGoalsRepository>();
+
+            var commandTest = TestObjectMother.CreateGoalCommand(false);
+            var expectedGoal = TestObjectMother.CreateGoal();
+
+            mapperMock.Setup(m => m.Map<Goal>(commandTest)).Returns(expectedGoal);
+            var handler = new CreateGoalCommandHandler(loggerMock.Object, mapperMock.Object, goalsRepositoryMock.Object, userContextMock.Object);
+          //Act +Assert
+           var act= async()=> await handler.Handle(commandTest,CancellationToken.None);
+            await act.Should().ThrowAsync<NullReferenceException>();
+
+
+
+
 
         }
     }

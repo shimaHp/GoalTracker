@@ -25,7 +25,7 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
 
 
         [Fact()]
-        public async void CreateGoalCommandHandler_createGoalWithutWorkItem_ReturnGoalId()
+        public async Task CreateGoalCommandHandler_createGoalWithutWorkItem_ReturnGoalId()
         {
             //A
             var loggerMock = new Mock<ILogger<CreateGoalCommandHandler>>();
@@ -54,7 +54,7 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
         }
 
         [Fact()]
-        public async void CreateGoalCommandHandler_createGoalWithWorkItems_ReturnGoalId()
+        public async Task CreateGoalCommandHandler_createGoalWithWorkItems_ReturnGoalId()
         {
 
             var mapperMock = new Mock<IMapper>();
@@ -88,7 +88,7 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
         }
 
         [Fact()]
-        public async void CreateGoalCommandHandler_WhenUserContextReturnsNull_ThrowsException()
+        public async Task CreateGoalCommandHandler_WhenUserContextReturnsNull_ThrowsException()
         {
             //Arange
             var loggerMock = new Mock<ILogger<CreateGoalCommandHandler>>();
@@ -110,7 +110,7 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
 
         }
         [Fact]
-      public async void CreateGoalCommandHandler_WhenRepositoryThrowsException_PropagatesException()
+      public async Task CreateGoalCommandHandler_WhenRepositoryThrowsException_PropagatesException()
         {
             //Arrange
             var mapperMock = new Mock<IMapper>();
@@ -138,7 +138,7 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
         }
 
         [Fact]
-         public  async void CreateGoalCommandHandler_WhenCreatingGoal_SetsGoalPropertiesCorrectly()
+         public  async Task CreateGoalCommandHandler_WhenCreatingGoal_SetsGoalPropertiesCorrectly()
         {
             var mapperMock =new  Mock<IMapper>();
             var loggerMck = new Mock<ILogger<CreateGoalCommandHandler>>();
@@ -169,7 +169,7 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
         }
 
         [Fact]
-        public void CreateGoalCommandHandler_CreateGoalWithGoalItems_setWorkItemsCorrectly()
+        public async Task CreateGoalCommandHandler_CreateGoalWithGoalItems_setWorkItemsCorrectly()
             {
         
             var loggerMock=new Mock<ILogger<CreateGoalCommandHandler>>();
@@ -193,7 +193,7 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
             var handler= new CreateGoalCommandHandler(loggerMock.Object,mapperMock.Object,goalRepositoryMock.Object,userContextMock.Object);
             //Act
 
-            var result= handler.Handle(commandTest,CancellationToken.None);
+            var result=await handler.Handle(commandTest,CancellationToken.None);
             //Assert
 
             capturedGoal.Should().NotBeNull();

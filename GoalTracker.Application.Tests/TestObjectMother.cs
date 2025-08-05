@@ -56,7 +56,8 @@ namespace GoalTracker.Application.Tests
         }
         public static CreateWorkItemDto CreateWorkItemDto(string title = "Test Work Item")
         {
-            return new CreateWorkItemDto()
+            return 
+             new CreateWorkItemDto()
             {
                 Title = title,
                 Description = "Test Description",
@@ -64,7 +65,8 @@ namespace GoalTracker.Application.Tests
                 DueDate = DateTime.Now.AddDays(10),
                 Priority = Domain.Enums.Priority.Low,
                 Status = Domain.Enums.WorkItemStatus.NotStarted,
-            };
+            };     
+             
         }
 
         public static List<WorkItem> CreateWorkItems(int count = 2)

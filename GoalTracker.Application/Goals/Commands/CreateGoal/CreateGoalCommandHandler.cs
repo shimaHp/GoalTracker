@@ -31,7 +31,10 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal
         public async Task<int> Handle(CreateGoalCommand request, CancellationToken cancellationToken)
         {
             var currentUser = _userContext.GetCurrentUser();
-            _logger.LogInformation($"Creating a goal with title: {request.Title}");
+            _logger.LogInformation("User {UserId} is creating goal '{Title}' with {WorkItemCount} work items",
+    currentUser.Id, request.Title, request.WorkItems?.Count ?? 0);
+
+
 
             // Map command to domain Goal
             var goal = _mapper.Map<Goal>(request);
@@ -40,7 +43,8 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal
             goal.UserId = currentUser.Id;
             goal.CreatedDate = DateTime.UtcNow;
 
-            if (request.WorkItems.Any())
+            //Todo: check in debuging agian
+            if (request.WorkItems?.Any() == true)
             {
                 goal.WorkItems = _mapper.Map<List<WorkItem>>(request.WorkItems);
 
@@ -49,11 +53,11 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal
                     workItem.CreatorId = currentUser.Id;
                     workItem.Goal = goal; // navigation property
                     workItem.CreatedDate = DateTime.UtcNow;
-                }
+                }              
             }
-
-            // Save to DB
             int goalId = await _goalsRepository.CreateAsync(goal);
+            _logger.LogInformation(
+              "Successfully created goal with ID {GoalId}", goalId);
             return goalId;
         }
     }

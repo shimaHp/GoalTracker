@@ -138,7 +138,7 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
         }
 
         [Fact]
-         public  async void CreateGoalCommandHandler_SetsGoalPropertiesCorrectly()
+         public  async void CreateGoalCommandHandler_WhenCreatingGoal_SetsGoalPropertiesCorrectly()
         {
             var mapperMock =new  Mock<IMapper>();
             var loggerMck = new Mock<ILogger<CreateGoalCommandHandler>>();

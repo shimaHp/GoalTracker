@@ -76,7 +76,7 @@ namespace GoalTracker.Application.Tests
                 {
                     Title = $"Work Item {i}",
                     Description = "Test Description",
-                    AssigneeId = "test-assignee",
+                    AssigneeId = $"Test-asignee-{i}",
                     DueDate = DateTime.Now.AddDays(10),
                                        Status = Domain.Enums.WorkItemStatus.NotStarted,
                     Goal = null // Add this line

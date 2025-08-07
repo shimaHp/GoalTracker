@@ -268,7 +268,7 @@ namespace GoalTracker.Application.Goals.Commands.CreateGoal.Tests
             //assert
 
             result.Should().Be(goalId);
-
+            //Todo chack
             // Verify start log
             loggerMock.Verify(
                 x => x.Log(

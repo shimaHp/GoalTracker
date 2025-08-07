@@ -7,7 +7,7 @@ public class Goal
     public int Id { get; set; }
     public string Title { get; set; } = default!;
     public string? Description { get; set; }
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime CreatedDate { get; set; }// = DateTime.Now;
     public DateTime? TargetDate { get; set; }
     public GoalStatus Status { get; set; }
     public Priority Priority { get; set; }

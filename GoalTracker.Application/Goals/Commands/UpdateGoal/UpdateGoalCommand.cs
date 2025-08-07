@@ -10,9 +10,7 @@ namespace GoalTracker.Application.Goals.Commands.editGoal;
 
 
 
-    /// <summary>
-    /// Command to update an existing goal with its work items
-    /// </summary>
+
     public class UpdateGoalCommand : IRequest<GoalDto>
     {
         public UpdateGoalCommand(UpdateGoalDto updateGoalDto)

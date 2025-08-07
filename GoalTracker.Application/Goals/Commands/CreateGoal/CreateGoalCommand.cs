@@ -1,6 +1,4 @@
-﻿using GoalTracker.Application.Goals.Dtos;
-using GoalTracker.Application.WorkItems.Commands.CreateWorkItem;
-using GoalTracker.Application.WorkItems.Dtos;
+﻿using GoalTracker.Application.WorkItems.Dtos;
 using GoalTracker.Domain.Enums;
 using MediatR;
 

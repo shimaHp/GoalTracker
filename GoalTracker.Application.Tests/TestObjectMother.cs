@@ -4,6 +4,7 @@ using GoalTracker.Application.Goals.Dtos;
 using GoalTracker.Application.Users;
 using GoalTracker.Application.WorkItems.Dtos;
 using GoalTracker.Domain.Entities;
+using GoalTracker.Domain.Enums;
 
 namespace GoalTracker.Application.Tests
 {
@@ -18,6 +19,19 @@ namespace GoalTracker.Application.Tests
                 Description = "Test Description",
                 Priority = Domain.Enums.Priority.Low,
                 TargetDate = DateTime.Now.AddDays(10),
+                Status = Domain.Enums.GoalStatus.NotStarted,
+            };
+        }
+        public static Goal CreateExistingGoal(int id = 1)
+        {
+            return new Goal()
+            {
+                Id = id,
+                Title = "Existing Goal",
+                CreatedDate = DateTime.Now.AddDays(-5), // Created 5 days ago
+                Description = "Original Description",
+                Priority = Domain.Enums.Priority.Low,
+                TargetDate = DateTime.Now.AddDays(10).Date,
                 Status = Domain.Enums.GoalStatus.NotStarted,
             };
         }
@@ -39,6 +53,18 @@ namespace GoalTracker.Application.Tests
             }
 
             return dto;
+        }
+        public static UpdateGoalDto CreateUpdateGoalDto(int id = 1)
+        {
+            return new UpdateGoalDto()
+            {
+                Id = id,
+                Title = "Updated Goal Title",
+                Description = "Updated Description",
+                TargetDate = DateTime.Now.AddDays(15), 
+                Status = GoalStatus.InProgress,         
+                Priority = Priority.Medium            
+            };
         }
 
         public static CurrentUser CreateUser(string? id = null, string? userName = null)

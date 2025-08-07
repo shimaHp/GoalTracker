@@ -161,9 +161,74 @@ namespace GoalTracker.Application.Goals.Dtos.Tests
         }
 
         [Fact]
-        public void WorkItemProfile_MapWorkItemToWorkItemDto_ShouldMapAllPropertiesCorrectly()
+        public void UpdateGoalDto_UpdateGoalDtoToExistingGoalWithnoWorkItems_ShouldUpdateCorrectProperties()
         {
-            var result = new WorkItemProfile();
+            // Arrange 
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<GoalProfile>();
+                cfg.AddProfile<WorkItemProfile>();
+            });
+            var mapper = config.CreateMapper();
+            var updateGoalDtoTest = TestObjectMother.CreateUpdateGoalDto(1);
+            var existingGoalTest = TestObjectMother.CreateExistingGoal(1);
+            // Act 
+            var result= mapper.Map(updateGoalDtoTest,existingGoalTest);
+            // Assert 
+            Assert.Equal(updateGoalDtoTest.Title, existingGoalTest.Title);
+            Assert.Equal(updateGoalDtoTest.Description, existingGoalTest.Description);
+            Assert.Equal(updateGoalDtoTest.Priority, existingGoalTest.Priority);
+            Assert.Equal(updateGoalDtoTest.Status, existingGoalTest.Status);
+            Assert.Equal(updateGoalDtoTest.TargetDate, existingGoalTest.TargetDate);
+            //shouldnt change
+            Assert.Equal(1,existingGoalTest.Id);
+            Assert.Equal(DateTime.Now.AddDays(-5).Date, existingGoalTest.CreatedDate.Date);
+        }
+        [Fact]
+        public void UpdateGoalDto_WithNullDescription_ShouldSetToNull()
+        {
+            // Arrange 
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<GoalProfile>();
+                cfg.AddProfile<WorkItemProfile>();
+            });
+            var mapper = config.CreateMapper();
+            var updateGoalDtoTest = TestObjectMother.CreateUpdateGoalDto(1);
+            // Arrange
+            var existingGoalTest = TestObjectMother.CreateExistingGoal(1);
+            existingGoalTest.Description = "Original Description";
+            var updateDto = TestObjectMother.CreateUpdateGoalDto(1);
+            updateDto.Description = null;
+            // Act
+            mapper.Map(updateDto, existingGoalTest);
+
+            // Assert
+            Assert.Null(existingGoalTest.Description); // Should be null now
+        }
+        [Fact]
+        public void UpdateGoalDto_WithNullTitle_ShouldThrowException()
+        {
+            // Arrange 
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<GoalProfile>();
+                cfg.AddProfile<WorkItemProfile>();
+            });
+            var mapper = config.CreateMapper();
+            var updateGoalDtoTest = TestObjectMother.CreateUpdateGoalDto(1);
+
+            // Arrange
+            var existingGoalTest = TestObjectMother.CreateExistingGoal(1);
+            existingGoalTest.Title = null;
+
+            var updateDto = TestObjectMother.CreateUpdateGoalDto(1);
+            updateDto.Description = null;
+
+            Assert.Throws<NullReferenceException>(() =>
+            {
+                mapper.Map(updateDto, existingGoalTest);
+            });
         }
 
 

@@ -17,20 +17,15 @@ public class CreateGoalCommandValidator : AbstractValidator<CreateGoalCommand>
         RuleFor(x => x.Description)
             .MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
 
-        RuleFor(x => x.CreatedDate)
-            .NotEmpty().WithMessage("CreatedDate is required.");
-
         RuleFor(x => x.TargetDate)
             .GreaterThanOrEqualTo(DateTime.Now).WithMessage("TargetDate cannot be in the past.")
             .When(x => x.TargetDate.HasValue);
 
         RuleFor(x => x.Status)
-    .IsInEnum()
-    .WithMessage("Status must be a valid WorkItemStatus value.");
+              .IsInEnum().WithMessage("Status must be a valid GoalStatus value.");
 
-        RuleFor(x => x.Status)
-     .IsInEnum()
-     .WithMessage("Status must be a valid GoalStatus value.");
+        RuleFor(x => x.Priority)
+            .IsInEnum().WithMessage("Priority must be a valid Priority value.");
 
     }
 }

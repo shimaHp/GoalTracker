@@ -22,6 +22,41 @@ namespace GoalTracker.Application.Tests
                 Status = Domain.Enums.GoalStatus.NotStarted,
             };
         }
+        public static CreateGoalCommand CreateGoalCommand(bool withWorkItems = false)
+        {
+            var command = new CreateGoalCommand()
+            {
+                Title = "Test Goal Title",
+                Description = "Test Description",
+                Status = Domain.Enums.GoalStatus.NotStarted,    
+                Priority = Domain.Enums.Priority.Low,          
+                TargetDate = DateTime.Now.AddDays(10)           
+
+            };
+
+            if (withWorkItems)
+            {
+                command.WorkItems.Add(CreateWorkItemDto("Work Item 1"));
+                command.WorkItems.Add(CreateWorkItemDto("Work Item 2"));
+            }
+
+            return command;
+        }
+        public static CreateWorkItemDto CreateWorkItemDto(string title = "Test Work Item")
+        {
+            return
+             new CreateWorkItemDto()
+             {
+                 Title = title,
+                 Description = "Test Description",
+                 AssigneeId = "test-assignee",
+                 DueDate = DateTime.Now.AddDays(10),
+                 Priority = Domain.Enums.Priority.Low,
+                 Status = Domain.Enums.WorkItemStatus.NotStarted,
+
+             };
+
+        }
         public static Goal CreateExistingGoal(int id = 1)
         {
             return new Goal()
@@ -79,38 +114,7 @@ namespace GoalTracker.Application.Tests
         }
 
 
-        public static CreateGoalCommand CreateGoalCommand(bool withWorkItems = false)
-        {
-            var command = new CreateGoalCommand()
-            {
-                Title = "Test Goal Title",
-                Description = "Test Description",
-
-            };
-
-            if (withWorkItems)
-            {
-                command.WorkItems.Add(CreateWorkItemDto("Work Item 1"));
-                command.WorkItems.Add(CreateWorkItemDto("Work Item 2"));
-            }
-
-            return command;
-        }
-        public static CreateWorkItemDto CreateWorkItemDto(string title = "Test Work Item")
-        {
-            return
-             new CreateWorkItemDto()
-             {
-                 Title = title,
-                 Description = "Test Description",
-                 AssigneeId = "test-assignee",
-                 DueDate = DateTime.Now.AddDays(10),
-                 Priority = Domain.Enums.Priority.Low,
-                 Status = Domain.Enums.WorkItemStatus.NotStarted,
-
-             };
-
-        }
+     
         
         public static List<WorkItem> CreateWorkItems(int count = 2)
         {

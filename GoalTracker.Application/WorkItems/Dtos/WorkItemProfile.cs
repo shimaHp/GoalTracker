@@ -12,25 +12,17 @@ public class WorkItemProfile : Profile
 
         //create
         CreateMap<CreateWorkItemDto, WorkItem>()
-.ForMember(dest => dest.Id, opt => opt.Ignore())
-.ForMember(dest => dest.GoalId, opt => opt.Ignore())
-.ForMember(dest => dest.Goal, opt => opt.Ignore())
-.ForMember(dest => dest.CreatorId, opt => opt.Ignore())
-.ForMember(dest => dest.Creator, opt => opt.Ignore())
-.ForMember(dest => dest.AssigneeId, opt => opt.MapFrom(src => src.AssigneeId.ToString()))
-.ForMember(dest => dest.Assignee, opt => opt.Ignore())
-.ForMember(dest => dest.LastUpdatedBy, opt => opt.Ignore())
-.ForMember(dest => dest.LastUpdatedById, opt => opt.Ignore())
-        .ForMember(dest => dest.LastUpdatedDate, opt => opt.Ignore());
-
-      
-
-        CreateMap<CreateWorkItemDto, WorkItem>()
-    .ForMember(dest => dest.Id, opt => opt.Ignore())
-    .ForMember(dest => dest.GoalId, opt => opt.Ignore())
-    .ForMember(dest => dest.Goal, opt => opt.Ignore())
-    .ForMember(dest => dest.CreatorId, opt => opt.Ignore())
-    .ForMember(dest => dest.CreatedDate, opt => opt.Ignore());
+     .ForMember(dest => dest.Id, opt => opt.Ignore())
+     .ForMember(dest => dest.GoalId, opt => opt.Ignore())
+     .ForMember(dest => dest.Goal, opt => opt.Ignore())
+     .ForMember(dest => dest.CreatorId, opt => opt.Ignore())
+     .ForMember(dest => dest.Creator, opt => opt.Ignore())
+     .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())         
+     .ForMember(dest => dest.AssigneeId, opt => opt.MapFrom(src => src.AssigneeId.ToString()))  
+     .ForMember(dest => dest.Assignee, opt => opt.Ignore())
+     .ForMember(dest => dest.LastUpdatedBy, opt => opt.Ignore())
+     .ForMember(dest => dest.LastUpdatedById, opt => opt.Ignore())
+     .ForMember(dest => dest.LastUpdatedDate, opt => opt.Ignore());
         //============
 
         CreateMap<WorkItem, WorkItemDto>()

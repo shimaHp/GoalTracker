@@ -9,7 +9,8 @@ namespace GoalTracker.Application.Goals.Dtos;
 public class GoalProfile : Profile
 {
     public GoalProfile()
-    {
+    { 
+        //ToDo Polish
         // Map from CreateGoalCommand to Goal entity and nested workitem as well
         CreateMap<CreateGoalDto, Goal>()
      .ForMember(dest => dest.Id, opt => opt.Ignore()) // DB will set it
@@ -20,16 +21,18 @@ public class GoalProfile : Profile
     .ForMember(dest => dest.Id, opt => opt.Ignore())
     .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
     .ForMember(dest => dest.WorkItems, opt => opt.MapFrom(src => src.WorkItems));
+        //ToDo:remove this code
+        //CreateMap<UpdateGoalCommand, Goal>();
 
-        CreateMap<UpdateGoalCommand, Goal>();
         CreateMap<UpdateGoalDto, Goal>()
         .ForMember(dest => dest.Id,opt => opt.Ignore())
         .ForMember(dest => dest.CreatedDate,opt => opt.Ignore())
         .ForMember(dest => dest.WorkItems,opt => opt.Ignore());
 
         CreateMap<Goal, GoalDto>()
-    .ForMember(dest => dest.Status,opt => opt.MapFrom(src => (int)src.Status))
-    .ForMember(dest => dest.Priority,opt => opt.MapFrom(src => (int)src.Priority))
+    //ToDo:remove this code
+    //.ForMember(dest => dest.Status,opt => opt.MapFrom(src => (int)src.Status))
+    //.ForMember(dest => dest.Priority,opt => opt.MapFrom(src => (int)src.Priority))
     .ForMember(dest => dest.WorkItems,opt => opt.MapFrom(src => src.WorkItems));
     }
 }
